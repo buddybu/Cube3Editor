@@ -66,7 +66,7 @@
             this.btnRightTempUpdate = new System.Windows.Forms.Button();
             this.btnRightCalculate = new System.Windows.Forms.Button();
             this.tabRetractrionControl = new System.Windows.Forms.TabPage();
-            this.gridRetraction = new SourceGrid.Grid();
+            this.gridRetractionStart = new SourceGrid.Grid();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.closeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -76,6 +76,9 @@
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.abouitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mainMenu = new System.Windows.Forms.MenuStrip();
+            this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.groupBox7 = new System.Windows.Forms.GroupBox();
+            this.gridRetractionStop = new SourceGrid.Grid();
             this.panel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -86,6 +89,8 @@
             this.groupBox4.SuspendLayout();
             this.tabRetractrionControl.SuspendLayout();
             this.mainMenu.SuspendLayout();
+            this.groupBox6.SuspendLayout();
+            this.groupBox7.SuspendLayout();
             this.SuspendLayout();
             // 
             // openFileDialog
@@ -534,7 +539,8 @@
             // 
             // tabRetractrionControl
             // 
-            this.tabRetractrionControl.Controls.Add(this.gridRetraction);
+            this.tabRetractrionControl.Controls.Add(this.groupBox7);
+            this.tabRetractrionControl.Controls.Add(this.groupBox6);
             this.tabRetractrionControl.Location = new System.Drawing.Point(4, 22);
             this.tabRetractrionControl.Name = "tabRetractrionControl";
             this.tabRetractrionControl.Padding = new System.Windows.Forms.Padding(3);
@@ -543,17 +549,17 @@
             this.tabRetractrionControl.Text = "Retraction Control";
             this.tabRetractrionControl.UseVisualStyleBackColor = true;
             // 
-            // gridRetraction
+            // gridRetractionStart
             // 
-            this.gridRetraction.EnableSort = true;
-            this.gridRetraction.Location = new System.Drawing.Point(6, 12);
-            this.gridRetraction.Name = "gridRetraction";
-            this.gridRetraction.OptimizeMode = SourceGrid.CellOptimizeMode.ForRows;
-            this.gridRetraction.SelectionMode = SourceGrid.GridSelectionMode.Cell;
-            this.gridRetraction.Size = new System.Drawing.Size(609, 342);
-            this.gridRetraction.TabIndex = 0;
-            this.gridRetraction.TabStop = true;
-            this.gridRetraction.ToolTipText = "";
+            this.gridRetractionStart.EnableSort = true;
+            this.gridRetractionStart.Location = new System.Drawing.Point(6, 19);
+            this.gridRetractionStart.Name = "gridRetractionStart";
+            this.gridRetractionStart.OptimizeMode = SourceGrid.CellOptimizeMode.ForRows;
+            this.gridRetractionStart.SelectionMode = SourceGrid.GridSelectionMode.Cell;
+            this.gridRetractionStart.Size = new System.Drawing.Size(597, 154);
+            this.gridRetractionStart.TabIndex = 0;
+            this.gridRetractionStart.TabStop = true;
+            this.gridRetractionStart.ToolTipText = "";
             // 
             // fileToolStripMenuItem
             // 
@@ -635,6 +641,38 @@
             this.mainMenu.TabIndex = 0;
             this.mainMenu.Text = "menuStrip1";
             // 
+            // groupBox6
+            // 
+            this.groupBox6.Controls.Add(this.gridRetractionStart);
+            this.groupBox6.Location = new System.Drawing.Point(6, 6);
+            this.groupBox6.Name = "groupBox6";
+            this.groupBox6.Size = new System.Drawing.Size(609, 171);
+            this.groupBox6.TabIndex = 1;
+            this.groupBox6.TabStop = false;
+            this.groupBox6.Text = "M227";
+            // 
+            // groupBox7
+            // 
+            this.groupBox7.Controls.Add(this.gridRetractionStop);
+            this.groupBox7.Location = new System.Drawing.Point(3, 183);
+            this.groupBox7.Name = "groupBox7";
+            this.groupBox7.Size = new System.Drawing.Size(609, 179);
+            this.groupBox7.TabIndex = 2;
+            this.groupBox7.TabStop = false;
+            this.groupBox7.Text = "M228";
+            // 
+            // gridRetractionStop
+            // 
+            this.gridRetractionStop.EnableSort = true;
+            this.gridRetractionStop.Location = new System.Drawing.Point(6, 19);
+            this.gridRetractionStop.Name = "gridRetractionStop";
+            this.gridRetractionStop.OptimizeMode = SourceGrid.CellOptimizeMode.ForRows;
+            this.gridRetractionStop.SelectionMode = SourceGrid.GridSelectionMode.Cell;
+            this.gridRetractionStop.Size = new System.Drawing.Size(597, 154);
+            this.gridRetractionStop.TabIndex = 0;
+            this.gridRetractionStop.TabStop = true;
+            this.gridRetractionStop.ToolTipText = "";
+            // 
             // MainEditor
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -671,6 +709,8 @@
             this.tabRetractrionControl.ResumeLayout(false);
             this.mainMenu.ResumeLayout(false);
             this.mainMenu.PerformLayout();
+            this.groupBox6.ResumeLayout(false);
+            this.groupBox7.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -723,7 +763,10 @@
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem abouitToolStripMenuItem;
         private System.Windows.Forms.MenuStrip mainMenu;
-        private SourceGrid.Grid gridRetraction;
+        private SourceGrid.Grid gridRetractionStart;
+        private System.Windows.Forms.GroupBox groupBox6;
+        private System.Windows.Forms.GroupBox groupBox7;
+        private SourceGrid.Grid gridRetractionStop;
     }
 }
 

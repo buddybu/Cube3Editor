@@ -2,6 +2,7 @@
 using Org.BouncyCastle.Crypto.Engines;
 using Org.BouncyCastle.Crypto.Paddings;
 using Org.BouncyCastle.Crypto.Parameters;
+using SourceGrid;
 using SourceGrid.Cells.Views;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,7 @@ using System.Linq;
 using System.Security;
 using System.Text;
 using System.Windows.Forms;
+using static Cube3Editor.BitFromByte;
 
 namespace Cube3Editor
 {
@@ -50,12 +52,18 @@ namespace Cube3Editor
             set => tempView = value;
         }
 
-        public MainEditor()
+        public MainEditor(string cubeFile)
         {
             InitializeComponent();
 
             openFileDialog.Filter = "CUBE Files |*.cube3;*.cubepro|All Files (*.*)|*.*";
             openFileDialog.Title = "Please Select a CUBE3 File to edit.";
+
+            if (cubeFile != null)
+            {
+                fileName = cubeFile;
+                LoadFile(fileName);
+            }
 
             engine = new BlowfishEngine(true);
         }
@@ -183,9 +191,10 @@ namespace Cube3Editor
                             cbCubeProMaterial.Text = bfbObject.GetMaterialType(BFBConstants.MATERIALCODEE3);
                             cbCubeProColor.Text = bfbObject.GetMaterialColor(BFBConstants.MATERIALCODEE3);
 
-                            bfbObject.PopulateTemperatures(BFBConstants.LEFT_TEMP, gridLeftTemps, border);
-                            bfbObject.PopulateTemperatures(BFBConstants.RIGHT_TEMP, gridRightTemps, border);
-                            bfbObject.PopulateRetractions(BFBConstants.RETRACT_START, gridRetraction, border);
+                            PopulateTemperatures(BFBConstants.LEFT_TEMP, gridLeftTemps, border);
+                            PopulateTemperatures(BFBConstants.RIGHT_TEMP, gridRightTemps, border);
+                            PopulateRetractionStarts(border);
+                            PopulateRetractionStops(border);
 
                             // enable material fields
                             tbFirmware.Enabled = true;
@@ -221,6 +230,257 @@ namespace Cube3Editor
             }
         }
 
+        internal void PopulateRetractionStarts(RectangleBorder border)
+        {
+
+            //List<string> retractionStartLines = bfbObject.generateRetractionStartList();
+
+            SourceGrid.Cells.Editors.TextBox retractCountEditor = new SourceGrid.Cells.Editors.TextBox(typeof(int));
+            retractCountEditor.EditableMode = SourceGrid.EditableMode.None;
+
+
+            int gridRow = 1;
+            RetractionStartChangedEvent valueChangedController = new RetractionStartChangedEvent(this);
+
+
+            foreach (string key in bfbObject.RetractionStartLineList.Keys)
+            {
+                int index = bfbObject.RetractionStartLineList[key][0];
+                Retraction retraction = bfbObject.RetractionStartDictionary[index];
+
+                gridRetractionStart.Rows.Insert(gridRow);
+                gridRetractionStart[gridRow, 0] = new SourceGrid.Cells.Cell(retraction.P, typeof(int));
+                gridRetractionStart[gridRow, 0].AddController(valueChangedController);
+                gridRetractionStart[gridRow, 1] = new SourceGrid.Cells.Cell(retraction.S, typeof(int));
+                gridRetractionStart[gridRow, 1].AddController(valueChangedController);
+                if (retraction.G != -1)
+                {
+                    gridRetractionStart[gridRow, 2] = new SourceGrid.Cells.Cell(retraction.G, typeof(int));
+                    gridRetractionStart[gridRow, 2].AddController(valueChangedController);
+                }
+                else
+                {
+                    gridRetractionStart[gridRow, 2] = new SourceGrid.Cells.Cell(" ", retractCountEditor);
+                }
+                if (retraction.F != -1)
+                {
+                    gridRetractionStart[gridRow, 3] = new SourceGrid.Cells.Cell(retraction.F, typeof(int));
+                    gridRetractionStart[gridRow, 3].AddController(valueChangedController);
+                }
+                else
+                {
+                    gridRetractionStart[gridRow, 3] = new SourceGrid.Cells.Cell(" ", retractCountEditor);
+                }
+                gridRetractionStart[gridRow, 4] = new SourceGrid.Cells.Cell(index, retractCountEditor);
+
+                //gridLeftTemps[gridRow, 1] = new SourceGrid.Cells.CellControl(); 
+                gridRow++;
+            }
+        }
+
+        internal void PopulateRetractionStops(RectangleBorder border)
+        {
+
+            //List<string> retractionStartLines = bfbObject.generateRetractionStartList();
+
+            SourceGrid.Cells.Editors.TextBox retractCountEditor = new SourceGrid.Cells.Editors.TextBox(typeof(int));
+            retractCountEditor.EditableMode = SourceGrid.EditableMode.None;
+
+            
+            int gridRow = 1;
+            RetractionStopChangedEvent valueChangedController = new RetractionStopChangedEvent(this);
+
+
+            foreach (string key in bfbObject.RetractionStopLineList.Keys)
+            {
+                int index = bfbObject.RetractionStopLineList[key][0];
+                Retraction retraction = bfbObject.RetractionStopDictionary[index];
+
+                gridRetractionStop.Rows.Insert(gridRow);
+                gridRetractionStop[gridRow, 0] = new SourceGrid.Cells.Cell(retraction.P, typeof(int));
+                gridRetractionStop[gridRow, 0].AddController(valueChangedController);
+                gridRetractionStop[gridRow, 1] = new SourceGrid.Cells.Cell(retraction.S, typeof(int));
+                gridRetractionStop[gridRow, 1].AddController(valueChangedController);
+                gridRetractionStop[gridRow, 2] = new SourceGrid.Cells.Cell(index, retractCountEditor);
+
+                gridRow++;
+            }
+        }
+
+        internal void UpdateStartRetractions(Grid gridStartRetracts)
+        {
+            if (gridStartRetracts.Rows.Count > 1)
+            {
+                for (int i = 1; i < gridStartRetracts.Rows.Count; i++)
+                {
+                    int p = (int)gridStartRetracts[i, 0].Value;
+                    int s = (int)gridStartRetracts[i, 1].Value;
+                    int g = (int)gridStartRetracts[i, 2].Value;
+                    int f = (int)gridStartRetracts[i, 3].Value;
+                    int index = (int)gridStartRetracts[i, 4].Value;
+
+                    string retractCmd = BFBConstants.RETRACT_START + " P" + p + " S" + s;
+                    if (g != -1)
+                        retractCmd += " G" + g;
+
+                    if (f != -1)
+                        retractCmd += " F" + f;
+
+                    bfbObject.updateRetractionStartLines(index, retractCmd);
+
+                }
+            }
+        }
+
+        internal void UpdateStopRetractions(Grid gridStopRetracts)
+        {
+            if (gridStopRetracts.Rows.Count > 1)
+            {
+                for (int i = 1; i < gridStopRetracts.Rows.Count; i++)
+                {
+                    int p = (int)gridStopRetracts[i, 0].Value;
+                    int s = (int)gridStopRetracts[i, 1].Value;
+                    int index = (int)gridStopRetracts[i, 2].Value;
+
+                    string retractCmd = BFBConstants.RETRACT_STOP + " P" + p + " S" + s;
+
+                    bfbObject.updateRetractionStopLines(index, retractCmd);
+
+                }
+            }
+        }
+
+
+        internal void PopulateTemperatures(string tempCmdStr, Grid gridTemps, RectangleBorder border)
+        {
+            Dictionary<int, int> tempDict = new Dictionary<int, int>();
+
+            List<string> tempLines = bfbObject.getUniqueTemperatures(tempCmdStr);
+
+            for (int i = 0; i < tempLines.Count; i++)
+            {
+                string tempStr = tempLines[i].Split(' ')[1];
+                string cvtTempStr = new string(tempStr.ToCharArray(1, tempStr.Length - 1));
+                int temperature = Convert.ToInt32(cvtTempStr);
+                if (tempDict.ContainsKey(temperature))
+                {
+                    tempDict[temperature]++;
+                }
+                else
+                {
+                    tempDict.Add(temperature, 1);
+                }
+            }
+
+            SourceGrid.Cells.Editors.ComboBox tempModEditor;
+            String[] tempModType = new String[] { "Percentage", "Additive", "Replace" };
+            tempModEditor = new SourceGrid.Cells.Editors.ComboBox(typeof(String));
+            tempModEditor.StandardValues = tempModType;
+            tempModEditor.EditableMode = SourceGrid.EditableMode.Focus | SourceGrid.EditableMode.SingleClick | SourceGrid.EditableMode.AnyKey;
+
+            SourceGrid.Cells.Editors.TextBox tempCountEditor = new SourceGrid.Cells.Editors.TextBox(typeof(int));
+            tempCountEditor.EditableMode = SourceGrid.EditableMode.None;
+
+            int gridRow = 1;
+            TemperatureChangedEvent valueChangedController = new TemperatureChangedEvent(this);
+
+            foreach (int temp in tempDict.Keys)
+            {
+                gridTemps.Rows.Insert(gridRow);
+                gridTemps[gridRow, 0] = new SourceGrid.Cells.Cell(temp, tempCountEditor);
+                gridTemps[gridRow, 1] = new SourceGrid.Cells.Cell(tempDict[temp], tempCountEditor);
+                gridTemps[gridRow, 2] = new SourceGrid.Cells.Cell(0, typeof(int));
+                gridTemps[gridRow, 2].AddController(valueChangedController);
+                gridTemps[gridRow, 3] = new SourceGrid.Cells.Cell("Percentage", tempModEditor);
+                gridTemps[gridRow, 3].View = SourceGrid.Cells.Views.ComboBox.Default;
+                gridTemps[gridRow, 3].AddController(valueChangedController);
+                gridTemps[gridRow, 4] = new SourceGrid.Cells.Cell(0, tempCountEditor);
+
+                //gridLeftTemps[gridRow, 1] = new SourceGrid.Cells.CellControl(); 
+                gridRow++;
+            }
+        }
+
+        internal void UpdateTemperatures(Grid gridTemps)
+        {
+            for (int i = 1; i < gridTemps.Rows.Count; i++)
+            {
+                if ((int)gridTemps[i, 2].Value != 0)
+                {
+                    gridTemps[i, 0].Value = gridTemps[i, 4].Value;
+                    gridTemps[i, 4].Value = 0;
+                }
+            }
+        }
+
+        internal void UpdateTemperatures(string tempCmd, Grid gridTemps)
+        {
+
+            int oldTemp;
+            int newTemp;
+
+            for (int i = 1; i < gridTemps.Rows.Count; i++)
+            {
+                if ((int)gridTemps[i, 2].Value != 0)
+                {
+
+                    oldTemp = (int)gridTemps[i, 0].Value;
+                    newTemp = (int)gridTemps[i, 4].Value;
+
+                    if (oldTemp != newTemp)
+                    {
+                        bfbObject.UpdateTemperatureLines(tempCmd, oldTemp, newTemp);
+                    }
+                }
+            }
+
+            UpdateTemperatures(gridTemps);
+
+        }
+
+
+        internal void CalculateTemperatures(Grid gridTemps)
+        {
+            if (gridTemps.Rows.Count > 1)
+            {
+                for (int i = 1; i < gridTemps.Rows.Count; i++)
+                {
+                    int currentTemp = (int)gridTemps[i, 0].Value;
+                    int newTemp = 0;
+
+                    if (gridTemps[i, 3].Value.Equals("Percentage"))
+                    {
+                        double percentage = (int)(gridTemps[i, 2].Value);
+                        if (currentTemp > 0 && percentage != 0)
+                        {
+                            newTemp = Convert.ToInt32((percentage / 100) * currentTemp + currentTemp);
+                        }
+                    }
+                    else if (gridTemps[i, 3].Value.Equals("Additive"))
+                    {
+                        int additive = (int)(gridTemps[i, 2].Value);
+                        newTemp = currentTemp + additive;
+                    }
+                    else if (gridTemps[i, 3].Value.Equals("Replace"))
+                    {
+                        int replace = (int)(gridTemps[i, 2].Value);
+                        newTemp = replace;
+                    }
+                    else
+                    {
+                        newTemp = currentTemp;
+                    }
+
+                    if (newTemp < 0)
+                        newTemp = 0;
+
+                    if (newTemp > 265)
+                        newTemp = 265;
+
+                    gridTemps[i, 4].Value = newTemp;
+                }
+            }
+        }
 
         private bool validCube3Header(byte[] inputCube3File)
         {
@@ -250,8 +510,8 @@ namespace Cube3Editor
                 gridLeftTemps.Rows.RemoveRange(1, gridLeftTemps.Rows.Count - 1);
             if (gridRightTemps.Rows.Count > 1)
                 gridRightTemps.Rows.RemoveRange(1, gridRightTemps.Rows.Count - 1);
-            if (gridRetraction.Rows.Count > 1)
-                gridRetraction.Rows.RemoveRange(1, gridRetraction.Rows.Count - 1);
+            if (gridRetractionStart.Rows.Count > 1)
+                gridRetractionStart.Rows.RemoveRange(1, gridRetractionStart.Rows.Count - 1);
 
             char[] seperator = new char[] { ' ', '-', ' ' };
             string title = Text.Split(seperator)[0];
@@ -469,50 +729,64 @@ namespace Cube3Editor
             gridRightTemps.Columns.StretchToFit();
             gridRightTemps.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 
-            gridRetraction.ColumnsCount = 5;
-            gridRetraction.FixedRows = 1;
-            gridRetraction.Rows.Insert(0);
+            gridRetractionStart.ColumnsCount = 5;
+            gridRetractionStart.FixedRows = 1;
+            gridRetractionStart.Rows.Insert(0);
 
-            gridRetraction[0, 0] = new SourceGrid.Cells.ColumnHeader("P Value");
-            gridRetraction[0, 0].View = headerView;
-            gridRetraction[0, 1] = new SourceGrid.Cells.ColumnHeader("S Value");
-            gridRetraction[0, 1].View = headerView;
-            gridRetraction[0, 2] = new SourceGrid.Cells.ColumnHeader("G Value");
-            gridRetraction[0, 2].View = headerView;
-            gridRetraction[0, 3] = new SourceGrid.Cells.ColumnHeader("F Value");
-            gridRetraction[0, 3].View = headerView;
-            gridRetraction[0, 4] = new SourceGrid.Cells.ColumnHeader("1st Index");
-            gridRetraction[0, 4].View = headerView;
-            gridRetraction.AutoSize = true;
-            gridRetraction.AutoSizeCells();
-            gridRetraction.Columns.StretchToFit();
-            gridRetraction.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            gridRetractionStart[0, 0] = new SourceGrid.Cells.ColumnHeader("P Value");
+            gridRetractionStart[0, 0].View = headerView;
+            gridRetractionStart[0, 1] = new SourceGrid.Cells.ColumnHeader("S Value");
+            gridRetractionStart[0, 1].View = headerView;
+            gridRetractionStart[0, 2] = new SourceGrid.Cells.ColumnHeader("G Value");
+            gridRetractionStart[0, 2].View = headerView;
+            gridRetractionStart[0, 3] = new SourceGrid.Cells.ColumnHeader("F Value");
+            gridRetractionStart[0, 3].View = headerView;
+            gridRetractionStart[0, 4] = new SourceGrid.Cells.ColumnHeader("1st Index");
+            gridRetractionStart[0, 4].View = headerView;
+            gridRetractionStart.AutoSize = true;
+            gridRetractionStart.AutoSizeCells();
+            gridRetractionStart.Columns.StretchToFit();
+            gridRetractionStart.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 
+            gridRetractionStop.ColumnsCount = 3;
+            gridRetractionStop.FixedRows = 1;
+            gridRetractionStop.Rows.Insert(0);
+
+            gridRetractionStop[0, 0] = new SourceGrid.Cells.ColumnHeader("P Value");
+            gridRetractionStop[0, 0].View = headerView;
+            gridRetractionStop[0, 1] = new SourceGrid.Cells.ColumnHeader("S Value");
+            gridRetractionStop[0, 1].View = headerView;
+            gridRetractionStop[0, 2] = new SourceGrid.Cells.ColumnHeader("1st Index");
+            gridRetractionStop[0, 2].View = headerView;
+            gridRetractionStop.AutoSize = true;
+            gridRetractionStop.AutoSizeCells();
+            gridRetractionStop.Columns.StretchToFit();
+            gridRetractionStop.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 
         }
 
         private void btnLeftCalculate_Click(object sender, EventArgs e)
         {
             modified = true;
-            bfbObject.CalculateTemperatures(gridLeftTemps);
+            CalculateTemperatures(gridLeftTemps);
         }
 
         private void btnRightCalculate_Click(object sender, EventArgs e)
         {
             modified = true;
-            bfbObject.CalculateTemperatures(gridRightTemps);
+            CalculateTemperatures(gridRightTemps);
         }
 
         private void btnLeftTempUpdate_Click(object sender, EventArgs e)
         {
             modified = true;
-            bfbObject.UpdateTemperatures(BFBConstants.LEFT_TEMP, gridLeftTemps);
+            UpdateTemperatures(BFBConstants.LEFT_TEMP, gridLeftTemps);
         }
 
         private void btnRightTempUpdate_Click(object sender, EventArgs e)
         {
             modified = true;
-            bfbObject.UpdateTemperatures(BFBConstants.RIGHT_TEMP, gridRightTemps);
+            UpdateTemperatures(BFBConstants.RIGHT_TEMP, gridRightTemps);
         }
 
         private void tbFirware_TextChanged(object sender, EventArgs e)
@@ -544,7 +818,7 @@ namespace Cube3Editor
 
         private void btnViewRaw_Click(object sender, EventArgs e)
         {
-            FrmRawView rawViewForm = new FrmRawView(bfbObject.BfbStringList);
+            FrmRawView rawViewForm = new FrmRawView(bfbObject.bfbLines);
             // display bfb data in a text box.  no editing allowed.
             rawViewForm.ShowDialog();
         }

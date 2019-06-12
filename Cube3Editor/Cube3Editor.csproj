@@ -68,6 +68,11 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Retraction.cs" />
+    <Compile Include="RetractionStopChangedEvent.cs" />
+    <Compile Include="RetractionStartChangedEvent.cs" />
+    <Compile Include="RetractStartModifier.cs" />
+    <Compile Include="TemperatureChangedEvent.cs" />
+    <Compile Include="TemperatureModifier.cs" />
     <EmbeddedResource Include="RawViewForm.resx">
       <DependentUpon>RawViewForm.cs</DependentUpon>
     </EmbeddedResource>
