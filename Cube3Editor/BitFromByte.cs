@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Cube3Editor
 {
-    partial class BitFromByte
+    class BitFromByte
     {
         private Byte[] byteArray;
         private Encoding encoding;
@@ -199,6 +199,11 @@ namespace Cube3Editor
         {
             int cubeCode = BFBConstants.getCUBE3Code(type, color);
 
+            SetMATERIALCODE(materialCode, cubeCode);
+        }
+
+        internal void SetMATERIALCODE(string materialCode, int cubeCode)
+        {
             if (cubeCode != -1)
             {
                 int index = bfbLines.FindIndex(x => x.Contains(materialCode));
@@ -214,7 +219,6 @@ namespace Cube3Editor
                 }
             }
         }
-
 
         internal List<string> generateRetractionStartList()
         {

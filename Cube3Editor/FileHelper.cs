@@ -22,8 +22,16 @@ namespace Cube3Editor
                 // First backup copy of the day starts at 1
                 int newSequence = 1;
 
+                String pathDirectoryName = Path.GetDirectoryName(fileName);
+                if (pathDirectoryName.Length == 0)
+                {
+                    pathDirectoryName = Directory.GetCurrentDirectory();
+                }
+
+                String pathFileName = Path.GetFileName(fileName);
+                
                 // Get the list of previous backups of the file, skipping the current file
-                var backupFiles = Directory.GetFiles(Path.GetDirectoryName(fileName), Path.GetFileName(fileName) + ".*")
+                var backupFiles = Directory.GetFiles(pathDirectoryName, pathFileName + ".*")
                     .ToList()
                     .Where(d => !d.Equals(fileName))
                     .OrderBy(d => d);

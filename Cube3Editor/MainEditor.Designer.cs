@@ -118,7 +118,7 @@
             this.tbPrinterModel.Name = "tbPrinterModel";
             this.tbPrinterModel.Size = new System.Drawing.Size(80, 20);
             this.tbPrinterModel.TabIndex = 5;
-            this.tbPrinterModel.TextChanged += new System.EventHandler(this.tbPrinterModel_TextChanged);
+            this.tbPrinterModel.TextChanged += new System.EventHandler(this.TbPrinterModel_TextChanged);
             // 
             // tbMinFirmware
             // 
@@ -127,7 +127,7 @@
             this.tbMinFirmware.Name = "tbMinFirmware";
             this.tbMinFirmware.Size = new System.Drawing.Size(80, 20);
             this.tbMinFirmware.TabIndex = 4;
-            this.tbMinFirmware.TextChanged += new System.EventHandler(this.tbMinFirmware_TextChanged);
+            this.tbMinFirmware.TextChanged += new System.EventHandler(this.TbMinFirmware_TextChanged);
             // 
             // tbFirmware
             // 
@@ -136,7 +136,7 @@
             this.tbFirmware.Name = "tbFirmware";
             this.tbFirmware.Size = new System.Drawing.Size(80, 20);
             this.tbFirmware.TabIndex = 3;
-            this.tbFirmware.TextChanged += new System.EventHandler(this.tbFirware_TextChanged);
+            this.tbFirmware.TextChanged += new System.EventHandler(this.TbFirware_TextChanged);
             // 
             // label3
             // 
@@ -187,7 +187,7 @@
             this.cbLeftMaterial.Name = "cbLeftMaterial";
             this.cbLeftMaterial.Size = new System.Drawing.Size(68, 21);
             this.cbLeftMaterial.TabIndex = 4;
-            this.cbLeftMaterial.SelectedIndexChanged += new System.EventHandler(this.cbLeftMaterial_SelectedIndexChanged);
+            this.cbLeftMaterial.SelectedIndexChanged += new System.EventHandler(this.CbLeftMaterial_SelectedIndexChanged);
             // 
             // label7
             // 
@@ -230,7 +230,7 @@
             this.cbLeftColor.Name = "cbLeftColor";
             this.cbLeftColor.Size = new System.Drawing.Size(68, 21);
             this.cbLeftColor.TabIndex = 8;
-            this.cbLeftColor.SelectedIndexChanged += new System.EventHandler(this.cbLeftColor_SelectedIndexChanged);
+            this.cbLeftColor.SelectedIndexChanged += new System.EventHandler(this.CbLeftColor_SelectedIndexChanged);
             // 
             // cbRightColor
             // 
@@ -264,7 +264,7 @@
             this.cbRightColor.Name = "cbRightColor";
             this.cbRightColor.Size = new System.Drawing.Size(68, 21);
             this.cbRightColor.TabIndex = 13;
-            this.cbRightColor.SelectedIndexChanged += new System.EventHandler(this.cbRightColor_SelectedIndexChanged);
+            this.cbRightColor.SelectedIndexChanged += new System.EventHandler(this.CbRightColor_SelectedIndexChanged);
             // 
             // label5
             // 
@@ -288,7 +288,7 @@
             this.cbRightMaterial.Name = "cbRightMaterial";
             this.cbRightMaterial.Size = new System.Drawing.Size(68, 21);
             this.cbRightMaterial.TabIndex = 10;
-            this.cbRightMaterial.SelectedIndexChanged += new System.EventHandler(this.cbRightMaterial_SelectedIndexChanged);
+            this.cbRightMaterial.SelectedIndexChanged += new System.EventHandler(this.CbRightMaterial_SelectedIndexChanged);
             // 
             // label9
             // 
@@ -351,7 +351,7 @@
             this.cbCubeProMaterial.Name = "cbCubeProMaterial";
             this.cbCubeProMaterial.Size = new System.Drawing.Size(68, 21);
             this.cbCubeProMaterial.TabIndex = 10;
-            this.cbCubeProMaterial.SelectedIndexChanged += new System.EventHandler(this.cbCubeProMaterial_SelectedIndexChanged);
+            this.cbCubeProMaterial.SelectedIndexChanged += new System.EventHandler(this.CbCubeProMaterial_SelectedIndexChanged);
             // 
             // label6
             // 
@@ -394,7 +394,7 @@
             this.cbCubeProColor.Name = "cbCubeProColor";
             this.cbCubeProColor.Size = new System.Drawing.Size(68, 21);
             this.cbCubeProColor.TabIndex = 13;
-            this.cbCubeProColor.SelectedIndexChanged += new System.EventHandler(this.cbCubeProColor_SelectedIndexChanged);
+            this.cbCubeProColor.SelectedIndexChanged += new System.EventHandler(this.CbCubeProColor_SelectedIndexChanged);
             // 
             // label8
             // 
@@ -423,7 +423,7 @@
             this.btnViewRaw.TabIndex = 30;
             this.btnViewRaw.Text = "View Raw BFB";
             this.btnViewRaw.UseVisualStyleBackColor = true;
-            this.btnViewRaw.Click += new System.EventHandler(this.btnViewRaw_Click);
+            this.btnViewRaw.Click += new System.EventHandler(this.BtnViewRaw_Click);
             // 
             // tabControl1
             // 
@@ -480,7 +480,7 @@
             this.btnLeftCalculate.TabIndex = 30;
             this.btnLeftCalculate.Text = "Calculate";
             this.btnLeftCalculate.UseVisualStyleBackColor = true;
-            this.btnLeftCalculate.Click += new System.EventHandler(this.btnLeftCalculate_Click);
+            this.btnLeftCalculate.Click += new System.EventHandler(this.BtnLeftCalculate_Click);
             // 
             // btnLeftTempUpdate
             // 
@@ -490,7 +490,7 @@
             this.btnLeftTempUpdate.TabIndex = 32;
             this.btnLeftTempUpdate.Text = "Update";
             this.btnLeftTempUpdate.UseVisualStyleBackColor = true;
-            this.btnLeftTempUpdate.Click += new System.EventHandler(this.btnLeftTempUpdate_Click);
+            this.btnLeftTempUpdate.Click += new System.EventHandler(this.BtnLeftTempUpdate_Click);
             // 
             // groupBox4
             // 
@@ -525,7 +525,7 @@
             this.btnRightTempUpdate.TabIndex = 33;
             this.btnRightTempUpdate.Text = "Update";
             this.btnRightTempUpdate.UseVisualStyleBackColor = true;
-            this.btnRightTempUpdate.Click += new System.EventHandler(this.btnRightTempUpdate_Click);
+            this.btnRightTempUpdate.Click += new System.EventHandler(this.BtnRightTempUpdate_Click);
             // 
             // btnRightCalculate
             // 
@@ -535,7 +535,7 @@
             this.btnRightCalculate.TabIndex = 31;
             this.btnRightCalculate.Text = "Calculate";
             this.btnRightCalculate.UseVisualStyleBackColor = true;
-            this.btnRightCalculate.Click += new System.EventHandler(this.btnRightCalculate_Click);
+            this.btnRightCalculate.Click += new System.EventHandler(this.BtnRightCalculate_Click);
             // 
             // tabRetractrionControl
             // 
@@ -628,7 +628,7 @@
             this.abouitToolStripMenuItem.Name = "abouitToolStripMenuItem";
             this.abouitToolStripMenuItem.Size = new System.Drawing.Size(119, 22);
             this.abouitToolStripMenuItem.Text = "Abouit...";
-            this.abouitToolStripMenuItem.Click += new System.EventHandler(this.abouitToolStripMenuItem_Click);
+            this.abouitToolStripMenuItem.Click += new System.EventHandler(this.AbouitToolStripMenuItem_Click);
             // 
             // mainMenu
             // 

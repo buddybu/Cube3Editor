@@ -20,6 +20,7 @@ namespace Cube3Editor
 
         public const string LEFT_TEMP = "M104";
         public const string RIGHT_TEMP = "M204";
+        public const string MID_TEMP = "M304";
         public const string RETRACT_START = "M227";
         public const string RETRACT_STOP = "M228";
 

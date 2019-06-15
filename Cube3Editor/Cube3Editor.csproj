@@ -70,9 +70,10 @@
     <Compile Include="Retraction.cs" />
     <Compile Include="RetractionStopChangedEvent.cs" />
     <Compile Include="RetractionStartChangedEvent.cs" />
-    <Compile Include="RetractStartModifier.cs" />
+    <Compile Include="RetractModifier.cs" />
     <Compile Include="TemperatureChangedEvent.cs" />
     <Compile Include="TemperatureModifier.cs" />
+    <Compile Include="TemperatureType.cs" />
     <EmbeddedResource Include="RawViewForm.resx">
       <DependentUpon>RawViewForm.cs</DependentUpon>
     </EmbeddedResource>

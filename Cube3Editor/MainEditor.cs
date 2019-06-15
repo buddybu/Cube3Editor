@@ -13,6 +13,7 @@ using System.Security;
 using System.Text;
 using System.Windows.Forms;
 using static Cube3Editor.BitFromByte;
+using static Cube3Editor.Program;
 
 namespace Cube3Editor
 {
@@ -59,13 +60,14 @@ namespace Cube3Editor
             openFileDialog.Filter = "CUBE Files |*.cube3;*.cubepro|All Files (*.*)|*.*";
             openFileDialog.Title = "Please Select a CUBE3 File to edit.";
 
+            engine = new BlowfishEngine(true);
+
             if (cubeFile != null)
             {
                 fileName = cubeFile;
+                PrepareForm();
                 LoadFile(fileName);
             }
-
-            engine = new BlowfishEngine(true);
         }
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
@@ -90,6 +92,11 @@ namespace Cube3Editor
                     inFile.Close();
             }
 
+        }
+
+        internal void CommandLineSave()
+        {
+            SaveFile();
         }
 
         private void LoadFile(String FileName)
@@ -211,7 +218,7 @@ namespace Cube3Editor
                             modified = false;
 
                         }
-                        catch (IOException ex)
+                        catch (IOException)
                         {
                             MessageBox.Show($"Unable to process CUBE3 File [{openFileDialog.FileName}]\n\n" +
                                 $"Was this really a CUBE3 file?");
@@ -286,7 +293,7 @@ namespace Cube3Editor
             SourceGrid.Cells.Editors.TextBox retractCountEditor = new SourceGrid.Cells.Editors.TextBox(typeof(int));
             retractCountEditor.EditableMode = SourceGrid.EditableMode.None;
 
-            
+
             int gridRow = 1;
             RetractionStopChangedEvent valueChangedController = new RetractionStopChangedEvent(this);
 
@@ -533,40 +540,7 @@ namespace Cube3Editor
         {
             //if (modified)
             {
-
-                inFile.Close();
-
-                FileHelper.MakeBackup(fileName, 5);
-
-                Byte[] newDataModel = bfbObject.getBytesFromBFB();
-                PaddedBufferedBlockCipher cipher;
-                ZeroBytePadding padding = new ZeroBytePadding();
-                cipher = new PaddedBufferedBlockCipher(engine, padding);
-
-                // create the key parameter 
-                Byte[] keyBytes = encoding.GetBytes(key);
-                KeyParameter param = new KeyParameter(encoding.GetBytes(key));
-
-                // initalize the cipher
-                cipher.Init(true, new KeyParameter(keyBytes));
-
-                Byte[] encodedBytes = new Byte[cipher.GetOutputSize(newDataModel.Length)];
-
-                int encodedLength = cipher.ProcessBytes(newDataModel, 0, newDataModel.Length, encodedBytes, 0);
-                cipher.DoFinal(encodedBytes, encodedLength);
-
-
-                using (outFile = File.OpenWrite(fileName))
-                using (var binaryWriter = new BinaryWriter(outFile))
-                {
-                    binaryWriter.Write(encodedBytes);
-
-                    outFile.Close();
-                    // close the original file
-                    // rename original file to .cube3.1 or .2 or .3 (etc)
-                    // encode the BFB using blowfish encryption
-                    // save the encrypted data to .cube3 
-                }
+                SaveFile();
             }
         }
 
@@ -585,7 +559,45 @@ namespace Cube3Editor
             }
         }
 
-        private void abouitToolStripMenuItem_Click(object sender, EventArgs e)
+        private void SaveFile()
+        {
+            inFile.Close();
+
+            FileHelper.MakeBackup(fileName, 5);
+
+            Byte[] newDataModel = bfbObject.getBytesFromBFB();
+            PaddedBufferedBlockCipher cipher;
+            ZeroBytePadding padding = new ZeroBytePadding();
+            cipher = new PaddedBufferedBlockCipher(engine, padding);
+
+            // create the key parameter 
+            Byte[] keyBytes = encoding.GetBytes(key);
+            KeyParameter param = new KeyParameter(encoding.GetBytes(key));
+
+            // initalize the cipher
+            cipher.Init(true, new KeyParameter(keyBytes));
+
+            Byte[] encodedBytes = new Byte[cipher.GetOutputSize(newDataModel.Length)];
+
+            int encodedLength = cipher.ProcessBytes(newDataModel, 0, newDataModel.Length, encodedBytes, 0);
+            cipher.DoFinal(encodedBytes, encodedLength);
+
+
+            using (outFile = File.OpenWrite(fileName))
+            using (var binaryWriter = new BinaryWriter(outFile))
+            {
+                binaryWriter.Write(encodedBytes);
+
+                outFile.Close();
+                // close the original file
+                // rename original file to .cube3.1 or .2 or .3 (etc)
+                // encode the BFB using blowfish encryption
+                // save the encrypted data to .cube3 
+            }
+        }
+
+
+        private void AbouitToolStripMenuItem_Click(object sender, EventArgs e)
         {
 
         }
@@ -603,7 +615,7 @@ namespace Cube3Editor
             return -1;
         }
 
-        private void cbLeftMaterial_SelectedIndexChanged(object sender, EventArgs e)
+        private void CbLeftMaterial_SelectedIndexChanged(object sender, EventArgs e)
         {
             modified = true;
             AddOrRemoveNatural(cbLeftMaterial, cbLeftColor);
@@ -611,33 +623,33 @@ namespace Cube3Editor
         }
 
 
-        private void cbRightMaterial_SelectedIndexChanged(object sender, EventArgs e)
+        private void CbRightMaterial_SelectedIndexChanged(object sender, EventArgs e)
         {
             modified = true;
             AddOrRemoveNatural(cbRightMaterial, cbRightColor);
             bfbObject.SetMATERIALCODE(BFBConstants.MATERIALCODEE2, cbRightMaterial.Text, cbRightColor.Text);
         }
 
-        private void cbCubeProMaterial_SelectedIndexChanged(object sender, EventArgs e)
+        private void CbCubeProMaterial_SelectedIndexChanged(object sender, EventArgs e)
         {
             modified = true;
             AddOrRemoveNatural(cbCubeProMaterial, cbCubeProColor);
             bfbObject.SetMATERIALCODE(BFBConstants.MATERIALCODEE3, cbCubeProMaterial.Text, cbCubeProColor.Text);
         }
 
-        private void cbLeftColor_SelectedIndexChanged(object sender, EventArgs e)
+        private void CbLeftColor_SelectedIndexChanged(object sender, EventArgs e)
         {
             modified = true;
             bfbObject.SetMATERIALCODE(BFBConstants.MATERIALCODEE1, cbLeftMaterial.Text, cbLeftColor.Text);
         }
 
-        private void cbRightColor_SelectedIndexChanged(object sender, EventArgs e)
+        private void CbRightColor_SelectedIndexChanged(object sender, EventArgs e)
         {
             modified = true;
             bfbObject.SetMATERIALCODE(BFBConstants.MATERIALCODEE2, cbRightMaterial.Text, cbRightColor.Text);
         }
 
-        private void cbCubeProColor_SelectedIndexChanged(object sender, EventArgs e)
+        private void CbCubeProColor_SelectedIndexChanged(object sender, EventArgs e)
         {
             bfbObject.SetMATERIALCODE(BFBConstants.MATERIALCODEE3, cbCubeProMaterial.Text, cbCubeProColor.Text);
             modified = true;
@@ -668,10 +680,15 @@ namespace Cube3Editor
 
         }
 
+        bool prepared = false;
 
-
-        private void MainEditor_Load(object sender, EventArgs e)
+        private void PrepareForm()
         {
+            if (prepared)
+                return;
+
+            prepared = true;
+
             Border = new RectangleBorder(
                 new BorderLine(Color.DarkGreen),
                 new BorderLine(Color.DarkGreen));
@@ -762,34 +779,38 @@ namespace Cube3Editor
             gridRetractionStop.AutoSizeCells();
             gridRetractionStop.Columns.StretchToFit();
             gridRetractionStop.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-
         }
 
-        private void btnLeftCalculate_Click(object sender, EventArgs e)
+        private void MainEditor_Load(object sender, EventArgs e)
+        {
+            PrepareForm();
+        }
+
+        private void BtnLeftCalculate_Click(object sender, EventArgs e)
         {
             modified = true;
             CalculateTemperatures(gridLeftTemps);
         }
 
-        private void btnRightCalculate_Click(object sender, EventArgs e)
+        private void BtnRightCalculate_Click(object sender, EventArgs e)
         {
             modified = true;
             CalculateTemperatures(gridRightTemps);
         }
 
-        private void btnLeftTempUpdate_Click(object sender, EventArgs e)
+        private void BtnLeftTempUpdate_Click(object sender, EventArgs e)
         {
             modified = true;
             UpdateTemperatures(BFBConstants.LEFT_TEMP, gridLeftTemps);
         }
 
-        private void btnRightTempUpdate_Click(object sender, EventArgs e)
+        private void BtnRightTempUpdate_Click(object sender, EventArgs e)
         {
             modified = true;
             UpdateTemperatures(BFBConstants.RIGHT_TEMP, gridRightTemps);
         }
 
-        private void tbFirware_TextChanged(object sender, EventArgs e)
+        private void TbFirware_TextChanged(object sender, EventArgs e)
         {
             if (tbFirmware.Text.Length > 0)
             {
@@ -798,7 +819,7 @@ namespace Cube3Editor
             }
         }
 
-        private void tbMinFirmware_TextChanged(object sender, EventArgs e)
+        private void TbMinFirmware_TextChanged(object sender, EventArgs e)
         {
             if (tbMinFirmware.Text.Length > 0)
             {
@@ -807,7 +828,7 @@ namespace Cube3Editor
             }
         }
 
-        private void tbPrinterModel_TextChanged(object sender, EventArgs e)
+        private void TbPrinterModel_TextChanged(object sender, EventArgs e)
         {
             if (tbPrinterModel.Text.Length > 0)
             {
@@ -816,7 +837,7 @@ namespace Cube3Editor
             }
         }
 
-        private void btnViewRaw_Click(object sender, EventArgs e)
+        private void BtnViewRaw_Click(object sender, EventArgs e)
         {
             FrmRawView rawViewForm = new FrmRawView(bfbObject.bfbLines);
             // display bfb data in a text box.  no editing allowed.
@@ -876,5 +897,104 @@ namespace Cube3Editor
         {
         }
 
+
+        internal bool CommandLineLoad(String newFWStr, String newMinFWStr, String newPrinterModel, String newMCE1, String newMCE2, String newMCE3,
+            List<TemperatureModifier> tempMods, List<RetractModifier> retractStartMods, List<RetractModifier> retractStopMods)
+        {
+            bool success = true;
+
+
+            tbFirmware.Text = newFWStr;
+            tbMinFirmware.Text = newMinFWStr;
+            tbPrinterModel.Text = newPrinterModel;
+
+            int.TryParse(newMCE1, out int cubeCode);
+            bfbObject.SetMATERIALCODE(BFBConstants.MATERIALCODEE1, cubeCode);
+            int.TryParse(newMCE2, out cubeCode);
+            bfbObject.SetMATERIALCODE(BFBConstants.MATERIALCODEE2, cubeCode);
+            int.TryParse(newMCE3, out cubeCode);
+            bfbObject.SetMATERIALCODE(BFBConstants.MATERIALCODEE3, cubeCode);
+
+            // process temperatures
+            foreach (TemperatureModifier tempMod in tempMods)
+            {
+                if (tempMod.extruder.Equals(BFBConstants.LEFT_TEMP))
+                {
+                    for (int i = 1; i < gridLeftTemps.Rows.Count; i++)
+                    {
+                        if ((int)gridLeftTemps[i, 0].Value == tempMod.oldValue)
+                        {
+                            // set row to replace and replace value to newvalue
+                            gridLeftTemps[i, 2].Value = tempMod.newValue;
+                            gridLeftTemps[i, 3].Value = "Replace";
+                        }
+                    }
+                }
+                else if (tempMod.extruder.Equals(BFBConstants.RIGHT_TEMP))
+                {
+                    for (int i = 1; i < gridRightTemps.Rows.Count; i++)
+                    {
+                        if ((int)gridRightTemps[i, 0].Value == tempMod.oldValue)
+                        {
+                            // set row to replace and replace value to newvalue
+                            gridRightTemps[i, 2].Value = tempMod.newValue;
+                            gridRightTemps[i, 3].Value = "Replace";
+                        }
+                    }
+                }
+                else if (tempMod.extruder.Equals(BFBConstants.MID_TEMP))
+                {
+                    /* TODO: Update when I have MIDTEMP working....
+                    for (int i = 1; i < gridMidTemps.Rows.Count; i++)
+                    {
+                        if ((int)gridMidTemps[i, 0].Value == tempMod.oldValue)
+                        {
+                            // set row to replace and replace value to newvalue
+                            gridMidTemps[i, 2].Value = tempMod.newValue;
+                            gridMidTemps[i, 3].Value = "Replace";
+                        }
+                    }
+                    */
+                }
+            }
+            CalculateTemperatures(gridLeftTemps);
+            UpdateTemperatures(BFBConstants.LEFT_TEMP, gridLeftTemps);
+            CalculateTemperatures(gridRightTemps);
+            UpdateTemperatures(BFBConstants.RIGHT_TEMP, gridRightTemps);
+            //CalculateTemperatures(gridMidTemps);
+            //UpdateTemperatures(gridMidTemps);
+
+            // process retract start
+            foreach (RetractModifier retractMod in retractStartMods)
+            {
+                for (int i = 1; i < gridRetractionStart.Rows.Count; i++)
+                {
+                    if ((int)gridRetractionStart[i, 0].Value == retractMod.oldRetractValue &&
+                        (int)gridRetractionStart[i, 1].Value == retractMod.oldRetractValue)
+                    {
+                        // set row to replace and replace value to newvalue
+                        gridRetractionStart[i, 0].Value = retractMod.newRetractValue;
+                        gridRetractionStart[i, 1].Value = retractMod.newRetractValue;
+                    }
+                }
+            }
+            UpdateStartRetractions(gridRetractionStart);
+
+            // process retract stop
+            foreach (RetractModifier retractMod in retractStopMods)
+            {
+                for (int i = 1; i < gridRetractionStop.Rows.Count; i++)
+                {
+                    if ((int)gridRetractionStop[i, 1].Value == retractMod.oldRetractValue)
+                    {
+                        // set row to replace and replace value to newvalue
+                        gridRetractionStop[i, 1].Value = retractMod.newRetractValue;
+                    }
+                }
+            }
+            UpdateStopRetractions(gridRetractionStop);
+
+            return success;
+        }
     }
 }
