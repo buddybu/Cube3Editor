@@ -82,7 +82,17 @@ namespace Cube3Editor
 
                     cubeEdit.CommandLineSave();
                 }
+
+                SendKeys.SendWait("{ENTER}");
+                Environment.Exit(0);
+
             }
+        }
+
+        // Send the "enter" to the console to release the command prompt
+        // on the parent console
+        static void SendEnterKey()
+        {
         }
 
         private static bool LoadAndValidateScript(string scriptFile)
@@ -99,19 +109,25 @@ namespace Cube3Editor
                     count++;
                     string[] lineArray = line.ToUpper().Split(null);
 
+                    if (lineArray.Length == 0)
+                    {
+                        // empty line, skip it
+                        continue;
+                    }
+
                     if (lineArray[0].Equals("SET"))
                     {
-                        valid = doSet(lineArray, count);
+                        valid = DoSet(lineArray, count);
                     }
                     else if (lineArray[0].ToUpper().Equals("MODIFY"))
                     {
-                        valid = doModify(lineArray, count);
+                        valid = DoModify(lineArray, count);
                     }
 
-                    else if (lineArray[0].ToUpper().Equals("EXECUTE"))
-                    {
-                        valid = doExecute(lineArray, count);
-                    }
+                    //else if (lineArray[0].ToUpper().Equals("EXECUTE"))
+                    //{
+                    //    valid = doExecute(lineArray, count);
+                    //}
                     else
                     {
                         System.Console.WriteLine("Invalid script file at line " + count);
@@ -119,7 +135,7 @@ namespace Cube3Editor
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 System.Console.WriteLine("Unable to open file '" + scriptFile + "'");
                 valid = false;
@@ -129,7 +145,7 @@ namespace Cube3Editor
         }
 
         // SET <Field> <value>
-        private static bool doSet(string[] lineArray, int lineNumber)
+        private static bool DoSet(string[] lineArray, int lineNumber)
         {
             bool valid = true;
             if (lineArray[1].Equals("") || lineArray.Length != 3)
@@ -173,7 +189,7 @@ namespace Cube3Editor
         // modify temperature [<modifier>] xxxx by <mod type> <mod value>
         // modify retractstart xxxx by <mod type> <mod value>
         // modify retractstop xxxx by <mod type> <mod value>
-        private static bool doModify(string[] lineArray, int lineNumber)
+        private static bool DoModify(string[] lineArray, int lineNumber)
         {
             bool valid = false;
             // MODIFY TEMPERATURE [LEFT|RIGHT|MID] XXXX BY [PERCENTAGE [+|-]YYYY|ADD [+|-]YYYY|REPLACE YYYY]
@@ -202,21 +218,21 @@ namespace Cube3Editor
             return valid;
         }
 
-        // execute
-        private static bool doExecute(string[] lineArray, int lineNumber)
-        {
-            bool valid = true;
-            if (lineArray.Length != 1)
-            {
-                System.Console.WriteLine("Invalid EXECUTE format at line " + lineNumber);
-                valid = false;
-            }
-            else
-            {
-            }
+        //// execute
+        //private static bool DoExecute(string[] lineArray, int lineNumber)
+        //{
+        //    bool valid = true;
+        //    if (lineArray.Length != 1)
+        //    {
+        //        System.Console.WriteLine("Invalid EXECUTE format at line " + lineNumber);
+        //        valid = false;
+        //    }
+        //    else
+        //    {
+        //    }
 
-            return valid;
-        }
+        //    return valid;
+        //}
 
 
         private static bool DoModifyTemperature(string[] lineArray, int lineNumber)
