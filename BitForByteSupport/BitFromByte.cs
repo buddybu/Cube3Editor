@@ -54,7 +54,7 @@ namespace BitForByteSupport
             RemoveImage();
         }
 
-        public  void RemoveImage()
+        public void RemoveImage()
         {
             // find last entry of M107
             int m107Index = BfbLines.FindLastIndex(x => x.StartsWith("M107"));
@@ -83,7 +83,7 @@ namespace BitForByteSupport
             }
         }
 
-        public  byte[] getBytesFromBFB()
+        public byte[] getBytesFromBFB()
         {
             string bfbString = string.Join("\r\n", BfbLines);
 
@@ -93,7 +93,7 @@ namespace BitForByteSupport
         }
 
 
-        public  string GetText(string control)
+        public string GetText(string control)
         {
             int index = BfbLines.FindIndex(x => x.Contains(control));
             if (index >= 0)
@@ -106,7 +106,7 @@ namespace BitForByteSupport
             }
         }
 
-        public  string GetMaterialType(string material)
+        public string GetMaterialType(string material)
         {
             int index = BfbLines.FindIndex(x => x.Contains(material));
             string materialCodeStr = BfbLines[index].Split(':')[1];
@@ -123,7 +123,7 @@ namespace BitForByteSupport
             }
         }
 
-        public  string GetMaterialColor(string material)
+        public string GetMaterialColor(string material)
         {
             int index = BfbLines.FindIndex(x => x.Contains(material));
             string materialCodeStr = BfbLines[index].Split(':')[1];
@@ -141,7 +141,7 @@ namespace BitForByteSupport
         }
 
 
-        public  void SetFIRMWARE(string firmwareVersion)
+        public void SetFIRMWARE(string firmwareVersion)
         {
             int index = BfbLines.FindIndex(x => x.Contains(BFBConstants.FIRMWARE));
             if (0 <= index && index < BfbLines.Count)
@@ -158,7 +158,7 @@ namespace BitForByteSupport
             }
         }
 
-        public  void SetMINFIRMWARE(string minFirmwareVersion)
+        public void SetMINFIRMWARE(string minFirmwareVersion)
         {
             int index = BfbLines.FindIndex(x => x.Contains(BFBConstants.MINFIRMWARE));
             if (0 <= index && index < BfbLines.Count)
@@ -175,7 +175,7 @@ namespace BitForByteSupport
             }
         }
 
-        public  void SetPRINTERMODEL(string printerModel)
+        public void SetPRINTERMODEL(string printerModel)
         {
             int index = BfbLines.FindIndex(x => x.Contains(BFBConstants.PRINTERMODEL));
             if (0 <= index && index < BfbLines.Count)
@@ -217,7 +217,7 @@ namespace BitForByteSupport
             }
         }
 
-        public  List<string> generateRetractionStartList()
+        public List<string> generateRetractionStartList()
         {
             List<string> retractions = new List<string>();
 
@@ -243,17 +243,61 @@ namespace BitForByteSupport
 
         public List<int> GetUniqueRetractions(string retractCmd)
         {
-            List<int> uniqueRetractions = new List<int>();
-            foreach (int i in RetractionStartDictionary.Keys)
+            Boolean retractStop = false;
+            bool addRetract = false;
+            int retractVal = -1;
+
+            List<int> keys;
+
+            if (retractCmd.Equals(BFBConstants.RETRACT_STOP))
+                retractStop = true;
+
+            if (!retractStop)
             {
+                keys = RetractionStartDictionary.Keys.ToList();
+            }
+            else
+            {
+                keys = RetractionStopDictionary.Keys.ToList();
+            }
+
+            List<int> uniqueRetractions = new List<int>();
+            foreach (int i in keys)
+            {
+                addRetract = false;
                 if (BfbLines[i].StartsWith(retractCmd))
                 {
-                    if (!uniqueRetractions.Contains(RetractionStartDictionary[i].P))
+
+                    // retraction start
+                    if (!retractStop)
                     {
-                        if (RetractionStartDictionary[i].P == RetractionStartDictionary[i].S && RetractionStartDictionary[i].P > 1)
+                        if (!uniqueRetractions.Contains(RetractionStartDictionary[i].P))
                         {
-                            uniqueRetractions.Add(RetractionStartDictionary[i].P);
+                            if (RetractionStartDictionary[i].P == RetractionStartDictionary[i].S &&
+                                RetractionStartDictionary[i].P > 1)
+                            {
+                                retractVal = retractionStartDictionary[i].P;
+                                addRetract = true;
+                            }
                         }
+                    }
+
+                    // retraction stop
+                    else
+                    {
+                        if (!uniqueRetractions.Contains(RetractionStopDictionary[i].S))
+                        {
+                            if (RetractionStopDictionary[i].P == 0 && RetractionStopDictionary[i].S > 1)
+                            {
+                                retractVal = retractionStopDictionary[i].S;
+                                addRetract = true;
+                            }
+                        }
+                    }
+
+                    if (addRetract)
+                    {
+                        uniqueRetractions.Add(retractVal);
                     }
                 }
             }
@@ -261,7 +305,7 @@ namespace BitForByteSupport
             return uniqueRetractions;
         }
 
-        public  List<string> generateRetractionStopList()
+        public List<string> generateRetractionStopList()
         {
             List<string> retractionss = new List<string>();
 
@@ -285,7 +329,7 @@ namespace BitForByteSupport
 
         }
 
-        public  List<string> getTemperatures(string bfbTemperatureCode)
+        public List<string> getTemperatures(string bfbTemperatureCode)
         {
             List<string> temps = new List<string>();
 
@@ -323,7 +367,7 @@ namespace BitForByteSupport
                     }
                 }
             }
-            return  uniqueTemps;
+            return uniqueTemps;
         }
 
         public int GetTemperatureFromString(string temperatureStr)

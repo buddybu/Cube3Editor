@@ -12,7 +12,7 @@ using Org.BouncyCastle.Crypto.Parameters;
 
 namespace Cube3ScriptGenerator
 {
-    class Program
+    class c3sg
     {
         private static string key = "221BBakerMycroft";
 
@@ -169,17 +169,26 @@ namespace Cube3ScriptGenerator
 
                             foreach (int temp in uniqueLeftTemps)
                             {
-                                PrintModifyTempLine(file, "LEFT", temp);
+                                if (temp > 0)
+                                {
+                                    PrintModifyTempLine(file, "LEFT", temp);
+                                }
                             }
 
                             foreach (int temp in uniqueRightTemps)
                             {
-                                PrintModifyTempLine(file, "RIGHT", temp);
+                                if (temp > 0)
+                                {
+                                    PrintModifyTempLine(file, "RIGHT", temp);
+                                }
                             }
 
                             foreach (int temp in uniqueMidTemps)
                             {
-                                PrintModifyTempLine(file, "MID", temp);
+                                if (temp > 0)
+                                {
+                                    PrintModifyTempLine(file, "MID", temp);
+                                }
                             }
 
                             foreach (int retract in uniqueRetractStarts)
@@ -216,7 +225,8 @@ namespace Cube3ScriptGenerator
             }
         }
 
-        private static void PrintSetLine(StreamWriter outFile, string command, string value) {
+        private static void PrintSetLine(StreamWriter outFile, string command, string value)
+        {
             outFile.WriteLine($"SET {command.ToUpper()} {value}");
         }
 
