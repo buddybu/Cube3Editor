@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Cube3Editor
+namespace BitForByteSupport
 {
-    class BitFromByte
+    public class BitFromByte
     {
-        private Byte[] byteArray;
+        private byte[] byteArray;
         private Encoding encoding;
-        private List<String> bfbStringList;
+        private List<string> bfbStringList;
 
         private Dictionary<int, Retraction> retractionStartDictionary = new Dictionary<int, Retraction>();
         private Dictionary<string, List<int>> retractionStartLineList = new Dictionary<string, List<int>>();
@@ -19,29 +19,26 @@ namespace Cube3Editor
 
         private Dictionary<int, List<int>> tempLineList = new Dictionary<int, List<int>>();
 
-        public List<string> bfbLines
+        public List<string> BfbLines
         {
             get => bfbStringList;
         }
 
-        internal Dictionary<int, Retraction> RetractionStartDictionary
+        public Dictionary<int, Retraction> RetractionStartDictionary
         {
             get => retractionStartDictionary;
         }
-        public Dictionary<string, List<int>> RetractionStartLineList
-        {
-            get => retractionStartLineList;
-        }
-        internal Dictionary<int, Retraction> RetractionStopDictionary
+
+        public Dictionary<int, Retraction> RetractionStopDictionary
         {
             get => retractionStopDictionary;
         }
-        public Dictionary<string, List<int>> RetractionStopLineList
-        {
-            get => retractionStopLineList;
-        }
 
-        public BitFromByte(Encoding encoding, Byte[] byteArray)
+        public Dictionary<string, List<int>> RetractionStartLineList { get => retractionStartLineList; set => retractionStartLineList = value; }
+        public Dictionary<string, List<int>> RetractionStopLineList { get => retractionStopLineList; set => retractionStopLineList = value; }
+        public Dictionary<int, List<int>> TempLineList { get => tempLineList; set => tempLineList = value; }
+
+        public BitFromByte(Encoding encoding, byte[] byteArray)
         {
             this.byteArray = byteArray;
             this.encoding = encoding;
@@ -49,7 +46,7 @@ namespace Cube3Editor
             string[] modelLines = encoding.GetString(byteArray).
                 Split(new string[] { "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
 
-            bfbStringList = modelLines.ToList<string>();
+            bfbStringList = modelLines.ToList();
 
             generateRetractionStartList();
             generateRetractionStopList();
@@ -57,17 +54,17 @@ namespace Cube3Editor
             RemoveImage();
         }
 
-        private void RemoveImage()
+        public  void RemoveImage()
         {
             // find last entry of M107
-            int m107Index = bfbLines.FindLastIndex(x => x.StartsWith("M107"));
+            int m107Index = BfbLines.FindLastIndex(x => x.StartsWith("M107"));
 
-            if (0 <= m107Index && m107Index < bfbLines.Count)
+            if (0 <= m107Index && m107Index < BfbLines.Count)
             {
                 // only do this if the M107 is not at the end of the file....
-                if (m107Index + 1 < bfbLines.Count)
+                if (m107Index + 1 < BfbLines.Count)
                 {
-                    char[] imageLine = bfbLines[m107Index + 1].ToArray();
+                    char[] imageLine = BfbLines[m107Index + 1].ToArray();
 
                     if (imageLine[0] != '^' && imageLine[0] != '#' && imageLine[0] != 'M' && imageLine[0] != 'G')
                     {
@@ -86,22 +83,22 @@ namespace Cube3Editor
             }
         }
 
-        internal Byte[] getBytesFromBFB()
+        public  byte[] getBytesFromBFB()
         {
-            String bfbString = String.Join("\r\n", bfbLines);
+            string bfbString = string.Join("\r\n", BfbLines);
 
-            Byte[] bytes = encoding.GetBytes(bfbString);
+            byte[] bytes = encoding.GetBytes(bfbString);
 
             return bytes;
         }
 
 
-        internal string GetText(string control)
+        public  string GetText(string control)
         {
-            int index = bfbLines.FindIndex(x => x.Contains(control));
+            int index = BfbLines.FindIndex(x => x.Contains(control));
             if (index >= 0)
             {
-                return bfbLines[index].Split(':')[1];
+                return BfbLines[index].Split(':')[1];
             }
             else
             {
@@ -109,10 +106,10 @@ namespace Cube3Editor
             }
         }
 
-        internal string GetMaterialType(string material)
+        public  string GetMaterialType(string material)
         {
-            int index = bfbLines.FindIndex(x => x.Contains(material));
-            string materialCodeStr = bfbLines[index].Split(':')[1];
+            int index = BfbLines.FindIndex(x => x.Contains(material));
+            string materialCodeStr = BfbLines[index].Split(':')[1];
             int materialCode = Convert.ToInt32(materialCodeStr);
 
             if (materialCode != -1)
@@ -126,10 +123,10 @@ namespace Cube3Editor
             }
         }
 
-        internal string GetMaterialColor(string material)
+        public  string GetMaterialColor(string material)
         {
-            int index = bfbLines.FindIndex(x => x.Contains(material));
-            string materialCodeStr = bfbLines[index].Split(':')[1];
+            int index = BfbLines.FindIndex(x => x.Contains(material));
+            string materialCodeStr = BfbLines[index].Split(':')[1];
             int materialCode = Convert.ToInt32(materialCodeStr);
 
             if (materialCode != -1)
@@ -144,93 +141,93 @@ namespace Cube3Editor
         }
 
 
-        internal void SetFIRMWARE(string firmwareVersion)
+        public  void SetFIRMWARE(string firmwareVersion)
         {
-            int index = bfbLines.FindIndex(x => x.Contains(BFBConstants.FIRMWARE));
-            if (0 <= index && index < bfbLines.Count)
+            int index = BfbLines.FindIndex(x => x.Contains(BFBConstants.FIRMWARE));
+            if (0 <= index && index < BfbLines.Count)
             {
-                string[] firmwareStrArr = bfbLines[index].Split(':');
-                bfbLines[index] = String.Join(":", firmwareStrArr[0], firmwareVersion);
+                string[] firmwareStrArr = BfbLines[index].Split(':');
+                BfbLines[index] = string.Join(":", firmwareStrArr[0], firmwareVersion);
             }
 
             // ^Firmware: entry not present, need to add as first entry
             else
             {
                 string firmwareCmd = BFBConstants.FIRMWARE + firmwareVersion;
-                bfbLines.Insert(0, firmwareCmd);
+                BfbLines.Insert(0, firmwareCmd);
             }
         }
 
-        internal void SetMINFIRMWARE(string minFirmwareVersion)
+        public  void SetMINFIRMWARE(string minFirmwareVersion)
         {
-            int index = bfbLines.FindIndex(x => x.Contains(BFBConstants.MINFIRMWARE));
-            if (0 <= index && index < bfbLines.Count)
+            int index = BfbLines.FindIndex(x => x.Contains(BFBConstants.MINFIRMWARE));
+            if (0 <= index && index < BfbLines.Count)
             {
-                string[] strArr = bfbLines[index].Split(':');
-                bfbLines[index] = String.Join(":", strArr[0], minFirmwareVersion);
+                string[] strArr = BfbLines[index].Split(':');
+                BfbLines[index] = string.Join(":", strArr[0], minFirmwareVersion);
             }
 
             // ^MinFirmware: entry not present, need to add as first entry
             else
             {
                 string minFirmwareCmd = BFBConstants.MINFIRMWARE + minFirmwareVersion;
-                bfbLines.Insert(0, minFirmwareCmd);
+                BfbLines.Insert(0, minFirmwareCmd);
             }
         }
 
-        internal void SetPRINTERMODEL(string printerModel)
+        public  void SetPRINTERMODEL(string printerModel)
         {
-            int index = bfbLines.FindIndex(x => x.Contains(BFBConstants.PRINTERMODEL));
-            if (0 <= index && index < bfbLines.Count)
+            int index = BfbLines.FindIndex(x => x.Contains(BFBConstants.PRINTERMODEL));
+            if (0 <= index && index < BfbLines.Count)
             {
-                string[] strArr = bfbLines[index].Split(':');
-                bfbLines[index] = String.Join(":", strArr[0], printerModel);
+                string[] strArr = BfbLines[index].Split(':');
+                BfbLines[index] = string.Join(":", strArr[0], printerModel);
             }
 
             // ^PrinterMode: entry not present, need to add as first entry
             else
             {
                 string printModelCmd = BFBConstants.PRINTERMODEL + printerModel;
-                bfbLines.Insert(0, printModelCmd);
+                BfbLines.Insert(0, printModelCmd);
             }
         }
 
-        internal void SetMATERIALCODE(string materialCode, string type, string color)
+        public void SetMATERIALCODE(string materialCode, string type, string color)
         {
             int cubeCode = BFBConstants.getCUBE3Code(type, color);
 
             SetMATERIALCODE(materialCode, cubeCode);
         }
 
-        internal void SetMATERIALCODE(string materialCode, int cubeCode)
+        public void SetMATERIALCODE(string materialCode, int cubeCode)
         {
             if (cubeCode != -1)
             {
-                int index = bfbLines.FindIndex(x => x.Contains(materialCode));
+                int index = BfbLines.FindIndex(x => x.Contains(materialCode));
                 if (0 <= index && index <= bfbStringList.Count)
                 {
-                    string[] materialStrArr = bfbLines[index].Split(':');
-                    bfbLines[index] = String.Join(":", materialStrArr[0], cubeCode.ToString());
+                    string[] materialStrArr = BfbLines[index].Split(':');
+                    BfbLines[index] = string.Join(":", materialStrArr[0], cubeCode.ToString());
                 }
                 else
                 {
                     string materialCmd = materialCode + ":" + cubeCode.ToString();
-                    bfbLines.Insert(0, materialCmd);
+                    BfbLines.Insert(0, materialCmd);
                 }
             }
         }
 
-        internal List<string> generateRetractionStartList()
+        public  List<string> generateRetractionStartList()
         {
-            List<string> retractionss = new List<string>();
+            List<string> retractions = new List<string>();
 
-            for (int i = 0; i < bfbLines.Count; i++)
+            for (int i = 0; i < BfbLines.Count; i++)
             {
-                if (bfbLines[i].StartsWith(BFBConstants.RETRACT_START))
+                if (BfbLines[i].StartsWith(BFBConstants.RETRACT_START))
                 {
 
-                    retractionss.Add(bfbLines[i]);
-                    Retraction retraction = new Retraction(bfbLines[i], i);
+                    retractions.Add(BfbLines[i]);
+                    Retraction retraction = new Retraction(BfbLines[i], i);
                     RetractionStartDictionary.Add(i, retraction);
 
                     if (!RetractionStartLineList.Keys.Contains(bfbStringList[i]))
@@ -240,21 +237,41 @@ namespace Cube3Editor
                     RetractionStartLineList[bfbStringList[i]].Add(i);
                 }
             }
-            return retractionss;
+            return retractions;
 
         }
 
-        internal List<string> generateRetractionStopList()
+        public List<int> GetUniqueRetractions(string retractCmd)
+        {
+            List<int> uniqueRetractions = new List<int>();
+            foreach (int i in RetractionStartDictionary.Keys)
+            {
+                if (BfbLines[i].StartsWith(retractCmd))
+                {
+                    if (!uniqueRetractions.Contains(RetractionStartDictionary[i].P))
+                    {
+                        if (RetractionStartDictionary[i].P == RetractionStartDictionary[i].S && RetractionStartDictionary[i].P > 1)
+                        {
+                            uniqueRetractions.Add(RetractionStartDictionary[i].P);
+                        }
+                    }
+                }
+            }
+
+            return uniqueRetractions;
+        }
+
+        public  List<string> generateRetractionStopList()
         {
             List<string> retractionss = new List<string>();
 
-            for (int i = 0; i < bfbLines.Count; i++)
+            for (int i = 0; i < BfbLines.Count; i++)
             {
-                if (bfbLines[i].StartsWith(BFBConstants.RETRACT_STOP))
+                if (BfbLines[i].StartsWith(BFBConstants.RETRACT_STOP))
                 {
 
-                    retractionss.Add(bfbLines[i]);
-                    Retraction retraction = new Retraction(bfbLines[i], i);
+                    retractionss.Add(BfbLines[i]);
+                    Retraction retraction = new Retraction(BfbLines[i], i);
                     RetractionStopDictionary.Add(i, retraction);
 
                     if (!RetractionStopLineList.Keys.Contains(bfbStringList[i]))
@@ -268,16 +285,16 @@ namespace Cube3Editor
 
         }
 
-        internal List<string> getUniqueTemperatures(string bfbTemperatureCode)
+        public  List<string> getTemperatures(string bfbTemperatureCode)
         {
             List<string> temps = new List<string>();
 
-            for (int i = 0; i < bfbLines.Count; i++)
+            for (int i = 0; i < BfbLines.Count; i++)
             {
-                if (bfbLines[i].StartsWith(bfbTemperatureCode))
+                if (BfbLines[i].StartsWith(bfbTemperatureCode))
                 {
-                    temps.Add(bfbLines[i]);
-                    int temperature = GetTemperatureFromString(bfbLines[i]);
+                    temps.Add(BfbLines[i]);
+                    int temperature = GetTemperatureFromString(BfbLines[i]);
 
                     if (!tempLineList.Keys.Contains(temperature))
                     {
@@ -289,7 +306,27 @@ namespace Cube3Editor
             return temps;
         }
 
-        internal int GetTemperatureFromString(string temperatureStr)
+        public List<int> getUniqueTemperatures(string tempString)
+        {
+            List<int> uniqueTemps = new List<int>();
+
+            foreach (int temp in tempLineList.Keys)
+            {
+                foreach (int line in tempLineList[temp])
+                {
+                    if (BfbLines[line].StartsWith(tempString))
+                    {
+                        if (!uniqueTemps.Contains(temp))
+                        {
+                            uniqueTemps.Add(temp);
+                        }
+                    }
+                }
+            }
+            return  uniqueTemps;
+        }
+
+        public int GetTemperatureFromString(string temperatureStr)
         {
             string splitTemp = temperatureStr.Split(' ')[1];
             string cvtTempStr = new string(splitTemp.ToCharArray(1, splitTemp.Length - 1));
@@ -297,7 +334,7 @@ namespace Cube3Editor
             return temperature;
         }
 
-        internal void updateRetractionStartLines(int index, string retractCmd)
+        public void updateRetractionStartLines(int index, string retractCmd)
         {
             List<int> retractLines = RetractionStartLineList[bfbStringList[index]];
             RetractionStartLineList.Remove(bfbStringList[index]);
@@ -325,7 +362,7 @@ namespace Cube3Editor
             }
         }
 
-        internal void updateRetractionStopLines(int index, string retractCmd)
+        public void updateRetractionStopLines(int index, string retractCmd)
         {
             List<int> retractLines = RetractionStopLineList[bfbStringList[index]];
 
@@ -354,12 +391,12 @@ namespace Cube3Editor
             }
         }
 
-        internal void UpdateTemperatureLines(string tempCmd, int oldTemp, int newTemp)
+        public void UpdateTemperatureLines(string tempCmd, int oldTemp, int newTemp)
         {
             List<int> intLines;
             List<int> newTempLineList;
             List<int> oldTempLineList;
-            Dictionary<int, String> updatedBFBLines = new Dictionary<int, string>();
+            Dictionary<int, string> updatedBFBLines = new Dictionary<int, string>();
 
             intLines = new List<int>(tempLineList[oldTemp]);
 
@@ -383,7 +420,7 @@ namespace Cube3Editor
             // need to filter for tempCmd and only move the indices for the command to the new value
             foreach (int index in intLines)
             {
-                if (bfbLines[index].StartsWith(tempCmd))
+                if (BfbLines[index].StartsWith(tempCmd))
                 {
                     newTempLineList.Add(index);
                     oldTempLineList.Remove(index);
@@ -419,9 +456,9 @@ namespace Cube3Editor
 
         }
 
-        private string UpdateTemperaturesInBFB(int index, int temperature)
+        public string UpdateTemperaturesInBFB(int index, int temperature)
         {
-            string[] tempStrArray = bfbLines[index].Split(' ');
+            string[] tempStrArray = BfbLines[index].Split(' ');
             string newTemperature = "S" + temperature;
             tempStrArray[1] = newTemperature;
 

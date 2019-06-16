@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Cube3Editor
+namespace BitForByteSupport
 {
-    class BFBTemps
+    public class BFBTemps
     {
         private int index;
         int oldTemperature;
@@ -14,7 +14,7 @@ namespace Cube3Editor
 
         public BFBTemps(int index, int temperature)
         {
-            this.Index = index;
+            Index = index;
             OldTemperature = temperature;
         }
 

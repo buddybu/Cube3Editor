@@ -1,4 +1,5 @@
-﻿using DevAge.Drawing;
+﻿using BitForByteSupport;
+using DevAge.Drawing;
 using Org.BouncyCastle.Crypto.Engines;
 using Org.BouncyCastle.Crypto.Paddings;
 using Org.BouncyCastle.Crypto.Parameters;
@@ -12,8 +13,6 @@ using System.Linq;
 using System.Security;
 using System.Text;
 using System.Windows.Forms;
-using static Cube3Editor.BitFromByte;
-using static Cube3Editor.Program;
 
 namespace Cube3Editor
 {
@@ -362,13 +361,11 @@ namespace Cube3Editor
         {
             Dictionary<int, int> tempDict = new Dictionary<int, int>();
 
-            List<string> tempLines = bfbObject.getUniqueTemperatures(tempCmdStr);
+            List<string> tempLines = bfbObject.getTemperatures(tempCmdStr);
 
             for (int i = 0; i < tempLines.Count; i++)
             {
-                string tempStr = tempLines[i].Split(' ')[1];
-                string cvtTempStr = new string(tempStr.ToCharArray(1, tempStr.Length - 1));
-                int temperature = Convert.ToInt32(cvtTempStr);
+                int temperature = bfbObject.GetTemperatureFromString(tempLines[i]);
                 if (tempDict.ContainsKey(temperature))
                 {
                     tempDict[temperature]++;
@@ -839,7 +836,7 @@ namespace Cube3Editor
 
         private void BtnViewRaw_Click(object sender, EventArgs e)
         {
-            FrmRawView rawViewForm = new FrmRawView(bfbObject.bfbLines);
+            FrmRawView rawViewForm = new FrmRawView(bfbObject.BfbLines);
             // display bfb data in a text box.  no editing allowed.
             rawViewForm.ShowDialog();
         }

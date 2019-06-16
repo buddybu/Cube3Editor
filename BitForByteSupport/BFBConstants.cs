@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Cube3Editor
+namespace BitForByteSupport
 {
-    static class BFBConstants
+    static public class BFBConstants
     {
         public const string FIRMWARE = "^Firmware:";
         public const string MINFIRMWARE = "^Minfirmware:";
@@ -97,7 +97,7 @@ namespace Cube3Editor
         public const int CP_ABS_ORANGE = 253;
         public const int CP_ABS_NEON_GREEN = 256;
         public const int CP_ABS_INDUST_GREY = 266;
-                         
+
         public const int CP_PLA_TEAL = 210;
         public const int CP_PLA_PURPLE = 212;
         public const int CP_PLA_BROWN = 211;

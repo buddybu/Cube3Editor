@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace Cube3Editor
+namespace BitForByteSupport
 {
-    internal class Retraction
+    public  class Retraction
     {
         private int p;
         private int s;
