@@ -112,5 +112,8 @@
       <Name>BitForByteSupport</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="cube3editor.ico" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -516,6 +516,8 @@ namespace Cube3Editor
                 gridRightTemps.Rows.RemoveRange(1, gridRightTemps.Rows.Count - 1);
             if (gridRetractionStart.Rows.Count > 1)
                 gridRetractionStart.Rows.RemoveRange(1, gridRetractionStart.Rows.Count - 1);
+            if (gridRetractionStop.Rows.Count > 1)
+                gridRetractionStop.Rows.RemoveRange(1, gridRetractionStop.Rows.Count - 1);
 
             char[] seperator = new char[] { ' ', '-', ' ' };
             string title = Text.Split(seperator)[0];
