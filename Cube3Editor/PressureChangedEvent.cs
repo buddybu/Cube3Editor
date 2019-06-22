@@ -14,7 +14,7 @@ namespace Cube3Editor
         public override void OnValueChanged(SourceGrid.CellContext sender, EventArgs e)
         {
             base.OnValueChanged(sender, e);
-            mFrm.UpdatePressures((Grid)sender.Grid);
+            mFrm.UpdatePressures();
         }
     }
 
