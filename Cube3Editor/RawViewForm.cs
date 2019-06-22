@@ -13,6 +13,8 @@ namespace Cube3Editor
 {
     public partial class FrmRawView : Form
     {
+        private bool isModified = false;
+
         public FrmRawView(List<string> bfbStringList)
         {
             InitializeComponent();
@@ -31,7 +33,6 @@ namespace Cube3Editor
             //saveFileDialog1.ShowDialog(); //Opens the Show File Dialog  
             if (saveFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK) //Check if it's all ok  
             {
-
                 string name = Path.GetFileNameWithoutExtension(saveFileDialog1.FileName) + ".bfb"; //Just to make sure the extension is .txt  
                 File.WriteAllText(name, rtbRawView.Text); //Writes the text to the file and saves it               
             }
@@ -44,6 +45,11 @@ namespace Cube3Editor
             {
                 rtbRawView.Font = fontDialog1.Font; //Sets the font to the one selected in the dialog  
             }
+        }
+
+        private void RtbRawView_TextChanged(object sender, EventArgs e)
+        {
+            isModified = true;
         }
     }
 }

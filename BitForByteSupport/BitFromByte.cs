@@ -19,6 +19,9 @@ namespace BitForByteSupport
 
         private Dictionary<int, List<int>> tempLineList = new Dictionary<int, List<int>>();
 
+        private Dictionary<int, Double> pressureDictionary = new Dictionary<int, Double>();
+        private Dictionary<string, List<int>> pressureLineList = new Dictionary<string, List<int>>();
+
         public List<string> BfbLines
         {
             get => bfbStringList;
@@ -37,6 +40,8 @@ namespace BitForByteSupport
         public Dictionary<string, List<int>> RetractionStartLineList { get => retractionStartLineList; set => retractionStartLineList = value; }
         public Dictionary<string, List<int>> RetractionStopLineList { get => retractionStopLineList; set => retractionStopLineList = value; }
         public Dictionary<int, List<int>> TempLineList { get => tempLineList; set => tempLineList = value; }
+        public Dictionary<string, List<int>> PressureLineList { get => pressureLineList; set => pressureLineList = value; }
+        public Dictionary<int, double> PressureDictionary { get => pressureDictionary; set => pressureDictionary = value; }
 
         public BitFromByte(Encoding encoding, byte[] byteArray)
         {
@@ -50,6 +55,7 @@ namespace BitForByteSupport
 
             generateRetractionStartList();
             generateRetractionStopList();
+            getExtruderPressures(BFBConstants.EXTRUDER_PRESSURE);
 
             RemoveImage();
         }
@@ -72,7 +78,9 @@ namespace BitForByteSupport
                         {
                             int startIndex = m107Index + 1;
                             int count = bfbStringList.Count - startIndex;
-                            bfbStringList.RemoveRange(startIndex, count);
+                            BfbLines.RemoveRange(startIndex, count);
+
+                            BfbLines[m107Index] = BfbLines[m107Index].Substring(0, 4);
                         }
                         catch (Exception ex)
                         {
@@ -216,6 +224,65 @@ namespace BitForByteSupport
                 }
             }
         }
+
+        public List<string> getExtruderPressures(string bfbPressureCode)
+        {
+            List<string> pressures = new List<string>();
+
+            for (int i = 0; i < BfbLines.Count; i++)
+            {
+                if (BfbLines[i].StartsWith(bfbPressureCode))
+                {
+                    pressures.Add(BfbLines[i]);
+                    Double pressure = GetPressureFromString(BfbLines[i]);
+                    if (!PressureDictionary.Keys.Contains(i))
+                    {
+                        PressureDictionary.Add(i, pressure);
+                    }
+
+                    if (!pressureLineList.Keys.Contains(BfbLines[i]))
+                    {
+                        pressureLineList.Add(BfbLines[i], new List<int>(i));
+                    }
+                    pressureLineList[BfbLines[i]].Add(i);
+                }
+            }
+            return pressures;
+        }
+
+        public List<Double> GetUniquePressures(string pressureString)
+        {
+
+            bool addPressure = false;
+            double pressureVal = -1d;
+
+            List<int> keys;
+
+            keys = PressureDictionary.Keys.ToList();
+
+            List<Double> uniquePressures = new List<Double>();
+            foreach (int i in keys)
+            {
+                addPressure = false;
+                if (BfbLines[i].StartsWith(pressureString))
+                {
+                    if (!uniquePressures.Contains(PressureDictionary[i]))
+                    {
+                        uniquePressures.Add(PressureDictionary[i]);
+                    }
+                }
+            }
+
+            return uniquePressures;
+        }
+        public double GetPressureFromString(string pressureStr)
+        {
+            string splitPressure = pressureStr.Split(' ')[1];
+            string cvtPressureStr = new string(splitPressure.ToCharArray(1, splitPressure.Length - 1));
+            double pressure = Convert.ToDouble(cvtPressureStr);
+            return pressure;
+        }
+
 
         public List<string> generateRetractionStartList()
         {
@@ -376,6 +443,35 @@ namespace BitForByteSupport
             string cvtTempStr = new string(splitTemp.ToCharArray(1, splitTemp.Length - 1));
             int temperature = Convert.ToInt32(cvtTempStr);
             return temperature;
+        }
+
+        public void updatePressureLines(int index, string pressureCmd)
+        {
+            List<int> pressureLines = PressureLineList[bfbStringList[index]];
+
+            List<int> newRetractLines = new List<int>();
+
+            RetractionStopLineList.Remove(bfbStringList[index]);
+
+
+            foreach (int line in pressureLines)
+            {
+                bfbStringList[line] = pressureCmd;
+
+                if (!RetractionStopLineList.Keys.Contains(pressureCmd))
+                {
+                    RetractionStopLineList.Add(pressureCmd, pressureLines);
+                }
+
+                if (RetractionStopDictionary.Keys.Contains(line))
+                {
+                    RetractionStopDictionary[line] = new Retraction(pressureCmd, line);
+                }
+                else
+                {
+                    RetractionStopDictionary.Add(line, new Retraction(pressureCmd, line));
+                }
+            }
         }
 
         public void updateRetractionStartLines(int index, string retractCmd)

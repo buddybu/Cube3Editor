@@ -10,9 +10,9 @@ using Org.BouncyCastle.Crypto.Paddings;
 using Org.BouncyCastle.Crypto.Parameters;
 
 
-namespace Cube3ScriptGenerator
+namespace Cube3Decoder
 {
-    class c3sg
+    class cube3Decoder
     {
         private static string key = "221BBakerMycroft";
 
@@ -20,40 +20,76 @@ namespace Cube3ScriptGenerator
 
         public static void Main(string[] args)
         {
+            int cube3FileIndex = 0;
+            int bfbFileIndex = 1;
+            int xmlIndex = -1;
+
+            bool xmlMode = false;
             string cube3File = null;
-            string scriptFile = null;
+            string bfbFile = null;
 
             if (args.Length > 0)
             {
-                cube3File = args[0];
-                if (args.Length > 1)
+                if (args[0].StartsWith("-"))
                 {
-                    scriptFile = args[1];
+                    cube3FileIndex++;
+                    bfbFileIndex++;
+
+                    if (args[0].ToUpper().Equals("-XML"))
+                        xmlMode = true;
+                    else
+                    {
+                        System.Console.WriteLine($"Invalid parameter {args[0]}!");
+                        System.Console.WriteLine("");
+                        displayHelp();
+                        Environment.Exit(-1);
+                    }
+                }
+                cube3File = args[cube3FileIndex];
+                if (args.Length > bfbFileIndex)
+                {
+                    bfbFile = args[bfbFileIndex];
                 }
 
             }
 
             if (cube3File == null)
             {
-                System.Console.WriteLine("usage: c3sg <cube3File> [<scriptFile>]");
-                System.Console.WriteLine("");
-                System.Console.WriteLine("c3sg reads cube3File and generates a script file.  Will generate file");
-                System.Console.WriteLine("in specified scriptFile or in a file with the same name as the Cube3 File,");
-                System.Console.WriteLine("but with the extension SCR");
-                System.Console.WriteLine("");
+                displayHelp();
                 Environment.Exit(0);
             }
 
-            if (scriptFile == null)
+            if (bfbFile == null)
             {
-                scriptFile = Path.GetFileNameWithoutExtension(cube3File) + ".SCR";
+                if (!xmlMode)
+                {
+                    bfbFile = Path.GetFileNameWithoutExtension(cube3File) + ".BFB";
+                }
+                else
+                {
+                    bfbFile = Path.GetFileNameWithoutExtension(cube3File) + ".XML";
+                }
             }
 
             engine = new BlowfishEngine(true);
-            generateScriptFromCube3File(cube3File, scriptFile);
+            generateBFBFromCube3File(cube3File, bfbFile, xmlMode);
 
         }
-        private static void generateScriptFromCube3File(String FileName, String scriptFile)
+
+        private static void displayHelp()
+        {
+            System.Console.WriteLine("usage: cube3Decoder [-xml] <cube3File> [<bfbFile>]");
+            System.Console.WriteLine("");
+            System.Console.WriteLine("cube3decoder reads cube3File and decodes the BFBfile.  Will generate output");
+            System.Console.WriteLine("into specified bfbFile or a file with the same name as the Cube3 File,");
+            System.Console.WriteLine("but with the extension BFB");
+            System.Console.WriteLine("");
+            System.Console.WriteLine("-xml will strip any ending bytes following the last closing angle bracket.");
+
+        }
+
+
+        private static void generateBFBFromCube3File(String FileName, String bfbFileName, Boolean xmlMode)
         {
             Byte[] dataModel;
             Encoding encoding = Encoding.ASCII;
@@ -132,80 +168,40 @@ namespace Cube3ScriptGenerator
 
                             decodedModel = encoding.GetString(decodedBytes);
 
-                            bfbObject = new BitFromByte(encoding, decodedBytes);
+                            if (xmlMode)
+                            {
+                                int endXmlIndex = decodedModel.LastIndexOf('>');
+
+                                if (endXmlIndex < decodedModel.Length - 1)
+                                {
+                                    decodedModel = decodedModel.Substring(0, endXmlIndex + 1);
+                                }
+                            }
 
                             string[] seperator = new string[] { "\r\n" };
                             string[] decodedModelArray = decodedModel.Split(seperator, StringSplitOptions.RemoveEmptyEntries);
 
-                            List<String> bfbStringList = bfbObject.BfbLines;
-
-                            string firmwareStr = bfbObject.GetText(BFBConstants.FIRMWARE);
-                            string minFirmwareStr = bfbObject.GetText(BFBConstants.MINFIRMWARE);
-                            string printerModelStr = bfbObject.GetText(BFBConstants.PRINTERMODEL);
-                            string materialE1Str = bfbObject.GetText(BFBConstants.MATERIALCODEE1);
-                            string materialE2Str = bfbObject.GetText(BFBConstants.MATERIALCODEE2);
-                            string materialE3Str = bfbObject.GetText(BFBConstants.MATERIALCODEE3);
-
-                            bfbObject.getTemperatures(BFBConstants.LEFT_TEMP);
-                            bfbObject.getTemperatures(BFBConstants.RIGHT_TEMP);
-                            bfbObject.getTemperatures(BFBConstants.MID_TEMP);
-
-                            List<int> uniqueLeftTemps = bfbObject.getUniqueTemperatures(BFBConstants.LEFT_TEMP);
-                            List<int> uniqueRightTemps = bfbObject.getUniqueTemperatures(BFBConstants.RIGHT_TEMP);
-                            List<int> uniqueMidTemps = bfbObject.getUniqueTemperatures(BFBConstants.MID_TEMP);
-
-                            List<int> uniqueRetractStarts = bfbObject.GetUniqueRetractions(BFBConstants.RETRACT_START);
-                            List<int> UniqueRetractStops = bfbObject.GetUniqueRetractions(BFBConstants.RETRACT_STOP);
-
-                            bfbObject.getExtruderPressures(BFBConstants.EXTRUDER_PRESSURE);
-                            List<Double> uniqueExtruderPressure = bfbObject.GetUniquePressures(BFBConstants.EXTRUDER_PRESSURE);
-
-                            System.IO.StreamWriter file = new System.IO.StreamWriter(scriptFile, false);
-
-                            PrintSetLine(file, "FIRMWARE", firmwareStr);
-                            PrintSetLine(file, "MINFIRMWARE", minFirmwareStr);
-                            PrintSetLine(file, "MODEL", printerModelStr);
-                            PrintSetLine(file, "E1", materialE1Str);
-                            PrintSetLine(file, "E2", materialE2Str);
-                            PrintSetLine(file, "E3", materialE3Str);
-
-                            foreach (int temp in uniqueLeftTemps)
+                            List<String> bfbStringList;
+                            if (xmlMode)
                             {
-                                if (temp > 0)
-                                {
-                                    PrintModifyTempLine(file, "LEFT", temp);
-                                }
+                                bfbStringList = decodedModelArray.ToList();
+                            }
+                            else
+                            {
+                                bfbObject = new BitFromByte(encoding, decodedBytes);
+                                bfbStringList = bfbObject.BfbLines;
                             }
 
-                            foreach (int temp in uniqueRightTemps)
-                            {
-                                if (temp > 0)
-                                {
-                                    PrintModifyTempLine(file, "RIGHT", temp);
-                                }
-                            }
+                            System.IO.StreamWriter file = new System.IO.StreamWriter(bfbFileName, false);
 
-                            foreach (int temp in uniqueMidTemps)
+                            int numBFBLines = 0;
+                            foreach (string bfbLine in bfbStringList)
                             {
-                                if (temp > 0)
-                                {
-                                    PrintModifyTempLine(file, "MID", temp);
-                                }
-                            }
-
-                            foreach (int retract in uniqueRetractStarts)
-                            {
-                                PrintModifyRetractLine(file, "RETRACTSTART", retract);
-                            }
-
-                            foreach (int retract in UniqueRetractStops)
-                            {
-                                PrintModifyRetractLine(file, "RETRACTSTOP", retract);
-                            }
-
-                            foreach (Double pressure in uniqueExtruderPressure)
-                            {
-                                PrintModifyPressureLine(file, "EXTPRESSURE", pressure);
+                                numBFBLines++;
+                                if (numBFBLines < bfbStringList.Count)
+                                    file.WriteLine(bfbLine);
+                                else
+                                    file.Write(bfbLine);
                             }
 
                             file.Close();
@@ -230,25 +226,6 @@ namespace Cube3ScriptGenerator
             {
                 throw new SecurityException("No File specified!");
             }
-        }
-
-        private static void PrintSetLine(StreamWriter outFile, string command, string value)
-        {
-            outFile.WriteLine($"SET {command.ToUpper()} {value}");
-        }
-
-        private static void PrintModifyTempLine(StreamWriter outFile, string side, int temperature)
-        {
-            outFile.WriteLine($"MODIFY TEMPERATURE {side} {temperature} BY REPLACE {temperature}");
-        }
-
-        private static void PrintModifyRetractLine(StreamWriter outFile, string command, int retract)
-        {
-            outFile.WriteLine($"MODIFY {command} {retract} BY REPLACE {retract}");
-        }
-        private static void PrintModifyPressureLine(StreamWriter outFile, string command, Double pressure)
-        {
-            outFile.WriteLine($"MODIFY {command} {pressure} BY REPLACE {pressure}");
         }
 
         private static bool ValidCube3Header(byte[] inputCube3File)
