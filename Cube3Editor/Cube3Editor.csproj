@@ -49,6 +49,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BCEngine.cs" />
+    <Compile Include="Temperatures.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="RetractStartStop.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ExtruderPressure.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="PressureModifier.cs" />
     <Compile Include="RawViewForm.cs">
       <SubType>Form</SubType>
@@ -86,6 +95,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -119,6 +129,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="cube3editor.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Analyzer Include="..\packages\RefactoringEssentials.5.6.0\analyzers\dotnet\RefactoringEssentials.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
