@@ -24,6 +24,8 @@ namespace BitForByteSupport
         public const string RETRACT_START = "M227";
         public const string RETRACT_STOP = "M228";
 
+        public const string EXTRUDER_PRESSURE = "M108";
+
         public const int ABS_TEAL = 76;
         public const int ABS_PURPLE = 77;
         public const int ABS_BROWN = 78;

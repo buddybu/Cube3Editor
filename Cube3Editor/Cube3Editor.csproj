@@ -49,7 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BCEngine.cs" />
-    <Compile Include="FileHelper.cs" />
+    <Compile Include="PressureModifier.cs" />
     <Compile Include="RawViewForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -64,6 +64,7 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PressureChangedEvent.cs" />
     <Compile Include="RetractionStopChangedEvent.cs" />
     <Compile Include="RetractionStartChangedEvent.cs" />
     <Compile Include="RetractModifier.cs" />
@@ -110,6 +111,10 @@
     <ProjectReference Include="..\BitForByteSupport\BitForByteSupport.csproj">
       <Project>{c1522fec-90ad-4502-869a-6ff7be19837a}</Project>
       <Name>BitForByteSupport</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FileHelper\FileHelper.csproj">
+      <Project>{666c52b7-46ec-43b8-af42-d7e2e26cb032}</Project>
+      <Name>FileHelper</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

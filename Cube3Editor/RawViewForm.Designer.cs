@@ -42,6 +42,7 @@
             this.rtbRawView.Size = new System.Drawing.Size(1037, 498);
             this.rtbRawView.TabIndex = 1;
             this.rtbRawView.Text = "";
+            this.rtbRawView.TextChanged += new System.EventHandler(this.RtbRawView_TextChanged);
             // 
             // button1
             // 
@@ -71,7 +72,7 @@
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.rtbRawView);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "FrmRawView";
             this.Text = "BFB Raw View";
             this.ResumeLayout(false);

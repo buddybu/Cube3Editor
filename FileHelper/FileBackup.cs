@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Cube3Editor
+namespace FileHelper
 {
-    public static class FileHelper
+    public static class FileBackup
     {
         /// <summary>
         /// Make a numbered backup copy of the specified files.  Backup files have the name filename.exe.yymmdd##, where yymmdd is the date and ## is a zero justified sequence number starting at 1

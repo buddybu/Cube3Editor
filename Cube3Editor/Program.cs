@@ -21,6 +21,7 @@ namespace Cube3Editor
         private static List<TemperatureModifier> temperatureModifers = new List<TemperatureModifier>();
         private static List<RetractModifier> retractStartModifers = new List<RetractModifier>();
         private static List<RetractModifier> retractStopModifers = new List<RetractModifier>();
+        private static List<PressureModifier> pressureModifiers = new List<PressureModifier>();
 
         [DllImport("kernel32.dll")]
         static extern bool AttachConsole(int dwProcessId);
@@ -79,7 +80,7 @@ namespace Cube3Editor
                     MainEditor cubeEdit = new MainEditor(cubeFile);
 
                     cubeEdit.CommandLineLoad(firmwareStr, minfirmwareStr, printerModelStr, materialCodeE1, materialCodeE2, materialCodeE3,
-                        temperatureModifers, retractStartModifers, retractStopModifers);
+                        temperatureModifers, retractStartModifers, retractStopModifers, pressureModifiers);
 
                     cubeEdit.CommandLineSave();
                 }
@@ -209,6 +210,10 @@ namespace Cube3Editor
             else if (lineArray[1].Equals("RETRACTSTOP"))
             {
                 valid = DoModifyRetractStop(lineArray, lineNumber);
+            }
+            else if (lineArray[1].Equals("EXTPRESSURE"))
+            {
+                valid = DoModifyPressure(lineArray, lineNumber);
             }
             else
             {
@@ -471,6 +476,86 @@ namespace Cube3Editor
             }
             return valid;
         }
+
+        private static bool DoModifyPressure(string[] lineArray, int lineNumber)
+        {
+            bool valid = true;
+            int oldPressureIndex = 2;
+            int byIndex = 3;
+            int modTypeIndex = 4;
+            int modValueIndex = 5;
+
+            // check parameter count
+            if (lineArray.Length != 6)
+            {
+                System.Console.WriteLine("Invalid MODIFY EXTPRESSURE at line " + lineNumber);
+                valid = false;
+            }
+
+
+            if (valid)
+            {
+                String oldTPressure = lineArray[oldPressureIndex];
+                String byStr = lineArray[byIndex].ToUpper();
+                String modType = lineArray[modTypeIndex].ToUpper();
+                String modValueStr = lineArray[modValueIndex];
+                Double modValue;
+
+                PressureModifier pressureMod = new PressureModifier();
+
+                // process OldPressure
+                if (!Double.TryParse(oldTPressure, out pressureMod.oldPressureValue))
+                {
+                    System.Console.WriteLine("Nonnumeric MODIFY EXTPRESSURE old value at line " + lineNumber);
+                    valid = false;
+                }
+
+                if (!Double.TryParse(modValueStr, out modValue))
+                {
+                    System.Console.WriteLine("Invalid MODIFY EXTPRESSURE modification value at line " + lineNumber);
+                    valid = false;
+                }
+
+                // process BY string
+                if (valid && !byStr.Equals("BY"))
+                {
+                    System.Console.WriteLine("Invalid MODIFY EXTPRESSURE at line " + lineNumber);
+                    valid = false;
+                }
+
+                // process modtype string
+                if (valid)
+                {
+                    if (modType.Equals("PERCENTAGE"))
+                    {
+                        double percentage = modValue;
+                        pressureMod.newPressureValue = pressureMod.oldPressureValue + (percentage / 100) * pressureMod.oldPressureValue;
+                    }
+                    else if (modType.Equals("ADD"))
+                    {
+                        pressureMod.newPressureValue = pressureMod.oldPressureValue + modValue;
+                    }
+                    else if (modType.Equals("REPLACE"))
+                    {
+                        pressureMod.newPressureValue = modValue;
+                    }
+                    else
+                    {
+                        System.Console.WriteLine("Invalid MODIFY EXTPRESSURE modificaiton setting at line " + lineNumber);
+                        valid = false;
+                    }
+                }
+
+                if (valid)
+                {
+                    pressureMod.pressureCmd = BFBConstants.EXTRUDER_PRESSURE;
+                    pressureModifiers.Add(pressureMod);
+                }
+            }
+
+            return valid;
+        }
+
 
         private static bool ValidRetractLine(string[] lineArray, int oldRetractIndex, int byIndex, int modTypeIndex, int modValueIndex)
         {
