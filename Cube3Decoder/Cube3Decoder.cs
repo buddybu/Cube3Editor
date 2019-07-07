@@ -5,6 +5,7 @@ using System.Linq;
 using System.Security;
 using System.Text;
 using BitForByteSupport;
+using FileHelper;
 using Org.BouncyCastle.Crypto.Engines;
 using Org.BouncyCastle.Crypto.Paddings;
 using Org.BouncyCastle.Crypto.Parameters;
@@ -15,6 +16,9 @@ namespace Cube3Decoder
     class cube3Decoder
     {
         private static string key = "221BBakerMycroft";
+        private static CubeExtractor extractor;
+        private static byte[] inputCube3File;
+        private static Byte[] dataModel;
 
         public static BlowfishEngine engine { get; private set; }
 
@@ -22,7 +26,6 @@ namespace Cube3Decoder
         {
             int cube3FileIndex = 0;
             int bfbFileIndex = 1;
-            int xmlIndex = -1;
 
             bool xmlMode = false;
             string cube3File = null;
@@ -91,7 +94,6 @@ namespace Cube3Decoder
 
         private static void generateBFBFromCube3File(String FileName, String bfbFileName, Boolean xmlMode)
         {
-            Byte[] dataModel;
             Encoding encoding = Encoding.ASCII;
             String decodedModel;
             BitFromByte bfbObject;
@@ -105,41 +107,26 @@ namespace Cube3Decoder
                     using (var inFile = File.OpenRead(FileName))
                     using (var binaryReader = new BinaryReader(inFile))
                     {
-                        var inputCube3File = binaryReader.ReadBytes((int)binaryReader.BaseStream.Length);
-                        int modelDataOffset = 0;
-                        if (ValidCube3Header(inputCube3File))
+                        inputCube3File = binaryReader.ReadBytes((int)binaryReader.BaseStream.Length);
+                        bool copyInputFile = true;
+                        if (!RawCubeFile())
                         {
-                            modelDataOffset = Array.IndexOf(inputCube3File, (Byte)0xC8);
-                            if (modelDataOffset < 0)
-                            {
-                                inFile.Close();
-                                throw new SecurityException("Invalid CUBE3 File!");
-                            }
+                            extractor = new CubeExtractor(inputCube3File);
 
-                            if (modelDataOffset < 14)
+                            String rawCube3Filename = extractor.GetCubeFilename();
+                            if (rawCube3Filename != null)
                             {
-                                modelDataOffset = Array.IndexOf(inputCube3File, (byte)0xC8, modelDataOffset + 1);
-                                if (modelDataOffset < 0)
-                                {
-                                    inFile.Close();
-                                    throw new SecurityException("Invalid CUBE3 File!");
-                                }
+                                copyInputFile = false;
+                                dataModel = new byte[extractor.ModelFiles[rawCube3Filename].Length];
+                                Array.Copy(extractor.ModelFiles[rawCube3Filename], dataModel, extractor.ModelFiles[rawCube3Filename].Length);
                             }
-
                         }
 
-                        if (modelDataOffset > 0)
-                        {
-                            int cube3Size = inputCube3File.Length - modelDataOffset;
-                            dataModel = new byte[cube3Size];
-                            Array.Copy(inputCube3File, modelDataOffset, dataModel, 0, cube3Size);
-                        }
-                        else
+                        if (copyInputFile)
                         {
                             dataModel = new byte[inputCube3File.Length];
                             Array.Copy(inputCube3File, dataModel, inputCube3File.Length);
                         }
-
 
                         try
                         {
@@ -228,17 +215,23 @@ namespace Cube3Decoder
             }
         }
 
-        private static bool ValidCube3Header(byte[] inputCube3File)
+        private static  bool RawCubeFile()
         {
-            bool valid = false;
+            bool raw = true;
 
-            if (inputCube3File[14] == 'i' && inputCube3File[15] == 'n' &&
-                inputCube3File[16] == 'd' && inputCube3File[17] == 'e' &&
-                inputCube3File[18] == 'x')
+            Int32 length = BitConverter.ToInt32(inputCube3File, 4);
+
+            if (inputCube3File.Length == length)
             {
-                valid = true;
+                raw = false;
             }
-            return valid;
+            //if (inputCube3File[14] == 'i' && inputCube3File[15] == 'n' &&
+            //    inputCube3File[16] == 'd' && inputCube3File[17] == 'e' &&
+            //    inputCube3File[18] == 'x')
+            //{
+            //    valid = true;
+            //}
+            return raw;
         }
 
     }

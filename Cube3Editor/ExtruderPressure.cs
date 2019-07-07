@@ -1,14 +1,11 @@
 ﻿using BitForByteSupport;
-using DevAge.Drawing;
-using SourceGrid;
 using System;
-using System.Windows.Forms;
 
 namespace Cube3Editor
 {
     public partial class MainEditor
     {
-        internal void PopulatePressures(RectangleBorder border)
+        internal void PopulatePressures()
         {
             SourceGrid.Cells.Editors.TextBox pressureEditor = new SourceGrid.Cells.Editors.TextBox(typeof(Double));
             pressureEditor.EditableMode = SourceGrid.EditableMode.None;
@@ -17,9 +14,9 @@ namespace Cube3Editor
             int gridRow = 1;
             PressureChangedEvent valueChangedController = new PressureChangedEvent(this);
 
-            foreach (String key in bfbObject.PressureLineList.Keys)
+            foreach (String keyLine in bfbObject.PressureLineList.Keys)
             {
-                int index = bfbObject.PressureLineList[key][0];
+                int index = bfbObject.PressureLineList[keyLine][0];
                 Double pressure = bfbObject.PressureDictionary[index];
 
                 gridPressure.Rows.Insert(gridRow);
@@ -38,9 +35,9 @@ namespace Cube3Editor
                 for (int i = 1; i < gridPressure.Rows.Count; i++)
                 {
                     Double pressure = (Double)gridPressure[i, 0].Value;
-                    int index = (int)gridPressure[i, 2].Value;
+                    int index = (int)gridPressure[i, 1].Value;
 
-                    string pressureCmd = BFBConstants.EXTRUDER_PRESSURE + "S" + pressure;
+                    string pressureCmd = BFBConstants.EXTRUDER_PRESSURE + " S" + pressure;
 
                     bfbObject.updatePressureLines(index, pressureCmd);
 

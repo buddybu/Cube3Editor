@@ -13,7 +13,7 @@ namespace Cube3Editor
 {
     public partial class FrmRawView : Form
     {
-        private bool isModified = false;
+        private bool isModified;
 
         public FrmRawView(List<string> bfbStringList)
         {

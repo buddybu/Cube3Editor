@@ -60,11 +60,13 @@
             this.closeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.generateScriptToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.loadScriptToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.abouitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mainMenu = new System.Windows.Forms.MenuStrip();
+            this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.generateScriptToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.tabRetractrionControl = new System.Windows.Forms.TabPage();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
             this.gridRetractionStop = new SourceGrid.Grid();
@@ -82,6 +84,11 @@
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tbPressure = new System.Windows.Forms.TabPage();
             this.gridPressure = new SourceGrid.Grid();
+            this.btnGenScript = new System.Windows.Forms.Button();
+            this.btnViewScript = new System.Windows.Forms.Button();
+            this.saveScriptDialog = new System.Windows.Forms.SaveFileDialog();
+            this.saveBFBFile = new System.Windows.Forms.SaveFileDialog();
+            this.fdLoadScript = new System.Windows.Forms.OpenFileDialog();
             this.panel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -112,13 +119,13 @@
             this.panel1.Controls.Add(this.label1);
             this.panel1.Location = new System.Drawing.Point(12, 27);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(183, 93);
+            this.panel1.Size = new System.Drawing.Size(216, 93);
             this.panel1.TabIndex = 1;
             // 
             // tbPrinterModel
             // 
             this.tbPrinterModel.Enabled = false;
-            this.tbPrinterModel.Location = new System.Drawing.Point(84, 56);
+            this.tbPrinterModel.Location = new System.Drawing.Point(130, 56);
             this.tbPrinterModel.Name = "tbPrinterModel";
             this.tbPrinterModel.Size = new System.Drawing.Size(80, 22);
             this.tbPrinterModel.TabIndex = 5;
@@ -127,7 +134,7 @@
             // tbMinFirmware
             // 
             this.tbMinFirmware.Enabled = false;
-            this.tbMinFirmware.Location = new System.Drawing.Point(84, 34);
+            this.tbMinFirmware.Location = new System.Drawing.Point(130, 34);
             this.tbMinFirmware.Name = "tbMinFirmware";
             this.tbMinFirmware.Size = new System.Drawing.Size(80, 22);
             this.tbMinFirmware.TabIndex = 4;
@@ -136,7 +143,7 @@
             // tbFirmware
             // 
             this.tbFirmware.Enabled = false;
-            this.tbFirmware.Location = new System.Drawing.Point(84, 11);
+            this.tbFirmware.Location = new System.Drawing.Point(130, 11);
             this.tbFirmware.Name = "tbFirmware";
             this.tbFirmware.Size = new System.Drawing.Size(80, 22);
             this.tbFirmware.TabIndex = 3;
@@ -187,7 +194,7 @@
             "PLA",
             "CP_ABS",
             "CP_PLA"});
-            this.cbLeftMaterial.Location = new System.Drawing.Point(93, 19);
+            this.cbLeftMaterial.Location = new System.Drawing.Point(142, 20);
             this.cbLeftMaterial.Name = "cbLeftMaterial";
             this.cbLeftMaterial.Size = new System.Drawing.Size(68, 24);
             this.cbLeftMaterial.TabIndex = 4;
@@ -230,7 +237,7 @@
             "Magenta",
             "Orange",
             "Neon Green"});
-            this.cbLeftColor.Location = new System.Drawing.Point(93, 46);
+            this.cbLeftColor.Location = new System.Drawing.Point(142, 47);
             this.cbLeftColor.Name = "cbLeftColor";
             this.cbLeftColor.Size = new System.Drawing.Size(68, 24);
             this.cbLeftColor.TabIndex = 8;
@@ -264,7 +271,7 @@
             "Magenta",
             "Orange",
             "Neon Green"});
-            this.cbRightColor.Location = new System.Drawing.Point(93, 50);
+            this.cbRightColor.Location = new System.Drawing.Point(142, 51);
             this.cbRightColor.Name = "cbRightColor";
             this.cbRightColor.Size = new System.Drawing.Size(68, 24);
             this.cbRightColor.TabIndex = 13;
@@ -288,7 +295,7 @@
             "PLA",
             "CP_ABS",
             "CP_PLA"});
-            this.cbRightMaterial.Location = new System.Drawing.Point(93, 19);
+            this.cbRightMaterial.Location = new System.Drawing.Point(142, 20);
             this.cbRightMaterial.Name = "cbRightMaterial";
             this.cbRightMaterial.Size = new System.Drawing.Size(68, 24);
             this.cbRightMaterial.TabIndex = 10;
@@ -311,7 +318,7 @@
             this.groupBox1.Controls.Add(this.cbLeftColor);
             this.groupBox1.Location = new System.Drawing.Point(12, 126);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(183, 87);
+            this.groupBox1.Size = new System.Drawing.Size(216, 87);
             this.groupBox1.TabIndex = 14;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Left Extruder (E1)";
@@ -324,7 +331,7 @@
             this.groupBox2.Controls.Add(this.label5);
             this.groupBox2.Location = new System.Drawing.Point(12, 324);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(183, 87);
+            this.groupBox2.Size = new System.Drawing.Size(216, 87);
             this.groupBox2.TabIndex = 15;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Right Extruder (E2)";
@@ -337,7 +344,7 @@
             this.groupBox5.Controls.Add(this.label8);
             this.groupBox5.Location = new System.Drawing.Point(12, 225);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(183, 87);
+            this.groupBox5.Size = new System.Drawing.Size(216, 87);
             this.groupBox5.TabIndex = 28;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Mid Extruder (E3)";
@@ -351,7 +358,7 @@
             "PLA",
             "CP_ABS",
             "CP_PLA"});
-            this.cbCubeProMaterial.Location = new System.Drawing.Point(93, 19);
+            this.cbCubeProMaterial.Location = new System.Drawing.Point(142, 20);
             this.cbCubeProMaterial.Name = "cbCubeProMaterial";
             this.cbCubeProMaterial.Size = new System.Drawing.Size(68, 24);
             this.cbCubeProMaterial.TabIndex = 10;
@@ -394,7 +401,7 @@
             "Magenta",
             "Orange",
             "Neon Green"});
-            this.cbCubeProColor.Location = new System.Drawing.Point(93, 50);
+            this.cbCubeProColor.Location = new System.Drawing.Point(142, 51);
             this.cbCubeProColor.Name = "cbCubeProColor";
             this.cbCubeProColor.Size = new System.Drawing.Size(68, 24);
             this.cbCubeProColor.TabIndex = 13;
@@ -411,9 +418,9 @@
             // 
             // btnGenerateCube3
             // 
-            this.btnGenerateCube3.Location = new System.Drawing.Point(705, 415);
+            this.btnGenerateCube3.Location = new System.Drawing.Point(733, 415);
             this.btnGenerateCube3.Name = "btnGenerateCube3";
-            this.btnGenerateCube3.Size = new System.Drawing.Size(108, 23);
+            this.btnGenerateCube3.Size = new System.Drawing.Size(133, 23);
             this.btnGenerateCube3.TabIndex = 29;
             this.btnGenerateCube3.Text = "Generate Cube3";
             this.btnGenerateCube3.UseVisualStyleBackColor = true;
@@ -421,7 +428,7 @@
             // 
             // btnViewRaw
             // 
-            this.btnViewRaw.Location = new System.Drawing.Point(591, 415);
+            this.btnViewRaw.Location = new System.Drawing.Point(328, 415);
             this.btnViewRaw.Name = "btnViewRaw";
             this.btnViewRaw.Size = new System.Drawing.Size(108, 23);
             this.btnViewRaw.TabIndex = 30;
@@ -436,7 +443,7 @@
             this.closeToolStripMenuItem,
             this.saveToolStripMenuItem,
             this.saveAsToolStripMenuItem,
-            this.generateScriptToolStripMenuItem,
+            this.loadScriptToolStripMenuItem,
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F)));
@@ -447,7 +454,7 @@
             // 
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
             this.openToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(246, 26);
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(225, 26);
             this.openToolStripMenuItem.Text = "Open...";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
             // 
@@ -456,7 +463,7 @@
             this.closeToolStripMenuItem.Name = "closeToolStripMenuItem";
             this.closeToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F4)));
             this.closeToolStripMenuItem.ShowShortcutKeys = false;
-            this.closeToolStripMenuItem.Size = new System.Drawing.Size(246, 26);
+            this.closeToolStripMenuItem.Size = new System.Drawing.Size(225, 26);
             this.closeToolStripMenuItem.Text = "Close";
             this.closeToolStripMenuItem.Click += new System.EventHandler(this.closeToolStripMenuItem_Click);
             // 
@@ -464,29 +471,30 @@
             // 
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
             this.saveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(246, 26);
-            this.saveToolStripMenuItem.Text = "Save";
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(225, 26);
+            this.saveToolStripMenuItem.Text = "Save Model";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
             // 
             // saveAsToolStripMenuItem
             // 
             this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
-            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(246, 26);
-            this.saveAsToolStripMenuItem.Text = "Save As...";
+            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(225, 26);
+            this.saveAsToolStripMenuItem.Text = "Save Model As...";
             this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.saveAsToolStripMenuItem_Click);
             // 
-            // generateScriptToolStripMenuItem
+            // loadScriptToolStripMenuItem
             // 
-            this.generateScriptToolStripMenuItem.Name = "generateScriptToolStripMenuItem";
-            this.generateScriptToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.G)));
-            this.generateScriptToolStripMenuItem.Size = new System.Drawing.Size(246, 26);
-            this.generateScriptToolStripMenuItem.Text = "Generate Script";
+            this.loadScriptToolStripMenuItem.Name = "loadScriptToolStripMenuItem";
+            this.loadScriptToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.L)));
+            this.loadScriptToolStripMenuItem.Size = new System.Drawing.Size(225, 26);
+            this.loadScriptToolStripMenuItem.Text = "Load Script...";
+            this.loadScriptToolStripMenuItem.Click += new System.EventHandler(this.LoadScriptToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
             this.exitToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F4)));
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(246, 26);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(225, 26);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -502,8 +510,8 @@
             // abouitToolStripMenuItem
             // 
             this.abouitToolStripMenuItem.Name = "abouitToolStripMenuItem";
-            this.abouitToolStripMenuItem.Size = new System.Drawing.Size(146, 26);
-            this.abouitToolStripMenuItem.Text = "Abouit...";
+            this.abouitToolStripMenuItem.Size = new System.Drawing.Size(142, 26);
+            this.abouitToolStripMenuItem.Text = "About...";
             this.abouitToolStripMenuItem.Click += new System.EventHandler(this.AbouitToolStripMenuItem_Click);
             // 
             // mainMenu
@@ -511,12 +519,29 @@
             this.mainMenu.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.mainMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
+            this.editToolStripMenuItem,
             this.helpToolStripMenuItem});
             this.mainMenu.Location = new System.Drawing.Point(0, 0);
             this.mainMenu.Name = "mainMenu";
-            this.mainMenu.Size = new System.Drawing.Size(856, 28);
+            this.mainMenu.Size = new System.Drawing.Size(903, 28);
             this.mainMenu.TabIndex = 0;
             this.mainMenu.Text = "menuStrip1";
+            // 
+            // editToolStripMenuItem
+            // 
+            this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.generateScriptToolStripMenuItem1});
+            this.editToolStripMenuItem.Name = "editToolStripMenuItem";
+            this.editToolStripMenuItem.Size = new System.Drawing.Size(49, 24);
+            this.editToolStripMenuItem.Text = "Edit";
+            // 
+            // generateScriptToolStripMenuItem1
+            // 
+            this.generateScriptToolStripMenuItem1.Name = "generateScriptToolStripMenuItem1";
+            this.generateScriptToolStripMenuItem1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.G)));
+            this.generateScriptToolStripMenuItem1.Size = new System.Drawing.Size(246, 26);
+            this.generateScriptToolStripMenuItem1.Text = "Generate Script";
+            this.generateScriptToolStripMenuItem1.Click += new System.EventHandler(this.GenerateScriptToolStripMenuItem_Click);
             // 
             // tabRetractrionControl
             // 
@@ -681,7 +706,7 @@
             this.tabControl1.Controls.Add(this.tabTemperatureControl);
             this.tabControl1.Controls.Add(this.tabRetractrionControl);
             this.tabControl1.Controls.Add(this.tbPressure);
-            this.tabControl1.Location = new System.Drawing.Point(201, 27);
+            this.tabControl1.Location = new System.Drawing.Point(262, 27);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
             this.tabControl1.Size = new System.Drawing.Size(629, 386);
@@ -710,10 +735,37 @@
             this.gridPressure.TabStop = true;
             this.gridPressure.ToolTipText = "";
             // 
+            // btnGenScript
+            // 
+            this.btnGenScript.Location = new System.Drawing.Point(583, 415);
+            this.btnGenScript.Name = "btnGenScript";
+            this.btnGenScript.Size = new System.Drawing.Size(133, 23);
+            this.btnGenScript.TabIndex = 32;
+            this.btnGenScript.Text = "Generate Script";
+            this.btnGenScript.UseVisualStyleBackColor = true;
+            this.btnGenScript.Click += new System.EventHandler(this.GenerateScriptToolStripMenuItem_Click);
+            // 
+            // btnViewScript
+            // 
+            this.btnViewScript.Location = new System.Drawing.Point(454, 415);
+            this.btnViewScript.Name = "btnViewScript";
+            this.btnViewScript.Size = new System.Drawing.Size(108, 23);
+            this.btnViewScript.TabIndex = 33;
+            this.btnViewScript.Text = "View Script";
+            this.btnViewScript.UseVisualStyleBackColor = true;
+            this.btnViewScript.Click += new System.EventHandler(this.BtnViewScript_Click);
+            // 
+            // fdLoadScript
+            // 
+            this.fdLoadScript.FileName = "fdLoadScript";
+            this.fdLoadScript.Filter = "\"Cube Script Files|*.cubescr|AllFiless|*.*\"";
+            // 
             // MainEditor
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-            this.ClientSize = new System.Drawing.Size(856, 450);
+            this.ClientSize = new System.Drawing.Size(903, 450);
+            this.Controls.Add(this.btnViewScript);
+            this.Controls.Add(this.btnGenScript);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.btnViewRaw);
             this.Controls.Add(this.btnGenerateCube3);
@@ -790,7 +842,6 @@
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem abouitToolStripMenuItem;
         private System.Windows.Forms.MenuStrip mainMenu;
-        private System.Windows.Forms.ToolStripMenuItem generateScriptToolStripMenuItem;
         private System.Windows.Forms.TabPage tabRetractrionControl;
         private System.Windows.Forms.GroupBox groupBox7;
         private SourceGrid.Grid gridRetractionStop;
@@ -808,6 +859,14 @@
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tbPressure;
         private SourceGrid.Grid gridPressure;
+        private System.Windows.Forms.Button btnGenScript;
+        private System.Windows.Forms.Button btnViewScript;
+        private System.Windows.Forms.SaveFileDialog saveScriptDialog;
+        private System.Windows.Forms.SaveFileDialog saveBFBFile;
+        private System.Windows.Forms.ToolStripMenuItem loadScriptToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem generateScriptToolStripMenuItem1;
+        private System.Windows.Forms.OpenFileDialog fdLoadScript;
     }
 }
 

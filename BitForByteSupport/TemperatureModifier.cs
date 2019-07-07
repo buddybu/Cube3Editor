@@ -1,6 +1,6 @@
-﻿namespace Cube3Editor
+﻿namespace BitForByteSupport
 {
-    internal class TemperatureModifier
+    public class TemperatureModifier
     {
         public string extruder;
         public int oldValue;

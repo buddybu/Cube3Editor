@@ -10,7 +10,7 @@ namespace Cube3Editor
     public partial class MainEditor
     {
 
-        internal void PopulateTemperatures(string tempCmdStr, Grid gridTemps, RectangleBorder border)
+        internal void PopulateTemperatures(string tempCmdStr, Grid gridTemps)
         {
             Dictionary<int, int> tempDict = new Dictionary<int, int>();
 
@@ -30,7 +30,7 @@ namespace Cube3Editor
             }
 
             SourceGrid.Cells.Editors.ComboBox tempModEditor;
-            String[] tempModType = new String[] { "Percentage", "Additive", "Replace" };
+            String[] tempModType = { "Percentage", "Additive", "Replace" };
             tempModEditor = new SourceGrid.Cells.Editors.ComboBox(typeof(String));
             tempModEditor.StandardValues = tempModType;
             tempModEditor.EditableMode = SourceGrid.EditableMode.Focus | SourceGrid.EditableMode.SingleClick | SourceGrid.EditableMode.AnyKey;
@@ -107,10 +107,10 @@ namespace Cube3Editor
 
                     if (gridTemps[i, 3].Value.Equals("Percentage"))
                     {
-                        double percentage = (int)(gridTemps[i, 2].Value);
-                        if (currentTemp > 0 && percentage != 0)
+                        int percentage = (int)(gridTemps[i, 2].Value);
+                        if (currentTemp > 0 && (0 < percentage))
                         {
-                            newTemp = Convert.ToInt32((percentage / 100) * currentTemp + currentTemp);
+                            newTemp = Convert.ToInt32((percentage / 100) * currentTemp);
                         }
                     }
                     else if (gridTemps[i, 3].Value.Equals("Additive"))

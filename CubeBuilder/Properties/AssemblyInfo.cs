@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Cube3Decoder")]
-[assembly: AssemblyDescription("Decode Cube3 files.")]
+[assembly: AssemblyTitle("CubeBuilder")]
+[assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Aardware")]
-[assembly: AssemblyProduct("Cube3Decoder")]
+[assembly: AssemblyCompany("")]
+[assembly: AssemblyProduct("CubeBuilder")]
 [assembly: AssemblyCopyright("Copyright ©  2019")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("ba6d0dd1-c730-490e-8605-95ba504ed0bb")]
+[assembly: Guid("4932f3b5-c5fb-48bf-9874-c42bce4886f1")]
 
 // Version information for an assembly consists of the following four values:
 //
