@@ -27,10 +27,11 @@ namespace Cube3Editor
         Stream outFile;
 
         BitFromByte bfbObject;
+        CubeScript cubeScript;
 
         BlowfishEngine engine;
         byte[] inputCube3File;
-        byte[] outputCube3File;
+        CubeExtractor extractor;
 
         private string key = "221BBakerMycroft";
 
@@ -60,6 +61,14 @@ namespace Cube3Editor
             openFileDialog.Filter = "CUBE Files |*.cube3;*.cubepro|All Files (*.*)|*.*";
             openFileDialog.Title = "Please Select a CUBE3 File to edit.";
 
+            saveFileDialog.Filter = "CUBE Files |*.cube3;*.cubepro|All Files (*.*)|*.*";
+            saveFileDialog.Title = "Save CUBE File";
+
+            saveScriptDialog.Filter = "CUBE Script Files |*.cubescr;*.scr|All Files (*.*)|*.*";
+            saveScriptDialog.Title = "Save Cube Script";
+
+
+
             engine = new BlowfishEngine(true);
 
             if (cubeFile != null)
@@ -82,7 +91,7 @@ namespace Cube3Editor
                     fileName = openFileDialog.FileName;
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 MessageBox.Show("Unable to open file [" + openFileDialog.FileName + "]", "Invalid CUBE File!");
             }
@@ -107,46 +116,31 @@ namespace Cube3Editor
                 ClearUI();
                 try
                 {
+
                     using (inFile = File.OpenRead(FileName))
                     using (var binaryReader = new BinaryReader(inFile))
                     {
                         inputCube3File = binaryReader.ReadBytes((int)binaryReader.BaseStream.Length);
-                        int modelDataOffset = 0;
-                        if (validCube3Header())
+
+                        bool copyInputFile = true;
+                        if (!RawCubeFile())
                         {
-                            modelDataOffset = Array.IndexOf(inputCube3File, (Byte)0xC8);
-                            if (modelDataOffset < 0)
-                            {
-                                inFile.Close();
-                                throw new SecurityException("Invalid CUBE3 File!");
-                            }
+                            extractor = new CubeExtractor(inputCube3File);
 
-                            if (modelDataOffset < 14)
+                            String rawCube3Filename = extractor.GetCubeFilename();
+                            if (rawCube3Filename != null)
                             {
-                                modelDataOffset = Array.IndexOf(inputCube3File, (byte)0xC8, modelDataOffset + 1);
-                                if (modelDataOffset < 0)
-                                {
-                                    inFile.Close();
-                                    throw new SecurityException("Invalid CUBE3 File!");
-                                }
+                                copyInputFile = false;
+                                dataModel = new byte[extractor.ModelFiles[rawCube3Filename].Length];
+                                Array.Copy(extractor.ModelFiles[rawCube3Filename], dataModel, extractor.ModelFiles[rawCube3Filename].Length);
                             }
-
                         }
 
-
-
-                        if (modelDataOffset > 0)
-                        {
-                            int cube3Size = inputCube3File.Length - modelDataOffset;
-                            dataModel = new byte[cube3Size];
-                            Array.Copy(inputCube3File, modelDataOffset, dataModel, 0, cube3Size);
-                        }
-                        else
+                        if (copyInputFile)
                         {
                             dataModel = new byte[inputCube3File.Length];
                             Array.Copy(inputCube3File, dataModel, inputCube3File.Length);
                         }
-
 
                         try
                         {
@@ -180,7 +174,7 @@ namespace Cube3Editor
 
                             bfbObject = new BitFromByte(encoding, decodedBytes);
 
-                            string[] seperator = new string[] { "\r\n" };
+                            string[] seperator = { "\r\n" };
                             string[] decodedModelArray = decodedModel.Split(seperator, StringSplitOptions.RemoveEmptyEntries);
 
                             List<String> bfbStringList = decodedModelArray.ToList<string>();
@@ -198,11 +192,11 @@ namespace Cube3Editor
                             cbCubeProMaterial.Text = bfbObject.GetMaterialType(BFBConstants.MATERIALCODEE3);
                             cbCubeProColor.Text = bfbObject.GetMaterialColor(BFBConstants.MATERIALCODEE3);
 
-                            PopulateTemperatures(BFBConstants.LEFT_TEMP, gridLeftTemps, border);
-                            PopulateTemperatures(BFBConstants.RIGHT_TEMP, gridRightTemps, border);
-                            PopulateRetractionStarts(border);
-                            PopulateRetractionStops(border);
-                            PopulatePressures(border);
+                            PopulateTemperatures(BFBConstants.LEFT_TEMP, gridLeftTemps);
+                            PopulateTemperatures(BFBConstants.RIGHT_TEMP, gridRightTemps);
+                            PopulateRetractionStarts();
+                            PopulateRetractionStops();
+                            PopulatePressures();
 
                             // enable material fields
                             tbFirmware.Enabled = true;
@@ -239,17 +233,23 @@ namespace Cube3Editor
         }
 
 
-        private bool validCube3Header()
+        private bool RawCubeFile()
         {
-            bool valid = false;
+            bool raw = true;
 
-            if (inputCube3File[14] == 'i' && inputCube3File[15] == 'n' &&
-                inputCube3File[16] == 'd' && inputCube3File[17] == 'e' &&
-                inputCube3File[18] == 'x')
+            Int32 length = BitConverter.ToInt32(inputCube3File, 4);
+
+            if (inputCube3File.Length == length)
             {
-                valid = true;
+                raw = false;
             }
-            return valid;
+            //if (inputCube3File[14] == 'i' && inputCube3File[15] == 'n' &&
+            //    inputCube3File[16] == 'd' && inputCube3File[17] == 'e' &&
+            //    inputCube3File[18] == 'x')
+            //{
+            //    valid = true;
+            //}
+            return raw;
         }
 
         private void ClearUI()
@@ -271,8 +271,12 @@ namespace Cube3Editor
                 gridRetractionStart.Rows.RemoveRange(1, gridRetractionStart.Rows.Count - 1);
             if (gridRetractionStop.Rows.Count > 1)
                 gridRetractionStop.Rows.RemoveRange(1, gridRetractionStop.Rows.Count - 1);
+            if (gridPressure.Rows.Count > 1)
+                gridPressure.Rows.RemoveRange(1, gridPressure.Rows.Count - 1);
 
-            char[] seperator = new char[] { ' ', '-', ' ' };
+            cubeScript = new CubeScript();
+
+            char[] seperator = { ' ', '-', ' ' };
             string title = Text.Split(seperator)[0];
             Text = title;
         }
@@ -290,16 +294,29 @@ namespace Cube3Editor
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //if (modified)
+            if (bfbObject != null)
             {
                 SaveFile();
+            }
+            else
+            {
+                MessageBox.Show("Please load a Cube model.", "No Model Present", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
         }
 
         private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            // disoplay save as dialog with cube3 as the default extension and the current
-            // filename as the default name.
+            try
+            {
+                if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    SaveFile(saveFileDialog.FileName);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Unable to save file [" + saveFileDialog.FileName + "]", ex.Message);
+            }
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -313,9 +330,14 @@ namespace Cube3Editor
 
         private void SaveFile()
         {
+            SaveFile(fileName);
+        }
+
+        private void SaveFile(String filename)
+        {
             inFile.Close();
 
-            FileBackup.MakeBackup(fileName, 5);
+            FileBackup.MakeBackup(filename, 5);
 
             Byte[] newDataModel = bfbObject.getBytesFromBFB();
             PaddedBufferedBlockCipher cipher;
@@ -335,7 +357,7 @@ namespace Cube3Editor
             cipher.DoFinal(encodedBytes, encodedLength);
 
 
-            using (outFile = File.OpenWrite(fileName))
+            using (outFile = File.OpenWrite(filename))
             using (var binaryWriter = new BinaryWriter(outFile))
             {
                 binaryWriter.Write(encodedBytes);
@@ -354,7 +376,7 @@ namespace Cube3Editor
 
         }
 
-        private int GetModelDataOffset(byte[] inputCube3File)
+        private int GetModelDataOffset()
         {
             for (int i = 0; i < inputCube3File.Length; i++)
             {
@@ -605,9 +627,16 @@ namespace Cube3Editor
 
         private void BtnViewRaw_Click(object sender, EventArgs e)
         {
-            FrmRawView rawViewForm = new FrmRawView(bfbObject.BfbLines);
-            // display bfb data in a text box.  no editing allowed.
-            rawViewForm.ShowDialog();
+            if (bfbObject != null)
+            {
+                FrmRawView rawViewForm = new FrmRawView(bfbObject.BfbLines);
+                // display bfb data in a text box.  no editing allowed.
+                rawViewForm.ShowDialog();
+            }
+            else
+            {
+                MessageBox.Show("Please open a Cube model.", "No Model Present", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }
         }
 
         bool validData;
@@ -761,9 +790,129 @@ namespace Cube3Editor
             }
             UpdateStopRetractions(gridRetractionStop);
 
+            // process retract stop
+            foreach (PressureModifier pressureMod in pressureMods)
+            {
+                for (int i = 1; i < gridPressure.Rows.Count; i++)
+                {
+                    Double currentPressure = (Double)gridPressure[i, 0].Value;
+                    if (0 == pressureMod.oldPressureValue.CompareTo(currentPressure))
+                    {
+                        // set row to replace and replace value to newvalue
+                        gridPressure[i, 0].Value = pressureMod.newPressureValue;
+                    }
+                }
+            }
+            UpdatePressures();
 
 
             return success;
+        }
+
+        private void GenerateScriptToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+            if (bfbObject == null)
+            {
+                MessageBox.Show("Please load a script or generate a script from a Cube model.", "No Model Present", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }
+            else
+            {
+                cubeScript = new CubeScript(bfbObject);
+                StreamWriter scriptFile = null;
+                try
+                {
+                    saveScriptDialog.FileName = Path.GetFileNameWithoutExtension(fileName) + ".CUBESCR";
+                    if (saveScriptDialog.ShowDialog() == DialogResult.OK)
+                    {
+                        scriptFile = new System.IO.StreamWriter(saveScriptDialog.FileName, false);
+
+                        foreach (String line in cubeScript.CubeScriptLines)
+                        {
+                            scriptFile.WriteLine(line);
+                        }
+
+                        scriptFile.Close();
+                        scriptFile = null;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Unable to save script [" + saveScriptDialog.FileName + "]", ex.Message);
+                }
+                finally
+                {
+                    if (scriptFile != null)
+                        scriptFile.Close();
+                }
+
+            }
+
+        }
+
+        private void LoadScriptToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+            if (bfbObject == null)
+            {
+                MessageBox.Show("Please load a Cube model.", "No Model Present", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }
+            else
+            {
+                try
+                {
+                    if (fdLoadScript.ShowDialog() == DialogResult.OK)
+                    {
+                        try
+                        {
+                            cubeScript = new CubeScript(fdLoadScript.FileName);
+                            CommandLineLoad(cubeScript.FirmwareStr, cubeScript.MinFirmwareStr, cubeScript.PrinterModelStr,
+                               cubeScript.MaterialE1Str, cubeScript.MaterialE2Str, cubeScript.MaterialE3Str,
+                               cubeScript.TemperatureModifers, cubeScript.RetractStartModifers, cubeScript.RetractStopModifers,
+                               cubeScript.PressureModifiers);
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show($"Unable to open {fdLoadScript.FileName}.  Reason: [{ex.InnerException.Message}]");
+                        }
+                    }
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show("Unable to open file [" + openFileDialog.FileName + "]", "Invalid CUBESCRIPT File!");
+                }
+                finally
+                {
+                }
+            }
+        }
+
+        private void BtnViewScript_Click(object sender, EventArgs e)
+        {
+            if (cubeScript == null)
+            {
+                MessageBox.Show("Please load a script or generate a script from a Cube model.", "No Model Present", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }
+            else
+            {
+                ScriptViewForm scriptViewForm = new ScriptViewForm(cubeScript.CubeScriptLines);
+                // display bfb data in a text box.  no editing allowed.
+                scriptViewForm.ShowDialog();
+
+                if (scriptViewForm.applyScript)
+                {
+                    string scriptText = scriptViewForm.rtbScript.Text;
+                    string[] separator = { "\r\n", "\n", "\r" };
+                    string[] scriptLineArray = scriptText.Split(separator, StringSplitOptions.RemoveEmptyEntries);
+
+                    cubeScript = new CubeScript(scriptLineArray);
+                    CommandLineLoad(cubeScript.FirmwareStr, cubeScript.MinFirmwareStr, cubeScript.PrinterModelStr,
+                       cubeScript.MaterialE1Str, cubeScript.MaterialE2Str, cubeScript.MaterialE3Str,
+                       cubeScript.TemperatureModifers, cubeScript.RetractStartModifers, cubeScript.RetractStopModifers,
+                       cubeScript.PressureModifiers);
+                }
+            }
+
         }
     }
 }

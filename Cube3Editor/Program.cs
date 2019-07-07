@@ -73,16 +73,26 @@ namespace Cube3Editor
                 System.Console.WriteLine($"cubeFile = '{cubeFile}'");
                 System.Console.WriteLine($"scriptFile = '{scriptFile}'");
 
-                // load and vaidate script
-                if (LoadAndValidateScript(scriptFile))
+                try
                 {
+                    CubeScript cubeScript = new CubeScript(scriptFile);
+
                     // load the file 
                     MainEditor cubeEdit = new MainEditor(cubeFile);
 
-                    cubeEdit.CommandLineLoad(firmwareStr, minfirmwareStr, printerModelStr, materialCodeE1, materialCodeE2, materialCodeE3,
-                        temperatureModifers, retractStartModifers, retractStopModifers, pressureModifiers);
+                    cubeEdit.CommandLineLoad(cubeScript.FirmwareStr, cubeScript.MinFirmwareStr, cubeScript.PrinterModelStr,
+                        cubeScript.MaterialE1Str, cubeScript.MaterialE2Str, cubeScript.MaterialE3Str,
+                        cubeScript.TemperatureModifers, cubeScript.RetractStartModifers, cubeScript.RetractStopModifers, 
+                        cubeScript.PressureModifiers);
 
                     cubeEdit.CommandLineSave();
+                }
+                catch (Exception ex)
+                {
+                    System.Console.WriteLine($"Unable to open script file. [{ex.Message}]");
+                }
+
+                {
                 }
 
                 SendKeys.SendWait("{ENTER}");
@@ -436,7 +446,6 @@ namespace Cube3Editor
         {
             bool valid = true;
             int oldRetractIndex = 2;
-            int byIndex = 3;
             int modTypeIndex = 4;
             int modValueIndex = 5;
 

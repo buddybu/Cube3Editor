@@ -8,7 +8,7 @@ namespace Cube3Editor
 {
     public partial class MainEditor
     {
-        internal void PopulateRetractionStarts(RectangleBorder border)
+        internal void PopulateRetractionStarts()
         {
 
             //List<string> retractionStartLines = bfbObject.generateRetractionStartList();
@@ -21,9 +21,9 @@ namespace Cube3Editor
             RetractionStartChangedEvent valueChangedController = new RetractionStartChangedEvent(this);
 
 
-            foreach (string key in bfbObject.RetractionStartLineList.Keys)
+            foreach (string keyLine in bfbObject.RetractionStartLineList.Keys)
             {
-                int index = bfbObject.RetractionStartLineList[key][0];
+                int index = bfbObject.RetractionStartLineList[keyLine][0];
                 Retraction retraction = bfbObject.RetractionStartDictionary[index];
 
                 gridRetractionStart.Rows.Insert(gridRow);
@@ -56,7 +56,7 @@ namespace Cube3Editor
             }
         }
 
-        internal void PopulateRetractionStops(RectangleBorder border)
+        internal void PopulateRetractionStops()
         {
 
             //List<string> retractionStartLines = bfbObject.generateRetractionStartList();
@@ -69,9 +69,9 @@ namespace Cube3Editor
             RetractionStopChangedEvent valueChangedController = new RetractionStopChangedEvent(this);
 
 
-            foreach (string key in bfbObject.RetractionStopLineList.Keys)
+            foreach (string keyLine in bfbObject.RetractionStopLineList.Keys)
             {
-                int index = bfbObject.RetractionStopLineList[key][0];
+                int index = bfbObject.RetractionStopLineList[keyLine][0];
                 Retraction retraction = bfbObject.RetractionStopDictionary[index];
 
                 gridRetractionStop.Rows.Insert(gridRow);

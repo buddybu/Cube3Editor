@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Cube3Editor
+namespace BitForByteSupport
 {
-    internal class PressureModifier
+    public class PressureModifier
     {
         public string pressureCmd;
         public Double oldPressureValue;

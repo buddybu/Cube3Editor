@@ -1,6 +1,6 @@
-﻿namespace Cube3Editor
+﻿namespace BitForByteSupport
 {
-    internal class RetractModifier
+    public class RetractModifier
     {
         public string retractCmd;
         public int oldRetractValue;

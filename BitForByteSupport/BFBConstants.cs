@@ -126,10 +126,17 @@ namespace BitForByteSupport
         public const int CP_PLA_NATURAL = 214;
         public const int CP_PLA_INDUST_GREY = 215;
 
+        public const int EKO_RED = 300;
+        public const int EKO_WHITE = 301;
+        public const int EKO_BLACK = 302;
+        public const int EKO_NATURAL = 303;
+        public const int EKO_GREY = 304;
+
         public const string PLA = "PLA";
         public const string ABS = "ABS";
         public const string CP_PLA = "CP_PLA";
         public const string CP_ABS = "CP_ABS";
+        public const string EKO = "EKO";
 
         public const string BLACK = "Black";
         public const string BLUE = "Blue";
@@ -142,7 +149,7 @@ namespace BitForByteSupport
         public const string GITDG = "GITDG";
         public const string GOLD = "Gold";
         public const string GREEN = "Green";
-        public const string INDUST_GREY = "Industrail Grey";
+        public const string INDUST_GREY = "Grey";
         public const string MAGENTA = "Magenta";
         public const string NATURAL = "Natural";
         public const string NAVY_BLUE = "Navy Blue";
@@ -265,6 +272,13 @@ namespace BitForByteSupport
                 case CP_PLA_YELLOW:
                     return CP_PLA;
 
+                case EKO_GREY:
+                case EKO_RED:
+                case EKO_WHITE:
+                case EKO_BLACK:
+                case EKO_NATURAL:
+                    return EKO;
+
                 default:
                     return "";
             }
@@ -279,6 +293,7 @@ namespace BitForByteSupport
                 case ABS_BLACK:
                 case CP_PLA_BLACK:
                 case CP_ABS_BLACK:
+                case EKO_BLACK:
                     return BLACK;
 
                 case PLA_BLUE:
@@ -343,6 +358,7 @@ namespace BitForByteSupport
 
                 case CP_PLA_INDUST_GREY:
                 case CP_ABS_INDUST_GREY:
+                case EKO_GREY:
                     return INDUST_GREY;
 
                 case PLA_MAGENTA:
@@ -377,6 +393,7 @@ namespace BitForByteSupport
                 case ABS_PALE_YELLOW:
                 case CP_PLA_PALE_YELLOW:
                 case CP_ABS_PALE_YELLOW:
+                case EKO_NATURAL:
                     return PALE_YELLOW;
 
                 case PLA_PURPLE:
@@ -389,6 +406,7 @@ namespace BitForByteSupport
                 case ABS_RED:
                 case CP_PLA_RED:
                 case CP_ABS_RED:
+                case EKO_RED:
                     return RED;
 
                 case PLA_SILVER:
@@ -413,6 +431,7 @@ namespace BitForByteSupport
                 case ABS_WHITE:
                 case CP_PLA_WHITE:
                 case CP_ABS_WHITE:
+                case EKO_WHITE:
                     return WHITE;
 
                 case PLA_YELLOW:
@@ -632,6 +651,19 @@ namespace BitForByteSupport
                     cube3Code = CP_PLA_WHITE;
                 else if (color.Equals(YELLOW))
                     cube3Code = CP_PLA_YELLOW;
+            }
+            else if (type.Equals(EKO))
+            {
+                if (color.Equals(RED))
+                    cube3Code = EKO_RED;
+                else if (color.Equals(BLACK))
+                    cube3Code = EKO_BLACK;
+                else if (color.Equals(INDUST_GREY))
+                    cube3Code = EKO_GREY;
+                else if (color.Equals(WHITE))
+                    cube3Code = EKO_WHITE;
+                else if (color.Equals(PALE_YELLOW))
+                    cube3Code = EKO_NATURAL;
             }
             return cube3Code;
         }

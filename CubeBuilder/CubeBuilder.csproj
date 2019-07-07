@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{67F8CEB3-7536-4C7A-9B4F-9CAAB25D8648}</ProjectGuid>
+    <ProjectGuid>{4932F3B5-C5FB-48BF-9874-C42BCE4886F1}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>Cube3ScriptGenerator</RootNamespace>
-    <AssemblyName>c3sg</AssemblyName>
+    <RootNamespace>CubeBuilder</RootNamespace>
+    <AssemblyName>cbld</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -32,15 +32,6 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup>
-    <SignManifests>true</SignManifests>
-  </PropertyGroup>
-  <PropertyGroup>
-    <ManifestCertificateThumbprint>6A1E1A1AD5D35A90F78B0EC81DB3FC8B490AEF52</ManifestCertificateThumbprint>
-  </PropertyGroup>
-  <PropertyGroup>
-    <ManifestKeyFile>Cube3ScriptGenerator_TemporaryKey.pfx</ManifestKeyFile>
-  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -52,24 +43,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="c3sg.cs" />
+    <Compile Include="CubeBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="Cube3ScriptGenerator_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\bc-csharp-release-1.8.5\crypto\BouncyCastle.csproj">
-      <Project>{4c235092-820c-4deb-9074-d356fb797d8b}</Project>
-      <Name>BouncyCastle</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\BitForByteSupport\BitForByteSupport.csproj">
-      <Project>{c1522fec-90ad-4502-869a-6ff7be19837a}</Project>
-      <Name>BitForByteSupport</Name>
-    </ProjectReference>
     <ProjectReference Include="..\FileHelper\FileHelper.csproj">
-      <Project>{666C52B7-46EC-43B8-AF42-D7E2E26CB032}</Project>
+      <Project>{666c52b7-46ec-43b8-af42-d7e2e26cb032}</Project>
       <Name>FileHelper</Name>
     </ProjectReference>
   </ItemGroup>

@@ -233,8 +233,10 @@ namespace BitForByteSupport
             {
                 if (BfbLines[i].StartsWith(bfbPressureCode))
                 {
-                    pressures.Add(BfbLines[i]);
+
+                    FixPressureLine(i);
                     Double pressure = GetPressureFromString(BfbLines[i]);
+                    pressures.Add(BfbLines[i]);
                     if (!PressureDictionary.Keys.Contains(i))
                     {
                         PressureDictionary.Add(i, pressure);
@@ -253,9 +255,6 @@ namespace BitForByteSupport
         public List<Double> GetUniquePressures(string pressureString)
         {
 
-            bool addPressure = false;
-            double pressureVal = -1d;
-
             List<int> keys;
 
             keys = PressureDictionary.Keys.ToList();
@@ -263,7 +262,6 @@ namespace BitForByteSupport
             List<Double> uniquePressures = new List<Double>();
             foreach (int i in keys)
             {
-                addPressure = false;
                 if (BfbLines[i].StartsWith(pressureString))
                 {
                     if (!uniquePressures.Contains(PressureDictionary[i]))
@@ -281,6 +279,20 @@ namespace BitForByteSupport
             string cvtPressureStr = new string(splitPressure.ToCharArray(1, splitPressure.Length - 1));
             double pressure = Convert.ToDouble(cvtPressureStr);
             return pressure;
+        }
+
+        private void FixPressureLine(int index)
+        {
+            string[] splitPressure = BfbLines[index].Split(' ');
+
+            if (splitPressure.Length == 1)
+            {
+                splitPressure = BfbLines[index].Split('S');
+                if (splitPressure.Length == 2)
+                {
+                    BfbLines[index] = splitPressure[0] + " S" + splitPressure[1];
+                }
+            }
         }
 
 
@@ -451,25 +463,25 @@ namespace BitForByteSupport
 
             List<int> newRetractLines = new List<int>();
 
-            RetractionStopLineList.Remove(bfbStringList[index]);
+            PressureLineList.Remove(bfbStringList[index]);
 
 
             foreach (int line in pressureLines)
             {
                 bfbStringList[line] = pressureCmd;
 
-                if (!RetractionStopLineList.Keys.Contains(pressureCmd))
+                if (!PressureLineList.Keys.Contains(pressureCmd))
                 {
-                    RetractionStopLineList.Add(pressureCmd, pressureLines);
+                    PressureLineList.Add(pressureCmd, pressureLines);
                 }
 
-                if (RetractionStopDictionary.Keys.Contains(line))
+                if (PressureDictionary.Keys.Contains(line))
                 {
-                    RetractionStopDictionary[line] = new Retraction(pressureCmd, line);
+                    PressureDictionary[line] = GetPressureFromString(pressureCmd);
                 }
                 else
                 {
-                    RetractionStopDictionary.Add(line, new Retraction(pressureCmd, line));
+                    PressureDictionary.Add(line, GetPressureFromString(pressureCmd));
                 }
             }
         }
