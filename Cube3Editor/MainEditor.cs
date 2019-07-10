@@ -14,6 +14,8 @@ using System.Linq;
 using System.Security;
 using System.Text;
 using System.Windows.Forms;
+using System.Xml;
+using System.Xml.Linq;
 
 namespace Cube3Editor
 {
@@ -37,7 +39,7 @@ namespace Cube3Editor
 
         static readonly Encoding encoding = Encoding.ASCII;
         private String decodedModel;
-
+        private bool copyInputFile;
         private Byte[] dataModel;
         private RectangleBorder border;
         private SourceGrid.Cells.Views.Cell tempView;
@@ -122,10 +124,17 @@ namespace Cube3Editor
                     {
                         inputCube3File = binaryReader.ReadBytes((int)binaryReader.BaseStream.Length);
 
-                        bool copyInputFile = true;
+                        copyInputFile = true;
+                        extractor = null;
+
                         if (!RawCubeFile())
                         {
-                            extractor = new CubeExtractor(inputCube3File);
+                            extractor = new CubeExtractor(inputCube3File)
+                            {
+                                ModelFilenameSize = 0x104,
+                                MaxFilenameLengthPlusSize = 0x108
+                            };
+
 
                             String rawCube3Filename = extractor.GetCubeFilename();
                             if (rawCube3Filename != null)
@@ -182,6 +191,7 @@ namespace Cube3Editor
 
                             // populate all fields
                             tbFirmware.Text = bfbObject.GetText(BFBConstants.FIRMWARE);
+
 
                             tbMinFirmware.Text = bfbObject.GetText(BFBConstants.MINFIRMWARE);
                             tbPrinterModel.Text = bfbObject.GetText(BFBConstants.PRINTERMODEL);
@@ -328,17 +338,8 @@ namespace Cube3Editor
             }
         }
 
-        private void SaveFile()
+        private Byte[] EncodeBFB()
         {
-            SaveFile(fileName);
-        }
-
-        private void SaveFile(String filename)
-        {
-            inFile.Close();
-
-            FileBackup.MakeBackup(filename, 5);
-
             Byte[] newDataModel = bfbObject.getBytesFromBFB();
             PaddedBufferedBlockCipher cipher;
             ZeroBytePadding padding = new ZeroBytePadding();
@@ -356,17 +357,136 @@ namespace Cube3Editor
             int encodedLength = cipher.ProcessBytes(newDataModel, 0, newDataModel.Length, encodedBytes, 0);
             cipher.DoFinal(encodedBytes, encodedLength);
 
+            return encodedBytes;
+
+        }
+
+        private Byte[] ProcessXML(Byte[] xmlBytes, Byte[] encodedBFB)
+        {
+            Byte[] newXMLBytes = null;
+
+            string xmlString = encoding.GetString(xmlBytes);
+            var xDoc = XDocument.Parse(xmlString);
+
+            var build = xDoc.Root.Element("build");
+
+            var type = build.Element("type");
+            type.Value = "cube";
+
+            CRC32 crc = new CRC32();
+            var buildCrc32 = build.Element("build_crc32");
+            var newCRC32 = crc.ComputeChecksum(encodedBFB);
+            buildCrc32.Value = newCRC32.ToString();
+
+            var materials = build.Element("materials");
+            var extruder1 = materials.Element("extruder1");
+            var ext1Code = extruder1.Element("code");
+            var ext1Recycled = extruder1.Element("recycled");
+            ext1Code.Value = bfbObject.GetMATERIALCODE(BFBConstants.MATERIALCODEE1).ToString();
+            ext1Recycled.Value = "0";
+
+            var extruder2 = materials.Element("extruder2");
+            var ext2Code = extruder2.Element("code");
+            var ext2Recycled = extruder2.Element("recycled");
+            ext2Code.Value = bfbObject.GetMATERIALCODE(BFBConstants.MATERIALCODEE2).ToString();
+            ext2Recycled.Value = "0";
+
+            var extruder3 = materials.Element("extruder3");
+            var ext3Code = extruder3.Element("code");
+            var ext3Recycled = extruder3.Element("recycled");
+            ext3Code.Value = bfbObject.GetMATERIALCODE(BFBConstants.MATERIALCODEE3).ToString();
+            ext3Recycled.Value = "0";
+
+            var supports = build.Element("supports");
+            var sidewalk = build.Element("sidewalk");
+
+            StringBuilder sb = new StringBuilder();
+            TextWriter tr = new StringWriter(sb);
+            xDoc.Save(tr);
+            String newXml = sb.ToString();
+            newXMLBytes = encoding.GetBytes(sb.ToString()) ;
+            return newXMLBytes;
+        }
+
+        private void SaveFile()
+        {
+            SaveFile(fileName);
+        }
+
+        private void SaveFile(String filename)
+        {
+            inFile.Close();
+
+            Byte[] encodedBFB = EncodeBFB();
+
+            FileBackup.MakeBackup(filename, 5);
+
+            File.Delete(filename);
 
             using (outFile = File.OpenWrite(filename))
             using (var binaryWriter = new BinaryWriter(outFile))
             {
-                binaryWriter.Write(encodedBytes);
+                if (extractor == null)
+                {
+                    binaryWriter.Write(encodedBFB);
 
+                    // close the original file
+                    // rename original file to .cube3.1 or .2 or .3 (etc)
+                    // encode the BFB using blowfish encryption
+                    // save the encrypted data to .cube3 
+                }
+                else
+                {
+                    extractor.ModelFileSize = 10;
+
+                    Byte[] updatedXMLBytes = ProcessXML(extractor.ModelFiles[extractor.GetXMLFilename()], encodedBFB);
+
+
+                    binaryWriter.Write(extractor.ModelFileCount);
+                    binaryWriter.Write(extractor.ModelFileSize);
+                    binaryWriter.Write(extractor.MaxFilenameLengthPlusSize);
+                    foreach (String fname in extractor.ModelFileNames)
+                    {
+                        int lengthWritten = extractor.MaxFilenameLengthPlusSize;
+
+                        Byte[] fnameData = new byte[extractor.ModelFilenameSize];
+                        Byte[] fnameBytes = Encoding.ASCII.GetBytes(fname);
+                        int fnameLength = extractor.ModelFilenameSize <= fnameBytes.Length ? extractor.ModelFilenameSize : fnameBytes.Length;
+                        Array.Copy(fnameBytes, fnameData, fnameLength);
+
+
+                        if (fname.ToUpper().EndsWith("XML", StringComparison.CurrentCulture))
+                        {
+                            binaryWriter.Write(updatedXMLBytes.Length);
+                            binaryWriter.Write(fnameData, 0, extractor.ModelFilenameSize);
+                            binaryWriter.Write(updatedXMLBytes);
+                            lengthWritten += updatedXMLBytes.Length;
+                        } else if (fname.ToUpper().EndsWith("CUBE3", StringComparison.CurrentCulture))
+                        {
+                            binaryWriter.Write(encodedBFB.Length);
+                            binaryWriter.Write(fnameData, 0, extractor.ModelFilenameSize);
+                            binaryWriter.Write(encodedBFB);
+                            lengthWritten += encodedBFB.Length;
+                        }
+                        else
+                        {
+                            binaryWriter.Write(extractor.ModelFiles[fname].Length);
+                            binaryWriter.Write(fnameData, 0, extractor.ModelFilenameSize);
+                            binaryWriter.Write(extractor.ModelFiles[fname]);
+                            lengthWritten += extractor.ModelFiles[fname].Length;
+
+                        }
+                        extractor.ModelFileSize += lengthWritten;
+                        lengthWritten = 0;
+                    }
+
+
+                    binaryWriter.Seek(4, SeekOrigin.Begin);
+                    binaryWriter.Write(extractor.ModelFileSize);
+
+
+                }
                 outFile.Close();
-                // close the original file
-                // rename original file to .cube3.1 or .2 or .3 (etc)
-                // encode the BFB using blowfish encryption
-                // save the encrypted data to .cube3 
             }
         }
 

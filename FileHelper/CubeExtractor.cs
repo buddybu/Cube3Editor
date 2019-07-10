@@ -12,10 +12,15 @@ namespace FileHelper
         private List<String> modelFileNames = new List<string>();
         private Dictionary<String, Byte[]> modelFiles = new Dictionary<string, byte[]>();
 
+        private int modelFilenameSize;
+        private Int16 maxFilenameLengthPlusSize;
+
         public int ModelFileCount { get => modelFileCount; set => modelFileCount = value; }
         public List<string> ModelFileNames { get => modelFileNames; set => modelFileNames = value; }
         public Dictionary<string, byte[]> ModelFiles { get => modelFiles; set => modelFiles = value; }
         public int ModelFileSize { get => modelFileSize; set => modelFileSize = value; }
+        public int ModelFilenameSize { get => modelFilenameSize; set => modelFilenameSize = value; }
+        public Int16 MaxFilenameLengthPlusSize { get => maxFilenameLengthPlusSize; set => maxFilenameLengthPlusSize = value; }
 
         public CubeExtractor()
         {
@@ -74,6 +79,21 @@ namespace FileHelper
                 }
             }
             return cubeFilename;
+        }
+        public String GetXMLFilename()
+        {
+            String xmlFilename = null;
+            foreach (String filename in ModelFileNames)
+            {
+                String extension = Path.GetExtension(filename);
+
+                if (extension.ToUpper().Equals(".XML"))
+                {
+                    xmlFilename = filename;
+                    break;
+                }
+            }
+            return xmlFilename;
         }
     }
 }

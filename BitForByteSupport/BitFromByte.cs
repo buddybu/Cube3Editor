@@ -225,6 +225,20 @@ namespace BitForByteSupport
             }
         }
 
+        public int GetMATERIALCODE(string materialCode)
+        {
+            int index = BfbLines.FindIndex(x => x.Contains(materialCode));
+            int code = -1;
+
+            if (0 <= index && index <= bfbStringList.Count)
+            {
+                string[] materialStrArr = BfbLines[index].Split(':');
+                code = Convert.ToInt32(materialStrArr[1]);
+            }
+
+            return code;
+        }
+
         public List<string> getExtruderPressures(string bfbPressureCode)
         {
             List<string> pressures = new List<string>();
