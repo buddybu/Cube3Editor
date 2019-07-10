@@ -102,20 +102,21 @@ namespace CubeBuilder
 
         private static void BuildCubeFile()
         {
-            Int16 modelFilenameSize = 0x104;
-            Int16 maxFilenameLengthPlusSize = 0x108;
 
             CubeExtractor cbld = new CubeExtractor
             {
                 ModelFileCount = cubeFiles.Length,
 
-                ModelFileSize = 10 // fileCount, FileSize, filename Size
+                ModelFileSize = 10, // fileCount, FileSize, filename Size
+
+                ModelFilenameSize = 0x104,
+                MaxFilenameLengthPlusSize = 0x108
             };
 
 
             for (int i=0; i < cubeFiles.Length; i++)
             {
-                cbld.ModelFileSize += maxFilenameLengthPlusSize;
+                cbld.ModelFileSize += cbld.MaxFilenameLengthPlusSize;
                 cbld.ModelFileNames.Add(cubeFiles[i]);
 
                 using (var inFile = File.OpenRead(cubeFolder + "\\" + cubeFiles[i]))
@@ -135,15 +136,15 @@ namespace CubeBuilder
             {
                 binaryWriter.Write(cbld.ModelFileCount);
                 binaryWriter.Write(cbld.ModelFileSize);
-                binaryWriter.Write(maxFilenameLengthPlusSize);
+                binaryWriter.Write(cbld.MaxFilenameLengthPlusSize);
                 foreach(String fname in cbld.ModelFileNames)
                 {
-                    Byte[] fnameData = new byte[modelFilenameSize];
+                    Byte[] fnameData = new byte[cbld.ModelFilenameSize];
                     Byte[] fnameBytes = Encoding.ASCII.GetBytes(fname);
-                    int fnameLength = modelFilenameSize <= fnameBytes.Length ? modelFilenameSize : fnameBytes.Length;
+                    int fnameLength = cbld.ModelFilenameSize <= fnameBytes.Length ? cbld.ModelFilenameSize : fnameBytes.Length;
                     Array.Copy(fnameBytes, fnameData, fnameLength);
                     binaryWriter.Write(cbld.ModelFiles[fname].Length);
-                    binaryWriter.Write(fnameData, 0, modelFilenameSize);
+                    binaryWriter.Write(fnameData, 0, cbld.ModelFilenameSize);
                     binaryWriter.Write(cbld.ModelFiles[fname]);
                 }
                 outFile.Close();
