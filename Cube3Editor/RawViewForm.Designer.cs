@@ -33,6 +33,7 @@
             this.button2 = new System.Windows.Forms.Button();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.fontDialog1 = new System.Windows.Forms.FontDialog();
+            this.btnApply = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // rtbRawView
@@ -64,11 +65,23 @@
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.Button2_Click);
             // 
+            // btnApply
+            // 
+            this.btnApply.Enabled = false;
+            this.btnApply.Location = new System.Drawing.Point(922, 13);
+            this.btnApply.Name = "btnApply";
+            this.btnApply.Size = new System.Drawing.Size(127, 23);
+            this.btnApply.TabIndex = 4;
+            this.btnApply.Text = "Apply Changes";
+            this.btnApply.UseVisualStyleBackColor = true;
+            this.btnApply.Click += new System.EventHandler(this.BtnApply_Click);
+            // 
             // FrmRawView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1067, 554);
+            this.Controls.Add(this.btnApply);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.rtbRawView);
@@ -80,10 +93,11 @@
         }
 
         #endregion
-        private System.Windows.Forms.RichTextBox rtbRawView;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.SaveFileDialog saveFileDialog1;
         private System.Windows.Forms.FontDialog fontDialog1;
+        public System.Windows.Forms.RichTextBox rtbRawView;
+        private System.Windows.Forms.Button btnApply;
     }
 }

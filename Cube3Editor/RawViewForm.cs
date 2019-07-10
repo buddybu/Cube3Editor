@@ -14,6 +14,7 @@ namespace Cube3Editor
     public partial class FrmRawView : Form
     {
         private bool isModified;
+        private bool applyChanges;
 
         public FrmRawView(List<string> bfbStringList)
         {
@@ -25,7 +26,13 @@ namespace Cube3Editor
             Font defaultFont = new Font(FontFamily.GenericMonospace, 14.0F, FontStyle.Regular, GraphicsUnit.Pixel);
             rtbRawView.Font = defaultFont;
 
+            applyChanges = false;
+            isModified = false;
+
         }
+
+        public bool IsModified { get => isModified; set => isModified = value; }
+        public bool ApplyChanges { get => applyChanges; set => applyChanges = value; }
 
         private void Button1_Click(object sender, EventArgs e)
         {
@@ -49,7 +56,15 @@ namespace Cube3Editor
 
         private void RtbRawView_TextChanged(object sender, EventArgs e)
         {
-            isModified = true;
+            IsModified = true;
+            btnApply.Enabled = true;
+            ApplyChanges = false;
+        }
+
+        private void BtnApply_Click(object sender, EventArgs e)
+        {
+            ApplyChanges = true;
+            btnApply.Enabled = false;
         }
     }
 }

@@ -181,43 +181,7 @@ namespace Cube3Editor
 
                             decodedModel = encoding.GetString(decodedBytes);
 
-                            bfbObject = new BitFromByte(encoding, decodedBytes);
-
-                            string[] seperator = { "\r\n" };
-                            string[] decodedModelArray = decodedModel.Split(seperator, StringSplitOptions.RemoveEmptyEntries);
-
-                            List<String> bfbStringList = decodedModelArray.ToList<string>();
-
-
-                            // populate all fields
-                            tbFirmware.Text = bfbObject.GetText(BFBConstants.FIRMWARE);
-
-
-                            tbMinFirmware.Text = bfbObject.GetText(BFBConstants.MINFIRMWARE);
-                            tbPrinterModel.Text = bfbObject.GetText(BFBConstants.PRINTERMODEL);
-                            cbLeftMaterial.Text = bfbObject.GetMaterialType(BFBConstants.MATERIALCODEE1);
-                            cbLeftColor.Text = bfbObject.GetMaterialColor(BFBConstants.MATERIALCODEE1);
-                            cbRightMaterial.Text = bfbObject.GetMaterialType(BFBConstants.MATERIALCODEE2);
-                            cbRightColor.Text = bfbObject.GetMaterialColor(BFBConstants.MATERIALCODEE2);
-                            cbCubeProMaterial.Text = bfbObject.GetMaterialType(BFBConstants.MATERIALCODEE3);
-                            cbCubeProColor.Text = bfbObject.GetMaterialColor(BFBConstants.MATERIALCODEE3);
-
-                            PopulateTemperatures(BFBConstants.LEFT_TEMP, gridLeftTemps);
-                            PopulateTemperatures(BFBConstants.RIGHT_TEMP, gridRightTemps);
-                            PopulateRetractionStarts();
-                            PopulateRetractionStops();
-                            PopulatePressures();
-
-                            // enable material fields
-                            tbFirmware.Enabled = true;
-                            tbMinFirmware.Enabled = true;
-                            tbPrinterModel.Enabled = true;
-                            cbRightMaterial.Enabled = true;
-                            cbRightColor.Enabled = true;
-                            cbLeftColor.Enabled = true;
-                            cbLeftMaterial.Enabled = true;
-                            cbCubeProColor.Enabled = true;
-                            cbCubeProMaterial.Enabled = true;
+                            ProcessAndLoadBFB(decodedBytes);
 
                             // clear modified flag
                             modified = false;
@@ -243,6 +207,48 @@ namespace Cube3Editor
         }
 
 
+        private void ProcessAndLoadBFB(Byte[] bfbBytes)
+        {
+            bfbObject = new BitFromByte(encoding, bfbBytes);
+
+            string[] seperator = { "\r\n" };
+            string[] decodedModelArray = decodedModel.Split(seperator, StringSplitOptions.RemoveEmptyEntries);
+
+            List<String> bfbStringList = decodedModelArray.ToList<string>();
+
+            ClearUI();
+
+            // populate all fields
+            tbFirmware.Text = bfbObject.GetText(BFBConstants.FIRMWARE);
+
+
+            tbMinFirmware.Text = bfbObject.GetText(BFBConstants.MINFIRMWARE);
+            tbPrinterModel.Text = bfbObject.GetText(BFBConstants.PRINTERMODEL);
+            cbLeftMaterial.Text = bfbObject.GetMaterialType(BFBConstants.MATERIALCODEE1);
+            cbLeftColor.Text = bfbObject.GetMaterialColor(BFBConstants.MATERIALCODEE1);
+            cbRightMaterial.Text = bfbObject.GetMaterialType(BFBConstants.MATERIALCODEE2);
+            cbRightColor.Text = bfbObject.GetMaterialColor(BFBConstants.MATERIALCODEE2);
+            cbCubeProMaterial.Text = bfbObject.GetMaterialType(BFBConstants.MATERIALCODEE3);
+            cbCubeProColor.Text = bfbObject.GetMaterialColor(BFBConstants.MATERIALCODEE3);
+
+            PopulateTemperatures(BFBConstants.LEFT_TEMP, gridLeftTemps);
+            PopulateTemperatures(BFBConstants.RIGHT_TEMP, gridRightTemps);
+            PopulateRetractionStarts();
+            PopulateRetractionStops();
+            PopulatePressures();
+
+            // enable material fields
+            tbFirmware.Enabled = true;
+            tbMinFirmware.Enabled = true;
+            tbPrinterModel.Enabled = true;
+            cbRightMaterial.Enabled = true;
+            cbRightColor.Enabled = true;
+            cbLeftColor.Enabled = true;
+            cbLeftMaterial.Enabled = true;
+            cbCubeProColor.Enabled = true;
+            cbCubeProMaterial.Enabled = true;
+
+        }
         private bool RawCubeFile()
         {
             bool raw = true;
@@ -752,6 +758,13 @@ namespace Cube3Editor
                 FrmRawView rawViewForm = new FrmRawView(bfbObject.BfbLines);
                 // display bfb data in a text box.  no editing allowed.
                 rawViewForm.ShowDialog();
+
+                if (rawViewForm.ApplyChanges)
+                {
+                    string rawBFBText = rawViewForm.rtbRawView.Text;
+
+                    ProcessAndLoadBFB(encoding.GetBytes(rawBFBText));
+                }
             }
             else
             {
