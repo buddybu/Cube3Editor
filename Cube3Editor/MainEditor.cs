@@ -346,7 +346,7 @@ namespace Cube3Editor
 
         private Byte[] EncodeBFB()
         {
-            Byte[] newDataModel = bfbObject.getBytesFromBFB();
+            Byte[] newDataModel = bfbObject.GetBytesFromBFB();
             PaddedBufferedBlockCipher cipher;
             ZeroBytePadding padding = new ZeroBytePadding();
             cipher = new PaddedBufferedBlockCipher(engine, padding);
@@ -404,13 +404,15 @@ namespace Cube3Editor
             ext3Recycled.Value = "0";
 
             var supports = build.Element("supports");
+            supports.Value = bfbObject.GetSUPPORTS();
             var sidewalk = build.Element("sidewalk");
+            sidewalk.Value = bfbObject.GetSIDEWALKS();
 
             StringBuilder sb = new StringBuilder();
             TextWriter tr = new StringWriter(sb);
             xDoc.Save(tr);
             String newXml = sb.ToString();
-            newXMLBytes = encoding.GetBytes(sb.ToString()) ;
+            newXMLBytes = encoding.GetBytes(sb.ToString());
             return newXMLBytes;
         }
 
@@ -467,7 +469,8 @@ namespace Cube3Editor
                             binaryWriter.Write(fnameData, 0, extractor.ModelFilenameSize);
                             binaryWriter.Write(updatedXMLBytes);
                             lengthWritten += updatedXMLBytes.Length;
-                        } else if (fname.ToUpper().EndsWith("CUBE3", StringComparison.CurrentCulture))
+                        }
+                        else if (fname.ToUpper().EndsWith("CUBE3", StringComparison.CurrentCulture))
                         {
                             binaryWriter.Write(encodedBFB.Length);
                             binaryWriter.Write(fnameData, 0, extractor.ModelFilenameSize);
@@ -844,44 +847,59 @@ namespace Cube3Editor
             int.TryParse(newMCE3, out cubeCode);
             bfbObject.SetMATERIALCODE(BFBConstants.MATERIALCODEE3, cubeCode);
 
+            Dictionary<int, int> leftTempDict = new Dictionary<int, int>();
+            Dictionary<int, int> rightTempDict = new Dictionary<int, int>();
+            //Dictionary<int, int> midTempDict = new Dictionary<int, int>();
+
             // process temperatures
+            for (int i = 1; i < gridLeftTemps.Rows.Count; i++)
+            {
+                leftTempDict.Add((int)gridLeftTemps[i, 0].Value, i);
+            }
+            for (int i = 1; i < gridRightTemps.Rows.Count; i++)
+            {
+                rightTempDict.Add((int)gridRightTemps[i, 0].Value, i);
+            }
+            //for (int i = 1; i < gridMidTemps.Rows.Count; i++)
+            //{
+            //    midTempDict.Add((int)gridMidTemps[i, 0].Value, i);
+            //}
+
             foreach (TemperatureModifier tempMod in tempMods)
             {
+                int i;
                 if (tempMod.extruder.Equals(BFBConstants.LEFT_TEMP))
                 {
-                    for (int i = 1; i < gridLeftTemps.Rows.Count; i++)
+                    if (leftTempDict.Keys.Contains(tempMod.oldValue))
                     {
-                        if ((int)gridLeftTemps[i, 0].Value == tempMod.oldValue)
-                        {
-                            // set row to replace and replace value to newvalue
-                            gridLeftTemps[i, 2].Value = tempMod.newValue;
-                            gridLeftTemps[i, 3].Value = "Replace";
-                        }
+                        i = leftTempDict[tempMod.oldValue];
+
+                        // set row to replace and replace value to newvalue
+                        gridLeftTemps[i, 2].Value = tempMod.newValue;
+                        gridLeftTemps[i, 3].Value = "Replace";
                     }
                 }
                 else if (tempMod.extruder.Equals(BFBConstants.RIGHT_TEMP))
                 {
-                    for (int i = 1; i < gridRightTemps.Rows.Count; i++)
+                    if (rightTempDict.Keys.Contains(tempMod.oldValue))
                     {
-                        if ((int)gridRightTemps[i, 0].Value == tempMod.oldValue)
-                        {
-                            // set row to replace and replace value to newvalue
-                            gridRightTemps[i, 2].Value = tempMod.newValue;
-                            gridRightTemps[i, 3].Value = "Replace";
-                        }
+                        i = rightTempDict[tempMod.oldValue];
+
+                        // set row to replace and replace value to newvalue
+                        gridRightTemps[i, 2].Value = tempMod.newValue;
+                        gridRightTemps[i, 3].Value = "Replace";
                     }
                 }
                 else if (tempMod.extruder.Equals(BFBConstants.MID_TEMP))
                 {
                     /* TODO: Update when I have MIDTEMP working....
-                    for (int i = 1; i < gridMidTemps.Rows.Count; i++)
+                    if (midTempDict.Keys.Contains(tempMod.oldValue))
                     {
-                        if ((int)gridMidTemps[i, 0].Value == tempMod.oldValue)
-                        {
-                            // set row to replace and replace value to newvalue
-                            gridMidTemps[i, 2].Value = tempMod.newValue;
-                            gridMidTemps[i, 3].Value = "Replace";
-                        }
+                        i = midTempDict[tempMod.oldValue];
+
+                        // set row to replace and replace value to newvalue
+                        gridMidTemps[i, 2].Value = tempMod.newValue;
+                        gridMidTemps[i, 3].Value = "Replace";
                     }
                     */
                 }
@@ -894,46 +912,59 @@ namespace Cube3Editor
             //UpdateTemperatures(gridMidTemps);
 
             // process retract start
-            foreach (RetractModifier retractMod in retractStartMods)
+            Dictionary<int, int> retractStartDict = new Dictionary<int, int>();
+            for (int i = 1; i < gridRetractionStart.Rows.Count; i++)
             {
-                for (int i = 1; i < gridRetractionStart.Rows.Count; i++)
+                if (gridRetractionStart[i, 0].Value == gridRetractionStart[i, 1].Value)
                 {
-                    if ((int)gridRetractionStart[i, 0].Value == retractMod.oldRetractValue &&
-                        (int)gridRetractionStart[i, 1].Value == retractMod.oldRetractValue)
-                    {
-                        // set row to replace and replace value to newvalue
-                        gridRetractionStart[i, 0].Value = retractMod.newRetractValue;
-                        gridRetractionStart[i, 1].Value = retractMod.newRetractValue;
-                    }
+                    retractStartDict.Add((int)gridRetractionStop[i, 1].Value, i);
                 }
             }
+
+            foreach (RetractModifier retractMod in retractStartMods)
+            {
+                if (retractStartDict.Keys.Contains(retractMod.oldRetractValue))
+                {
+                    int i = retractStartDict[retractMod.oldRetractValue];
+                    gridRetractionStart[i, 0].Value = retractMod.newRetractValue;
+                    gridRetractionStart[i, 1].Value = retractMod.newRetractValue;
+                }
+            }
+
             UpdateStartRetractions(gridRetractionStart);
 
             // process retract stop
+            Dictionary<int, int> retractStopDict = new Dictionary<int, int>();
+            for (int i = 1; i < gridRetractionStop.Rows.Count; i++)
+            {
+                retractStopDict.Add((int)gridRetractionStop[i, 1].Value, i);
+            }
+
             foreach (RetractModifier retractMod in retractStopMods)
             {
-                for (int i = 1; i < gridRetractionStop.Rows.Count; i++)
+                if (retractStopDict.Keys.Contains(retractMod.oldRetractValue))
                 {
-                    if ((int)gridRetractionStop[i, 1].Value == retractMod.oldRetractValue)
-                    {
-                        // set row to replace and replace value to newvalue
-                        gridRetractionStop[i, 1].Value = retractMod.newRetractValue;
-                    }
+                    int i = retractStopDict[retractMod.oldRetractValue];
+                    gridRetractionStop[i, 1].Value = retractMod.newRetractValue;
                 }
             }
             UpdateStopRetractions(gridRetractionStop);
 
-            // process retract stop
+            // process pressures
+            Dictionary<double, int> pressureDict = new Dictionary<double, int>();
+            for (int i = 1; i < gridPressure.Rows.Count; i++)
+            {
+                pressureDict.Add((double)gridPressure[i, 0].Value, i);
+            }
+
             foreach (PressureModifier pressureMod in pressureMods)
             {
-                for (int i = 1; i < gridPressure.Rows.Count; i++)
+                if (pressureDict.Keys.Contains(pressureMod.oldPressureValue))
                 {
-                    Double currentPressure = (Double)gridPressure[i, 0].Value;
-                    if (0 == pressureMod.oldPressureValue.CompareTo(currentPressure))
-                    {
-                        // set row to replace and replace value to newvalue
-                        gridPressure[i, 0].Value = pressureMod.newPressureValue;
-                    }
+                    int i = pressureDict[pressureMod.oldPressureValue];
+
+                    // set row to replace and replace value to newvalue
+                    gridPressure[i, 0].Value = (double)pressureMod.newPressureValue;
                 }
             }
             UpdatePressures();
