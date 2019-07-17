@@ -20,7 +20,7 @@ namespace Cube3Editor
                 Double pressure = bfbObject.PressureDictionary[index];
 
                 gridPressure.Rows.Insert(gridRow);
-                gridPressure[gridRow, 0] = new SourceGrid.Cells.Cell(pressure, typeof(Double));
+                gridPressure[gridRow, 0] = new SourceGrid.Cells.Cell(pressure, typeof(double));
                 gridPressure[gridRow, 0].AddController(valueChangedController);
                 gridPressure[gridRow, 1] = new SourceGrid.Cells.Cell(index, pressureEditor);
 

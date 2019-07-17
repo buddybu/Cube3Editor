@@ -91,7 +91,7 @@ namespace BitForByteSupport
             }
         }
 
-        public byte[] getBytesFromBFB()
+        public byte[] GetBytesFromBFB()
         {
             string bfbString = string.Join("\r\n", BfbLines);
 
@@ -225,6 +225,23 @@ namespace BitForByteSupport
             }
         }
 
+        public void SetSIDEWALKS(string newSidewalk)
+        {
+            int index = BfbLines.FindIndex(x => x.Contains(BFBConstants.SIDEWALKS));
+            if (0 <= index && index < BfbLines.Count)
+            {
+                string[] sidewalkStrArr = BfbLines[index].Split(':');
+                BfbLines[index] = string.Join(":", sidewalkStrArr[0], newSidewalk);
+            }
+
+            // ^Sidewalks: entry not present, need to add as first entry
+            else
+            {
+                string sidewalksCmd = BFBConstants.SIDEWALKS + newSidewalk;
+                BfbLines.Insert(0, sidewalksCmd);
+            }
+        }
+
         public int GetMATERIALCODE(string materialCode)
         {
             int index = BfbLines.FindIndex(x => x.Contains(materialCode));
@@ -237,6 +254,34 @@ namespace BitForByteSupport
             }
 
             return code;
+        }
+
+        public string GetSIDEWALKS()
+        {
+            int index = BfbLines.FindIndex(x => x.Contains(BFBConstants.SIDEWALKS));
+            string sidewalk = null;
+
+            if (0 <= index && index <= bfbStringList.Count)
+            {
+                string[] sidewalksStrArr = BfbLines[index].Split(':');
+                sidewalk = sidewalksStrArr[1];
+            }
+
+            return sidewalk;
+        }
+
+        public string GetSUPPORTS()
+        {
+            int index = BfbLines.FindIndex(x => x.Contains(BFBConstants.SUPPORTS));
+            string supports = null;
+
+            if (0 <= index && index <= bfbStringList.Count)
+            {
+                string[] supportsStrArr = BfbLines[index].Split(':');
+                supports = supportsStrArr[1];
+            }
+
+            return supports;
         }
 
         public List<string> getExtruderPressures(string bfbPressureCode)
@@ -473,31 +518,33 @@ namespace BitForByteSupport
 
         public void updatePressureLines(int index, string pressureCmd)
         {
-            List<int> pressureLines = PressureLineList[bfbStringList[index]];
-
-            List<int> newRetractLines = new List<int>();
-
-            PressureLineList.Remove(bfbStringList[index]);
-
-
-            foreach (int line in pressureLines)
+            if (PressureLineList.Keys.Contains(bfbStringList[index]))
             {
-                bfbStringList[line] = pressureCmd;
+                List<int> pressureLines = PressureLineList[bfbStringList[index]];
+                PressureLineList.Remove(bfbStringList[index]);
 
-                if (!PressureLineList.Keys.Contains(pressureCmd))
-                {
-                    PressureLineList.Add(pressureCmd, pressureLines);
-                }
+                List<int> newRetractLines = new List<int>();
 
-                if (PressureDictionary.Keys.Contains(line))
+                foreach (int line in pressureLines)
                 {
-                    PressureDictionary[line] = GetPressureFromString(pressureCmd);
-                }
-                else
-                {
-                    PressureDictionary.Add(line, GetPressureFromString(pressureCmd));
+                    bfbStringList[line] = pressureCmd;
+
+                    if (!PressureLineList.Keys.Contains(pressureCmd))
+                    {
+                        PressureLineList.Add(pressureCmd, pressureLines);
+                    }
+
+                    if (PressureDictionary.Keys.Contains(line))
+                    {
+                        PressureDictionary[line] = GetPressureFromString(pressureCmd);
+                    }
+                    else
+                    {
+                        PressureDictionary.Add(line, GetPressureFromString(pressureCmd));
+                    }
                 }
             }
+
         }
 
         public void updateRetractionStartLines(int index, string retractCmd)
