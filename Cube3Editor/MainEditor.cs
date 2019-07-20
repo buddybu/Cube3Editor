@@ -89,6 +89,11 @@ namespace Cube3Editor
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
                     ClearUI();
+
+                    char[] seperator = { ' ', '-', ' ' };
+                    string title = Text.Split(seperator)[0];
+                    Text = title;
+
                     LoadFile(openFileDialog.FileName);
                     fileName = openFileDialog.FileName;
                 }
@@ -110,16 +115,16 @@ namespace Cube3Editor
             SaveFile();
         }
 
-        private void LoadFile(String FileName)
+        private void LoadFile(String filename)
         {
             PaddedBufferedBlockCipher cipher;
-            if (FileName != null || FileName.Length > 0)
+            if (filename != null || filename.Length > 0)
             {
                 ClearUI();
                 try
                 {
 
-                    using (inFile = File.OpenRead(FileName))
+                    using (inFile = File.OpenRead(filename))
                     using (var binaryReader = new BinaryReader(inFile))
                     {
                         inputCube3File = binaryReader.ReadBytes((int)binaryReader.BaseStream.Length);
@@ -177,7 +182,7 @@ namespace Cube3Editor
                             if (decodedLength % 8 == 0)
                                 cipher.DoFinal(decodedBytes, decodedLength);
 
-                            Text = Text + " - " + openFileDialog.FileName;
+                            Text = Text + " - " + filename;
 
                             decodedModel = encoding.GetString(decodedBytes);
 
@@ -292,9 +297,6 @@ namespace Cube3Editor
 
             cubeScript = new CubeScript();
 
-            char[] seperator = { ' ', '-', ' ' };
-            string title = Text.Split(seperator)[0];
-            Text = title;
         }
 
         private void closeToolStripMenuItem_Click(object sender, EventArgs e)
@@ -427,76 +429,110 @@ namespace Cube3Editor
 
             Byte[] encodedBFB = EncodeBFB();
 
-            FileBackup.MakeBackup(filename, 5);
+            var newPath = Path.GetDirectoryName(filename);
+            var newFileName = Path.GetFileNameWithoutExtension(filename);
+            var newExtension = Path.GetExtension(filename);
 
-            File.Delete(filename);
-
-            using (outFile = File.OpenWrite(filename))
-            using (var binaryWriter = new BinaryWriter(outFile))
+            if (!newFileName.EndsWith("_MOD", StringComparison.CurrentCultureIgnoreCase))
             {
-                if (extractor == null)
-                {
-                    binaryWriter.Write(encodedBFB);
-
-                    // close the original file
-                    // rename original file to .cube3.1 or .2 or .3 (etc)
-                    // encode the BFB using blowfish encryption
-                    // save the encrypted data to .cube3 
-                }
-                else
-                {
-                    extractor.ModelFileSize = 10;
-
-                    Byte[] updatedXMLBytes = ProcessXML(extractor.ModelFiles[extractor.GetXMLFilename()], encodedBFB);
-
-
-                    binaryWriter.Write(extractor.ModelFileCount);
-                    binaryWriter.Write(extractor.ModelFileSize);
-                    binaryWriter.Write(extractor.MaxFilenameLengthPlusSize);
-                    foreach (String fname in extractor.ModelFileNames)
-                    {
-                        int lengthWritten = extractor.MaxFilenameLengthPlusSize;
-
-                        Byte[] fnameData = new byte[extractor.ModelFilenameSize];
-                        Byte[] fnameBytes = Encoding.ASCII.GetBytes(fname);
-                        int fnameLength = extractor.ModelFilenameSize <= fnameBytes.Length ? extractor.ModelFilenameSize : fnameBytes.Length;
-                        Array.Copy(fnameBytes, fnameData, fnameLength);
-
-
-                        if (fname.ToUpper().EndsWith("XML", StringComparison.CurrentCulture))
-                        {
-                            binaryWriter.Write(updatedXMLBytes.Length);
-                            binaryWriter.Write(fnameData, 0, extractor.ModelFilenameSize);
-                            binaryWriter.Write(updatedXMLBytes);
-                            lengthWritten += updatedXMLBytes.Length;
-                        }
-                        else if (fname.ToUpper().EndsWith("CUBE3", StringComparison.CurrentCulture))
-                        {
-                            binaryWriter.Write(encodedBFB.Length);
-                            binaryWriter.Write(fnameData, 0, extractor.ModelFilenameSize);
-                            binaryWriter.Write(encodedBFB);
-                            lengthWritten += encodedBFB.Length;
-                        }
-                        else
-                        {
-                            binaryWriter.Write(extractor.ModelFiles[fname].Length);
-                            binaryWriter.Write(fnameData, 0, extractor.ModelFilenameSize);
-                            binaryWriter.Write(extractor.ModelFiles[fname]);
-                            lengthWritten += extractor.ModelFiles[fname].Length;
-
-                        }
-                        extractor.ModelFileSize += lengthWritten;
-                        lengthWritten = 0;
-                    }
-
-
-                    binaryWriter.Seek(4, SeekOrigin.Begin);
-                    binaryWriter.Write(extractor.ModelFileSize);
-
-
-                }
-                outFile.Close();
+                newFileName = newPath + "\\" + newFileName + "_MOD" + newExtension;
             }
+            else
+            {
+                newFileName = filename;
+            }
+
+            FileBackup.MakeBackup(newFileName, 5);
+
+            try
+            {
+                File.Delete(newFileName);
+
+                using (outFile = File.OpenWrite(newFileName))
+                using (var binaryWriter = new BinaryWriter(outFile))
+                {
+                    if (extractor == null)
+                    {
+                        binaryWriter.Write(encodedBFB);
+
+                        // close the original file
+                        // rename original file to .cube3.1 or .2 or .3 (etc)
+                        // encode the BFB using blowfish encryption
+                        // save the encrypted data to .cube3 
+                    }
+                    else
+                    {
+                        extractor.ModelFileSize = 10;
+
+                        Byte[] updatedXMLBytes = ProcessXML(extractor.ModelFiles[extractor.GetXMLFilename()], encodedBFB);
+
+
+                        binaryWriter.Write(extractor.ModelFileCount);
+                        binaryWriter.Write(extractor.ModelFileSize);
+                        binaryWriter.Write(extractor.MaxFilenameLengthPlusSize);
+                        foreach (String fname in extractor.ModelFileNames)
+                        {
+                            int lengthWritten = extractor.MaxFilenameLengthPlusSize;
+
+                            Byte[] fnameData = new byte[extractor.ModelFilenameSize];
+                            Byte[] fnameBytes = Encoding.ASCII.GetBytes(fname);
+                            int fnameLength = extractor.ModelFilenameSize <= fnameBytes.Length ? extractor.ModelFilenameSize : fnameBytes.Length;
+                            Array.Copy(fnameBytes, fnameData, fnameLength);
+
+
+                            if (fname.ToUpper().EndsWith("XML", StringComparison.CurrentCulture))
+                            {
+                                binaryWriter.Write(updatedXMLBytes.Length);
+                                binaryWriter.Write(fnameData, 0, extractor.ModelFilenameSize);
+                                binaryWriter.Write(updatedXMLBytes);
+                                lengthWritten += updatedXMLBytes.Length;
+                            }
+                            else if (fname.ToUpper().EndsWith("CUBE3", StringComparison.CurrentCulture))
+                            {
+                                binaryWriter.Write(encodedBFB.Length);
+                                binaryWriter.Write(fnameData, 0, extractor.ModelFilenameSize);
+                                binaryWriter.Write(encodedBFB);
+                                lengthWritten += encodedBFB.Length;
+                            }
+                            else
+                            {
+                                binaryWriter.Write(extractor.ModelFiles[fname].Length);
+                                binaryWriter.Write(fnameData, 0, extractor.ModelFilenameSize);
+                                binaryWriter.Write(extractor.ModelFiles[fname]);
+                                lengthWritten += extractor.ModelFiles[fname].Length;
+
+                            }
+                            extractor.ModelFileSize += lengthWritten;
+                            lengthWritten = 0;
+                        }
+
+
+                        binaryWriter.Seek(4, SeekOrigin.Begin);
+                        binaryWriter.Write(extractor.ModelFileSize);
+
+
+                    }
+                    outFile.Close();
+
+                    fileName = newFileName;
+
+                    char[] seperator = { ' ', '-', ' ' };
+                    Text = Text.Split(seperator, StringSplitOptions.RemoveEmptyEntries)[0] + " - " + newFileName;
+                }
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Unable to save file.  Check permissions and/or attributes");
+                try
+                {
+                    FileBackup.DeleteLastBackup(newFileName);
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show("Unable to remove backup file.  Check permissions and/or attributes");
+                }
+            }
+
         }
 
 
