@@ -37,7 +37,24 @@ namespace Cube3Editor
             if (saveFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK) //Check if it's all ok  
             {
                 string name = Path.GetFileNameWithoutExtension(saveFileDialog1.FileName) + ".cubescr"; //Just to make sure the extension is .txt  
-                File.WriteAllText(name, rtbScript.Text); //Writes the text to the file and saves it               
+
+                char[] seperator = { '\r', '\n' };
+                string[] tbLines = rtbScript.Text.Split(seperator, StringSplitOptions.RemoveEmptyEntries);
+                try
+                {
+                    using (var outFile = File.OpenWrite(name))
+                    using (var bfbWriter = new StreamWriter(outFile))
+                    {
+                        foreach (string line in tbLines)
+                        {
+                            bfbWriter.WriteLine(line);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Unable to write to file '{name}'");
+                }
             }
 
         }
