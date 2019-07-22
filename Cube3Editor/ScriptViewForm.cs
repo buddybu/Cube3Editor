@@ -51,7 +51,7 @@ namespace Cube3Editor
                         }
                     }
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     MessageBox.Show($"Unable to write to file '{name}'");
                 }

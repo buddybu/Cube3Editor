@@ -92,7 +92,7 @@ namespace BitForByteSupport
 
             foreach (int temp in UniqueLeftTemps)
             {
-                if (temp > 0)
+                if (temp >= 0)
                 {
                     PrintModifyTempLine("LEFT", temp);
                 }
@@ -100,7 +100,7 @@ namespace BitForByteSupport
 
             foreach (int temp in UniqueRightTemps)
             {
-                if (temp > 0)
+                if (temp >= 0)
                 {
                     PrintModifyTempLine("RIGHT", temp);
                 }
@@ -108,7 +108,7 @@ namespace BitForByteSupport
 
             foreach (int temp in UniqueMidTemps)
             {
-                if (temp > 0)
+                if (temp >= 0)
                 {
                     PrintModifyTempLine("MID", temp);
                 }

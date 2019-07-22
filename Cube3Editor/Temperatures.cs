@@ -46,9 +46,9 @@ namespace Cube3Editor
                 gridTemps.Rows.Insert(gridRow);
                 gridTemps[gridRow, 0] = new SourceGrid.Cells.Cell(temp, tempCountEditor);
                 gridTemps[gridRow, 1] = new SourceGrid.Cells.Cell(tempDict[temp], tempCountEditor);
-                gridTemps[gridRow, 2] = new SourceGrid.Cells.Cell(0, typeof(int));
+                gridTemps[gridRow, 2] = new SourceGrid.Cells.Cell(null, typeof(int));
                 gridTemps[gridRow, 2].AddController(valueChangedController);
-                gridTemps[gridRow, 3] = new SourceGrid.Cells.Cell("Percentage", tempModEditor);
+                gridTemps[gridRow, 3] = new SourceGrid.Cells.Cell("Replace", tempModEditor);
                 gridTemps[gridRow, 3].View = SourceGrid.Cells.Views.ComboBox.Default;
                 gridTemps[gridRow, 3].AddController(valueChangedController);
                 gridTemps[gridRow, 4] = new SourceGrid.Cells.Cell(0, tempCountEditor);
@@ -58,19 +58,25 @@ namespace Cube3Editor
             }
         }
 
-        internal void UpdateTemperatures(Grid gridTemps)
+        internal void UpdateTemperaturesInGrid(Grid gridTemps)
         {
             for (int i = 1; i < gridTemps.Rows.Count; i++)
             {
-                if ((int)gridTemps[i, 2].Value != 0)
+                if (gridTemps[i, 2].Value != null)
                 {
-                    gridTemps[i, 0].Value = gridTemps[i, 4].Value;
+                    int newTemp = (int)gridTemps[i, 4].Value;
+                    if (newTemp > 0 || (newTemp <= 0 && Prefs.AllowZeroTemperatures))
+                    {
+                        gridTemps[i, 0].Value = gridTemps[i, 4].Value;
+                    }
+
                     gridTemps[i, 4].Value = 0;
+                    gridTemps[i, 2].Value = null;
                 }
             }
         }
 
-        internal void UpdateTemperatures(string tempCmd, Grid gridTemps)
+        internal void UpdateTemperaturesInBFB(string tempCmd, Grid gridTemps)
         {
 
             int oldTemp;
@@ -78,20 +84,22 @@ namespace Cube3Editor
 
             for (int i = 1; i < gridTemps.Rows.Count; i++)
             {
-                if ((int)gridTemps[i, 2].Value != 0)
+                if (gridTemps[i, 2].Value != null)
                 {
-
                     oldTemp = (int)gridTemps[i, 0].Value;
                     newTemp = (int)gridTemps[i, 4].Value;
 
                     if (oldTemp != newTemp)
                     {
-                        bfbObject.UpdateTemperatureLines(tempCmd, oldTemp, newTemp);
+                        if (newTemp > 0 || (newTemp <= 0 && Prefs.AllowZeroTemperatures))
+                        {
+                            bfbObject.UpdateTemperatureLines(tempCmd, oldTemp, newTemp);
+                        }
                     }
                 }
             }
 
-            UpdateTemperatures(gridTemps);
+            UpdateTemperaturesInGrid(gridTemps);
 
         }
 
@@ -102,39 +110,45 @@ namespace Cube3Editor
             {
                 for (int i = 1; i < gridTemps.Rows.Count; i++)
                 {
-                    int currentTemp = (int)gridTemps[i, 0].Value;
-                    int newTemp = 0;
-
-                    if (gridTemps[i, 3].Value.Equals("Percentage"))
+                    if (gridTemps[i, 2].Value != null)
                     {
-                        int percentage = (int)(gridTemps[i, 2].Value);
-                        if (currentTemp > 0 && (0 < percentage))
+                        int currentTemp = (int)gridTemps[i, 0].Value;
+                        int newTemp = 0;
+
+                        if (gridTemps[i, 3].Value.Equals("Percentage"))
                         {
-                            newTemp = Convert.ToInt32((percentage / 100) * currentTemp);
+                            int percentage = (int)(gridTemps[i, 2].Value);
+                            if (currentTemp >= 0 && (0 < percentage))
+                            {
+                                newTemp = Convert.ToInt32((percentage / 100) * currentTemp);
+                            }
                         }
-                    }
-                    else if (gridTemps[i, 3].Value.Equals("Additive"))
-                    {
-                        int additive = (int)(gridTemps[i, 2].Value);
-                        newTemp = currentTemp + additive;
-                    }
-                    else if (gridTemps[i, 3].Value.Equals("Replace"))
-                    {
-                        int replace = (int)(gridTemps[i, 2].Value);
-                        newTemp = replace;
-                    }
-                    else
-                    {
-                        newTemp = currentTemp;
-                    }
+                        else if (gridTemps[i, 3].Value.Equals("Additive"))
+                        {
+                            int additive = (int)(gridTemps[i, 2].Value);
+                            newTemp = currentTemp + additive;
+                        }
+                        else if (gridTemps[i, 3].Value.Equals("Replace"))
+                        {
+                            int replace = (int)(gridTemps[i, 2].Value);
+                            newTemp = replace;
+                        }
+                        else
+                        {
+                            newTemp = currentTemp;
+                        }
 
-                    if (newTemp < 0)
-                        newTemp = 0;
+                        if (prefs.AllowZeroTemperatures && newTemp <= 0)
+                        {
+                            if (newTemp < 0)
+                                newTemp = 0;
+                        }
 
-                    if (newTemp > 265)
-                        newTemp = 265;
+                        if (newTemp > Prefs.MaxTemperatureValue)
+                            newTemp = Prefs.MaxTemperatureValue;
 
-                    gridTemps[i, 4].Value = newTemp;
+                        gridTemps[i, 4].Value = newTemp;
+                    }
                 }
             }
         }

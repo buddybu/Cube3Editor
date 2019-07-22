@@ -73,6 +73,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BCEngine.cs" />
+    <Compile Include="Preferences.cs" />
+    <Compile Include="PreferencesDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PreferencesDialog.Designer.cs">
+      <DependentUpon>PreferencesDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="ScriptViewForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -107,6 +114,9 @@
     <Compile Include="RetractionStartChangedEvent.cs" />
     <Compile Include="TemperatureChangedEvent.cs" />
     <Compile Include="TemperatureType.cs" />
+    <EmbeddedResource Include="PreferencesDialog.resx">
+      <DependentUpon>PreferencesDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="RawViewForm.resx">
       <DependentUpon>RawViewForm.cs</DependentUpon>
     </EmbeddedResource>

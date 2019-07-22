@@ -2,9 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using static Cube3Editor.MainEditor;
 using static Cube3Editor.TemperatureType;
 
 namespace Cube3Editor
@@ -27,13 +25,41 @@ namespace Cube3Editor
         static extern bool AttachConsole(int dwProcessId);
         private const int ATTACH_PARENT_PROCESS = -1;
 
-        //static void Main(string[] args)
-        //{
-        //    System.Console.WriteLine($"args = {args}");
-        //    System.Console.Error.WriteLine($"args = {args}");
-        //    Main2(args);
-        //}
+        static string Usage()
+        {
+            string usage = "cube3editor <options> cubefile [scriptfile]" + Environment.NewLine +
+                Environment.NewLine + "Options:" + Environment.NewLine +
+                "-pr:[on|off] preserve original cube file On or Off.If not specified, " + Environment.NewLine +
+                "             will use last saved preference from UI" + Environment.NewLine +
+                "-b:n         create backups of n > 0 (-b:5). Disable if n is 0 (-b:0)." + Environment.NewLine +
+                "             If not specified, will use last saved preference from UI." + Environment.NewLine +
+                "-z:[on|off]  enable zero temperatures On or Off.If not specified, " + Environment.NewLine +
+                "             will use last save preferenced from UI." + Environment.NewLine +
+                "-mt:n        sets maximum temperature to n. If not specified, will use" + Environment.NewLine +
+                "             last saved preference from UI." + Environment.NewLine +
+                "-mc:[on|off] enables(on) or disables(off) minimizing the cube3 file " + Environment.NewLine +
+                "             size. If not specified, will use last saved preference " + Environment.NewLine +
+                "             from UI";
+            return usage;
+        }
 
+
+        /*
+         * -pr:[on|off] preserve original cube file On or Off. If not specified, will use last saved preference from UI
+         * -b:n         create backups of n > 0 (-b:5). Disable if n is 0 (-b:0). If not specified, will use last saved preference from UI.
+         * -z:[on|off]  enable zero temperatures On or Off. If not specified, will use last save preferenced from UI.
+         * -mt:n        sets maximum temperature to n. If not specified, will use last saved preference from UI.
+         * -mc:[on|off] enables(on) or disables(off) minimizing the cube3 file size. If not specified, will use last saved preference from UI
+         */
+
+        static void BadParameter(string arg)
+        {
+            MessageBox.Show($"Invalid command line option '{arg}'" +
+                Environment.NewLine +
+                Environment.NewLine +
+                Usage());
+            Environment.Exit(-1);
+        }
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
@@ -41,20 +67,143 @@ namespace Cube3Editor
         static void Main(string[] args)
         {
 
-
-
             string cubeFile = null;
             string scriptFile = null;
 
             if (args.Length > 0)
             {
-                cubeFile = args[0];
-                if (args.Length > 1)
+                Preferences prefs = new Preferences();
+
+                // process commmand line options
+                foreach (string arg in args)
                 {
-                    scriptFile = args[1];
+                    if (arg.ToLower().Trim().Equals("-help", StringComparison.CurrentCultureIgnoreCase))
+                    {
+                        MessageBox.Show(Usage());
+                        Environment.Exit(1);
+                    }
+
+                    if (arg.StartsWith("-", StringComparison.CurrentCultureIgnoreCase))
+                    {
+                        char[] separators = { ':' };
+                        string[] argArr = arg.Split(separators, StringSplitOptions.RemoveEmptyEntries);
+                        if (argArr.Length < 2)
+                        {
+                            BadParameter(arg);
+                        }
+                        if (arg.StartsWith("-b:", StringComparison.CurrentCultureIgnoreCase))
+                        {
+                            int backupCount = 0;
+                            try
+                            {
+                                backupCount = Convert.ToInt32(argArr[1]);
+                                if (backupCount > 0)
+                                {
+                                    prefs.CreateBackupFiles = true;
+                                    prefs.MaxNumberBackupFiles = backupCount;
+                                }
+                                else if (backupCount == 0)
+                                {
+                                    prefs.CreateBackupFiles = false;
+                                }
+                                else
+                                {
+                                    BadParameter(arg);
+                                }
+                            }
+                            catch (Exception)
+                            {
+                                BadParameter(arg);
+                            }
+                        }
+                        else if (arg.StartsWith("-mc:", StringComparison.CurrentCultureIgnoreCase))
+                        {
+                            if (argArr[1].Trim().ToUpper().Equals("ON"))
+                            {
+                                prefs.MinimizeCube3Size = true;
+                            }
+                            else if (argArr[1].Trim().ToUpper().Equals("OFF"))
+                            {
+                                prefs.MinimizeCube3Size = false;
+                            }
+                            else
+                            {
+                                BadParameter(arg);
+                            }
+                        }
+                        else if (arg.StartsWith("-mt:", StringComparison.CurrentCultureIgnoreCase))
+                        {
+                            int maxTemperature = 0;
+                            try
+                            {
+                                maxTemperature = Convert.ToInt32(argArr[1]);
+                                if (maxTemperature >= 0 && maxTemperature <= 300)
+                                {
+                                    prefs.MaxTemperatureValue = maxTemperature;
+                                }
+                                else
+                                {
+                                    BadParameter(arg);
+                                }
+                            }
+                            catch (Exception)
+                            {
+                                BadParameter(arg);
+                            }
+                        }
+                        else if (arg.StartsWith("-pr:", StringComparison.CurrentCultureIgnoreCase))
+                        {
+                            if (argArr[1].Trim().ToUpper().Equals("ON"))
+                            {
+                                prefs.PreserveOriginalCube3 = true;
+                            }
+                            else if (argArr[1].Trim().ToUpper().Equals("OFF"))
+                            {
+                                prefs.PreserveOriginalCube3 = false;
+                            }
+                            else
+                            {
+                                BadParameter(arg);
+                            }
+                        }
+                        else if (arg.StartsWith("-z:", StringComparison.CurrentCultureIgnoreCase))
+                        {
+                            if (argArr[1].Trim().ToUpper().Equals("ON"))
+                            {
+                                prefs.AllowZeroTemperatures = true;
+                            }
+                            else if (argArr[1].Trim().ToUpper().Equals("OFF"))
+                            {
+                                prefs.AllowZeroTemperatures = false;
+                            }
+                            else
+                            {
+                                BadParameter(arg);
+                            }
+
+                        }
+                        else
+                        {
+                            BadParameter(arg);
+                        }
+                    }
+                    else if (cubeFile == null)
+                    {
+                        cubeFile = arg;
+                    }
+                    else if (scriptFile == null)
+                    {
+                        scriptFile = arg;
+                    }
+                    else
+                    {
+                        BadParameter(arg);
+                    }
                 }
 
+                prefs.Save();
             }
+
 
             // if script is empty, just run the gui
             if (scriptFile == null)
@@ -66,12 +215,15 @@ namespace Cube3Editor
             else
             {
 
+
                 // redirect console output to parent process;
                 // must be before any calls to Console.WriteLine()
                 AttachConsole(ATTACH_PARENT_PROCESS);
 
                 System.Console.WriteLine($"cubeFile = '{cubeFile}'");
                 System.Console.WriteLine($"scriptFile = '{scriptFile}'");
+
+
 
                 try
                 {
@@ -82,7 +234,7 @@ namespace Cube3Editor
 
                     cubeEdit.CommandLineLoad(cubeScript.FirmwareStr, cubeScript.MinFirmwareStr, cubeScript.PrinterModelStr,
                         cubeScript.MaterialE1Str, cubeScript.MaterialE2Str, cubeScript.MaterialE3Str,
-                        cubeScript.TemperatureModifers, cubeScript.RetractStartModifers, cubeScript.RetractStopModifers, 
+                        cubeScript.TemperatureModifers, cubeScript.RetractStartModifers, cubeScript.RetractStopModifers,
                         cubeScript.PressureModifiers);
 
                     cubeEdit.CommandLineSave();
