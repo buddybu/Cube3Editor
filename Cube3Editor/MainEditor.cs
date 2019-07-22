@@ -30,7 +30,7 @@ namespace Cube3Editor
 
         BitFromByte bfbObject;
         CubeScript cubeScript;
-
+        private PreferencesDialog preferencesDialog;
         BlowfishEngine engine;
         byte[] inputCube3File;
         CubeExtractor extractor;
@@ -44,6 +44,9 @@ namespace Cube3Editor
         private RectangleBorder border;
         private SourceGrid.Cells.Views.Cell tempView;
 
+
+        private Preferences prefs = new Preferences();
+
         public RectangleBorder Border
         {
             get => border;
@@ -55,6 +58,8 @@ namespace Cube3Editor
             get => tempView;
             set => tempView = value;
         }
+        public PreferencesDialog PreferencesDialog { get => preferencesDialog; set => preferencesDialog = value; }
+        internal Preferences Prefs { get => prefs; set => prefs = value; }
 
         public MainEditor(string cubeFile)
         {
@@ -70,8 +75,10 @@ namespace Cube3Editor
             saveScriptDialog.Title = "Save Cube Script";
 
 
+            PreferencesDialog = new PreferencesDialog(Prefs);
 
             engine = new BlowfishEngine(true);
+
 
             if (cubeFile != null)
             {
@@ -433,16 +440,19 @@ namespace Cube3Editor
             var newFileName = Path.GetFileNameWithoutExtension(filename);
             var newExtension = Path.GetExtension(filename);
 
-            if (!newFileName.EndsWith("_MOD", StringComparison.CurrentCultureIgnoreCase))
+            newFileName = filename;
+            if (Prefs.PreserveOriginalCube3)
             {
-                newFileName = newPath + "\\" + newFileName + "_MOD" + newExtension;
-            }
-            else
-            {
-                newFileName = filename;
+                if (!newFileName.EndsWith("_MOD", StringComparison.CurrentCultureIgnoreCase))
+                {
+                    newFileName = newPath + "\\" + newFileName + "_MOD" + newExtension;
+                }
             }
 
-            FileBackup.MakeBackup(newFileName, 5);
+            if (Prefs.CreateBackupFiles)
+            {
+                FileBackup.MakeBackup(newFileName, Prefs.MaxNumberBackupFiles);
+            }
 
             try
             {
@@ -451,7 +461,7 @@ namespace Cube3Editor
                 using (outFile = File.OpenWrite(newFileName))
                 using (var binaryWriter = new BinaryWriter(outFile))
                 {
-                    if (extractor == null)
+                    if (extractor == null || Prefs.MinimizeCube3Size)
                     {
                         binaryWriter.Write(encodedBFB);
 
@@ -523,13 +533,16 @@ namespace Cube3Editor
             catch (Exception)
             {
                 MessageBox.Show("Unable to save file.  Check permissions and/or attributes");
-                try
+                if (Prefs.CreateBackupFiles)
                 {
-                    FileBackup.DeleteLastBackup(newFileName);
-                }
-                catch (Exception)
-                {
-                    MessageBox.Show("Unable to remove backup file.  Check permissions and/or attributes");
+                    try
+                    {
+                        FileBackup.DeleteLastBackup(newFileName);
+                    }
+                    catch (Exception)
+                    {
+                        MessageBox.Show("Unable to remove backup file.  Check permissions and/or attributes");
+                    }
                 }
             }
 
@@ -754,13 +767,13 @@ namespace Cube3Editor
         private void BtnLeftTempUpdate_Click(object sender, EventArgs e)
         {
             modified = true;
-            UpdateTemperatures(BFBConstants.LEFT_TEMP, gridLeftTemps);
+            UpdateTemperaturesInBFB(BFBConstants.LEFT_TEMP, gridLeftTemps);
         }
 
         private void BtnRightTempUpdate_Click(object sender, EventArgs e)
         {
             modified = true;
-            UpdateTemperatures(BFBConstants.RIGHT_TEMP, gridRightTemps);
+            UpdateTemperaturesInBFB(BFBConstants.RIGHT_TEMP, gridRightTemps);
         }
 
         private void TbFirware_TextChanged(object sender, EventArgs e)
@@ -941,9 +954,9 @@ namespace Cube3Editor
                 }
             }
             CalculateTemperatures(gridLeftTemps);
-            UpdateTemperatures(BFBConstants.LEFT_TEMP, gridLeftTemps);
+            UpdateTemperaturesInBFB(BFBConstants.LEFT_TEMP, gridLeftTemps);
             CalculateTemperatures(gridRightTemps);
-            UpdateTemperatures(BFBConstants.RIGHT_TEMP, gridRightTemps);
+            UpdateTemperaturesInBFB(BFBConstants.RIGHT_TEMP, gridRightTemps);
             //CalculateTemperatures(gridMidTemps);
             //UpdateTemperatures(gridMidTemps);
 
@@ -951,9 +964,9 @@ namespace Cube3Editor
             Dictionary<int, int> retractStartDict = new Dictionary<int, int>();
             for (int i = 1; i < gridRetractionStart.Rows.Count; i++)
             {
-                if (gridRetractionStart[i, 0].Value == gridRetractionStart[i, 1].Value)
+                if (gridRetractionStart[i, 0].Value.Equals(gridRetractionStart[i, 1].Value))
                 {
-                    retractStartDict.Add((int)gridRetractionStop[i, 1].Value, i);
+                    retractStartDict.Add((int)gridRetractionStart[i, 0].Value, i);
                 }
             }
 
@@ -1113,6 +1126,12 @@ namespace Cube3Editor
                 }
             }
 
+        }
+
+        private void PreferencesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            preferencesDialog.ShowDialog();
+            prefs.Load();
         }
     }
 }
