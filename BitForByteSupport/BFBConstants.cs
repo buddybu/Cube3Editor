@@ -26,6 +26,9 @@ namespace BitForByteSupport
 
         public const string EXTRUDER_PRESSURE = "M108";
 
+        public const int CUBE3_INFINITY_RINSE = 500;
+        public const int CUBEPRO_INFINITY_RINSE = 501;
+
         public const int ABS_TEAL = 76;
         public const int ABS_PURPLE = 77;
         public const int ABS_BROWN = 78;
@@ -137,6 +140,9 @@ namespace BitForByteSupport
         public const string CP_PLA = "CP_PLA";
         public const string CP_ABS = "CP_ABS";
         public const string EKO = "EKO";
+        public const string INFRINSE = "INFRINSE";
+        public const string CP_INFRINSE = "CP_INFRINSE";
+        public const string EMPTY = "EMPTY";
 
         public const string BLACK = "Black";
         public const string BLUE = "Blue";
@@ -163,11 +169,36 @@ namespace BitForByteSupport
         public const string TEAL = "Teal";
         public const string WHITE = "White";
         public const string YELLOW = "Yellow";
+        public const string INFINITY_RINSE = "InfRinse";
+
+        public static List<String> cube3PLAColors = new List<String>(new String[]
+        {
+            BLACK, BLUE, BRONZE, CORAL, DARK_GREY, FOREST_GREEN, GITDB,
+            GITDG, GOLD, GREEN, INDUST_GREY, MAGENTA, NATURAL, NAVY_BLUE,
+            NEON_GREEN, ORANGE, PALE_YELLOW, PURPLE, RED, SILVER, TAN,
+              TEAL, WHITE, YELLOW
+        });
+
+        public static List<String> cube3ABSColors = new List<String>(new String[]
+        {
+            BLACK, BLUE, BRONZE, CORAL, DARK_GREY, FOREST_GREEN, GITDB,
+            GITDG, GOLD, GREEN, INDUST_GREY, MAGENTA, NAVY_BLUE,
+            NEON_GREEN, ORANGE, PALE_YELLOW, PURPLE, RED, SILVER, TAN,
+              TEAL, WHITE, YELLOW
+        });
+
+        public static List<String> ekoCycleColors = new List<String>(new String[]
+        {
+            BLACK, DARK_GREY, NATURAL, RED, WHITE
+        });
 
         static public string GetMaterialType(int material)
         {
             switch (material)
             {
+                case -1:
+                    return EMPTY;
+
                 case ABS_BLACK:
                 case ABS_BLUE:
                 case ABS_BRONZE:
@@ -191,7 +222,7 @@ namespace BitForByteSupport
                 case ABS_TEAL:
                 case ABS_WHITE:
                 case ABS_YELLOW:
-                    return CP_ABS;
+                    return ABS;
 
                 case CP_ABS_BLACK:
                 case CP_ABS_BLUE:
@@ -279,6 +310,12 @@ namespace BitForByteSupport
                 case EKO_NATURAL:
                     return EKO;
 
+                case CUBE3_INFINITY_RINSE:
+                    return INFRINSE;
+
+                case CUBEPRO_INFINITY_RINSE:
+                    return CP_INFRINSE;
+
                 default:
                     return "";
             }
@@ -289,6 +326,9 @@ namespace BitForByteSupport
         {
             switch (material)
             {
+                case -1:
+                    return "";
+
                 case PLA_BLACK:
                 case ABS_BLACK:
                 case CP_PLA_BLACK:
@@ -439,6 +479,10 @@ namespace BitForByteSupport
                 case CP_PLA_YELLOW:
                 case CP_ABS_YELLOW:
                     return YELLOW;
+
+                case CUBE3_INFINITY_RINSE:
+                case CUBEPRO_INFINITY_RINSE:
+                    return INFINITY_RINSE;
 
                 default:
                     return "";
@@ -665,6 +709,16 @@ namespace BitForByteSupport
                 else if (color.Equals(PALE_YELLOW))
                     cube3Code = EKO_NATURAL;
             }
+            else if (type.Equals(INFRINSE))
+            {
+                cube3Code = CUBE3_INFINITY_RINSE;
+            }
+
+            else if (type.Equals(CP_INFRINSE))
+            {
+                cube3Code = CUBEPRO_INFINITY_RINSE;
+            }
+
             return cube3Code;
         }
     }

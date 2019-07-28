@@ -120,15 +120,15 @@ namespace BitForByteSupport
             string materialCodeStr = BfbLines[index].Split(':')[1];
             int materialCode = Convert.ToInt32(materialCodeStr);
 
-            if (materialCode != -1)
+            //if (materialCode != -1)
             {
                 return BFBConstants.GetMaterialType(materialCode);
             }
-            else
-            {
-                return "";
+            //else
+            //{
+            //    return "";
 
-            }
+            //}
         }
 
         public string GetMaterialColor(string material)
@@ -137,15 +137,15 @@ namespace BitForByteSupport
             string materialCodeStr = BfbLines[index].Split(':')[1];
             int materialCode = Convert.ToInt32(materialCodeStr);
 
-            if (materialCode != -1)
+//            if (materialCode != -1)
             {
                 return BFBConstants.GetMaterialColor(materialCode);
             }
-            else
-            {
-                return "";
+            //else
+            //{
+            //    return "";
 
-            }
+            //}
         }
 
 

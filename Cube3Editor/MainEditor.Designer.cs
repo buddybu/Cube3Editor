@@ -67,6 +67,7 @@
             this.mainMenu = new System.Windows.Forms.MenuStrip();
             this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.generateScriptToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.preferencesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tabRetractrionControl = new System.Windows.Forms.TabPage();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
             this.gridRetractionStop = new SourceGrid.Grid();
@@ -89,7 +90,6 @@
             this.saveScriptDialog = new System.Windows.Forms.SaveFileDialog();
             this.saveBFBFile = new System.Windows.Forms.SaveFileDialog();
             this.fdLoadScript = new System.Windows.Forms.OpenFileDialog();
-            this.preferencesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -193,8 +193,12 @@
             this.cbLeftMaterial.Items.AddRange(new object[] {
             "ABS",
             "PLA",
+            "EKO",
             "CP_ABS",
-            "CP_PLA"});
+            "CP_PLA",
+            "INFRINSE",
+            "CP_INFRINSE",
+            "EMPTY"});
             this.cbLeftMaterial.Location = new System.Drawing.Point(142, 20);
             this.cbLeftMaterial.Name = "cbLeftMaterial";
             this.cbLeftMaterial.Size = new System.Drawing.Size(68, 24);
@@ -295,7 +299,11 @@
             "ABS",
             "PLA",
             "CP_ABS",
-            "CP_PLA"});
+            "CP_PLA",
+            "EKO",
+            "INFRINSE",
+            "CP_INFRINSE",
+            "EMPTY"});
             this.cbRightMaterial.Location = new System.Drawing.Point(142, 20);
             this.cbRightMaterial.Name = "cbRightMaterial";
             this.cbRightMaterial.Size = new System.Drawing.Size(68, 24);
@@ -358,7 +366,11 @@
             "ABS",
             "PLA",
             "CP_ABS",
-            "CP_PLA"});
+            "CP_PLA",
+            "EKO",
+            "INFRINSE",
+            "CP_INFRINSE",
+            "EMPTY"});
             this.cbCubeProMaterial.Location = new System.Drawing.Point(142, 20);
             this.cbCubeProMaterial.Name = "cbCubeProMaterial";
             this.cbCubeProMaterial.Size = new System.Drawing.Size(68, 24);
@@ -448,7 +460,7 @@
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F)));
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(46, 26);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(46, 24);
             this.fileToolStripMenuItem.Text = "File";
             // 
             // openToolStripMenuItem
@@ -465,7 +477,7 @@
             this.closeToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F4)));
             this.closeToolStripMenuItem.ShowShortcutKeys = false;
             this.closeToolStripMenuItem.Size = new System.Drawing.Size(225, 26);
-            this.closeToolStripMenuItem.Text = "Close";
+            this.closeToolStripMenuItem.Text = "Close Model";
             this.closeToolStripMenuItem.Click += new System.EventHandler(this.closeToolStripMenuItem_Click);
             // 
             // saveToolStripMenuItem
@@ -505,7 +517,7 @@
             this.abouitToolStripMenuItem});
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
             this.helpToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.H)));
-            this.helpToolStripMenuItem.Size = new System.Drawing.Size(55, 26);
+            this.helpToolStripMenuItem.Size = new System.Drawing.Size(55, 24);
             this.helpToolStripMenuItem.Text = "Help";
             // 
             // abouitToolStripMenuItem
@@ -524,7 +536,7 @@
             this.helpToolStripMenuItem});
             this.mainMenu.Location = new System.Drawing.Point(0, 0);
             this.mainMenu.Name = "mainMenu";
-            this.mainMenu.Size = new System.Drawing.Size(903, 30);
+            this.mainMenu.Size = new System.Drawing.Size(903, 28);
             this.mainMenu.TabIndex = 0;
             this.mainMenu.Text = "menuStrip1";
             // 
@@ -534,7 +546,7 @@
             this.generateScriptToolStripMenuItem1,
             this.preferencesToolStripMenuItem});
             this.editToolStripMenuItem.Name = "editToolStripMenuItem";
-            this.editToolStripMenuItem.Size = new System.Drawing.Size(49, 26);
+            this.editToolStripMenuItem.Size = new System.Drawing.Size(49, 24);
             this.editToolStripMenuItem.Text = "Edit";
             // 
             // generateScriptToolStripMenuItem1
@@ -544,6 +556,13 @@
             this.generateScriptToolStripMenuItem1.Size = new System.Drawing.Size(246, 26);
             this.generateScriptToolStripMenuItem1.Text = "Generate Script";
             this.generateScriptToolStripMenuItem1.Click += new System.EventHandler(this.GenerateScriptToolStripMenuItem_Click);
+            // 
+            // preferencesToolStripMenuItem
+            // 
+            this.preferencesToolStripMenuItem.Name = "preferencesToolStripMenuItem";
+            this.preferencesToolStripMenuItem.Size = new System.Drawing.Size(246, 26);
+            this.preferencesToolStripMenuItem.Text = "Preferences";
+            this.preferencesToolStripMenuItem.Click += new System.EventHandler(this.PreferencesToolStripMenuItem_Click);
             // 
             // tabRetractrionControl
             // 
@@ -761,13 +780,6 @@
             // 
             this.fdLoadScript.FileName = "fdLoadScript";
             this.fdLoadScript.Filter = "\"Cube Script Files|*.cubescr|AllFiless|*.*\"";
-            // 
-            // preferencesToolStripMenuItem
-            // 
-            this.preferencesToolStripMenuItem.Name = "preferencesToolStripMenuItem";
-            this.preferencesToolStripMenuItem.Size = new System.Drawing.Size(246, 26);
-            this.preferencesToolStripMenuItem.Text = "Preferences";
-            this.preferencesToolStripMenuItem.Click += new System.EventHandler(this.PreferencesToolStripMenuItem_Click);
             // 
             // MainEditor
             // 
