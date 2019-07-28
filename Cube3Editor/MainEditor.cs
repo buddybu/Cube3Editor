@@ -233,15 +233,24 @@ namespace Cube3Editor
             // populate all fields
             tbFirmware.Text = bfbObject.GetText(BFBConstants.FIRMWARE);
 
+            cbRightColor.Enabled = true;
+            cbLeftColor.Enabled = true;
+            cbCubeProColor.Enabled = true;
 
             tbMinFirmware.Text = bfbObject.GetText(BFBConstants.MINFIRMWARE);
             tbPrinterModel.Text = bfbObject.GetText(BFBConstants.PRINTERMODEL);
             cbLeftMaterial.Text = bfbObject.GetMaterialType(BFBConstants.MATERIALCODEE1);
             cbLeftColor.Text = bfbObject.GetMaterialColor(BFBConstants.MATERIALCODEE1);
+            if (cbLeftMaterial.Text.Equals(BFBConstants.EMPTY))
+                cbLeftColor.Enabled = false;
             cbRightMaterial.Text = bfbObject.GetMaterialType(BFBConstants.MATERIALCODEE2);
             cbRightColor.Text = bfbObject.GetMaterialColor(BFBConstants.MATERIALCODEE2);
+            if (cbRightMaterial.Text.Equals(BFBConstants.EMPTY))
+                cbRightColor.Enabled = false;
             cbCubeProMaterial.Text = bfbObject.GetMaterialType(BFBConstants.MATERIALCODEE3);
             cbCubeProColor.Text = bfbObject.GetMaterialColor(BFBConstants.MATERIALCODEE3);
+            if (cbCubeProMaterial.Text.Equals(BFBConstants.EMPTY))
+                cbCubeProColor.Enabled = false;
 
             PopulateTemperatures(BFBConstants.LEFT_TEMP, gridLeftTemps);
             PopulateTemperatures(BFBConstants.RIGHT_TEMP, gridRightTemps);
@@ -254,10 +263,7 @@ namespace Cube3Editor
             tbMinFirmware.Enabled = true;
             tbPrinterModel.Enabled = true;
             cbRightMaterial.Enabled = true;
-            cbRightColor.Enabled = true;
-            cbLeftColor.Enabled = true;
             cbLeftMaterial.Enabled = true;
-            cbCubeProColor.Enabled = true;
             cbCubeProMaterial.Enabled = true;
 
         }
@@ -290,6 +296,8 @@ namespace Cube3Editor
             cbLeftMaterial.Text = "";
             cbRightColor.Text = "";
             cbRightMaterial.Text = "";
+            cbCubeProColor.Text = "";
+            cbCubeProMaterial.Text = "";
 
             if (gridLeftTemps.Rows.Count > 1)
                 gridLeftTemps.Rows.RemoveRange(1, gridLeftTemps.Rows.Count - 1);
@@ -303,17 +311,57 @@ namespace Cube3Editor
                 gridPressure.Rows.RemoveRange(1, gridPressure.Rows.Count - 1);
 
             cubeScript = new CubeScript();
+        }
 
+        private void ResetUIToDefault()
+        {
+            // don't do this if a file is loaded
+            if (fileName == null)
+            {
+                tbFirmware.Enabled = false;
+                tbMinFirmware.Enabled = false;
+                tbPrinterModel.Enabled = false;
+
+                cbRightMaterial.Enabled = false;
+                cbLeftMaterial.Enabled = false;
+                cbCubeProMaterial.Enabled = false;
+
+                cbRightColor.Enabled = false;
+                cbLeftColor.Enabled = false;
+                cbCubeProColor.Enabled = false;
+            }
         }
 
         private void closeToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            Boolean doClose = false;
             if (modified)
             {
+                DialogResult result = MessageBox.Show("There have been changes, are you sure you want to close?", "Confirmation",
+                    MessageBoxButtons.YesNo);
+
+                if (result == DialogResult.Yes)
+                {
+                    doClose = true;
+                } 
                 // display dialog box that something has changed.  Are you sure you want to close the file?
                 // if yes, then close the file.
                 // If no, then call the save file routine
                 // reset all controls
+            }
+            else
+            {
+                doClose = true;
+            }
+
+            if (doClose)
+            {
+                ClearUI();
+                cubeScript = null;
+                bfbObject = null;
+                fileName = null;
+                Text = "Cube3Editor";
+                ResetUIToDefault();
             }
         }
 
@@ -348,8 +396,13 @@ namespace Cube3Editor
         {
             if (modified)
             {
-                // show dialog box that something has changed and ask them
-                // if they really want to quit.
+                DialogResult result = MessageBox.Show("There have been changes, are you sure you want to exit?", "Confirmation",
+                    MessageBoxButtons.YesNo);
+
+                if (result == DialogResult.Yes)
+                {
+                    Application.Exit();
+                }
             }
         }
 
@@ -570,7 +623,25 @@ namespace Cube3Editor
         private void CbLeftMaterial_SelectedIndexChanged(object sender, EventArgs e)
         {
             modified = true;
-            AddOrRemoveNatural(cbLeftMaterial, cbLeftColor);
+            if (cbLeftMaterial.Text.Equals(BFBConstants.INFRINSE) || cbLeftMaterial.Text.Equals(BFBConstants.CP_INFRINSE))
+            {
+                cbLeftColor.Text = BFBConstants.INFINITY_RINSE;
+                cbLeftColor.Enabled = false;
+            } 
+            else if (cbLeftMaterial.Text.Equals(BFBConstants.EMPTY))
+            {
+                cbLeftColor.Text = "";
+                cbLeftColor.Enabled = false;
+            }
+            else
+            {
+                if (cbLeftColor.Text.Equals(BFBConstants.INFINITY_RINSE))
+                {
+                    cbLeftColor.Text = "";
+                }
+                SetColors(cbLeftMaterial.Text, cbLeftColor);
+                cbLeftColor.Enabled = true;
+            }
             bfbObject.SetMATERIALCODE(BFBConstants.MATERIALCODEE1, cbLeftMaterial.Text, cbLeftColor.Text);
         }
 
@@ -578,16 +649,79 @@ namespace Cube3Editor
         private void CbRightMaterial_SelectedIndexChanged(object sender, EventArgs e)
         {
             modified = true;
-            AddOrRemoveNatural(cbRightMaterial, cbRightColor);
+            if (cbRightMaterial.Text.Equals(BFBConstants.INFRINSE) || cbRightMaterial.Text.Equals(BFBConstants.CP_INFRINSE))
+            {
+                cbRightColor.Text = BFBConstants.INFINITY_RINSE;
+                cbRightColor.Enabled = false;
+            }
+            else if (cbRightMaterial.Text.Equals(BFBConstants.EMPTY))
+            {
+                cbRightColor.Text = "";
+                cbRightColor.Enabled = false;
+            }
+            else
+            {
+                if (cbRightColor.Text.Equals(BFBConstants.INFINITY_RINSE))
+                {
+                    cbRightColor.Text = "";
+                }
+                SetColors(cbRightMaterial.Text, cbRightColor);
+                cbRightColor.Enabled = true;
+            }
             bfbObject.SetMATERIALCODE(BFBConstants.MATERIALCODEE2, cbRightMaterial.Text, cbRightColor.Text);
         }
 
         private void CbCubeProMaterial_SelectedIndexChanged(object sender, EventArgs e)
         {
             modified = true;
-            AddOrRemoveNatural(cbCubeProMaterial, cbCubeProColor);
+            if (cbCubeProMaterial.Text.Equals(BFBConstants.INFRINSE) || cbCubeProMaterial.Text.Equals(BFBConstants.CP_INFRINSE))
+            {
+                cbCubeProColor.Text = BFBConstants.INFINITY_RINSE;
+                cbCubeProColor.Enabled = false;
+            }
+            else if (cbCubeProMaterial.Text.Equals(BFBConstants.EMPTY))
+            {
+                cbCubeProColor.Text = "";
+                cbCubeProColor.Enabled = false;
+            }
+            else
+            {
+                if (cbCubeProColor.Text.Equals(BFBConstants.INFINITY_RINSE))
+                {
+                    cbCubeProColor.Text = "";
+                }
+                SetColors(cbCubeProMaterial.Text, cbCubeProColor);
+                cbCubeProColor.Enabled = true;
+            }
             bfbObject.SetMATERIALCODE(BFBConstants.MATERIALCODEE3, cbCubeProMaterial.Text, cbCubeProColor.Text);
         }
+        private void SetColors(string text, System.Windows.Forms.ComboBox cbColor)
+        {
+            if (text.Equals(BFBConstants.ABS) || text.Equals(BFBConstants.CP_ABS))
+            {
+                cbColor.Items.Clear();
+                cbColor.Text = "";
+                foreach (String color in BFBConstants.cube3ABSColors)
+                    cbColor.Items.Add(color);
+            }
+            else if (text.Equals(BFBConstants.PLA) || text.Equals(BFBConstants.CP_PLA))
+            {
+                cbColor.Items.Clear();
+                cbColor.Text = "";
+                foreach (String color in BFBConstants.cube3PLAColors)
+                    cbColor.Items.Add(color);
+            }
+            else if (text.Equals(BFBConstants.EKO))
+            {
+                cbColor.Items.Clear();
+                cbColor.Text = "";
+                foreach (String color in BFBConstants.ekoCycleColors)
+                    cbColor.Items.Add(color);
+            }
+
+
+        }
+
 
         private void CbLeftColor_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -606,6 +740,7 @@ namespace Cube3Editor
             bfbObject.SetMATERIALCODE(BFBConstants.MATERIALCODEE3, cbCubeProMaterial.Text, cbCubeProColor.Text);
             modified = true;
         }
+
 
         private void AddOrRemoveNatural(System.Windows.Forms.ComboBox comboBox, System.Windows.Forms.ComboBox cbColor)
         {
@@ -1127,6 +1262,7 @@ namespace Cube3Editor
             }
 
         }
+
 
         private void PreferencesToolStripMenuItem_Click(object sender, EventArgs e)
         {
