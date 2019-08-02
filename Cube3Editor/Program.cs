@@ -556,10 +556,20 @@ namespace Cube3Editor
             int modValueIndex = 5;
 
             // check parameter count and validate line
-            if (lineArray.Length != 6 || !ValidRetractLine(lineArray, oldRetractIndex, byIndex, modTypeIndex, modValueIndex))
+            if (lineArray.Length != 6 || lineArray.Length != 8)
             {
                 System.Console.WriteLine("Invalid MODIFY RETRACTSTART at line " + lineNumber);
                 valid = false;
+            }
+
+            if (!lineArray[byIndex].ToUpper().Equals("REPLACE") && ValidRetractLine(lineArray, oldRetractIndex, byIndex, modTypeIndex, modValueIndex))
+            {
+                System.Console.WriteLine("Invalid MODIFY RETRACTSTART at line " + lineNumber);
+                valid = false;
+            }
+            else
+            {
+                return DoModifyRetractStartReplace(lineArray, lineNumber);
             }
 
             if (valid)
@@ -574,20 +584,92 @@ namespace Cube3Editor
                 if (modType.Equals("PERCENTAGE"))
                 {
                     double percentage = modValue;
-                    retractMod.newRetractValue = Convert.ToInt32(retractMod.oldRetractValue + (percentage / 100) * retractMod.oldRetractValue);
+                    retractMod.newPValue = Convert.ToInt32(retractMod.oldRetractValue + (percentage / 100) * retractMod.oldRetractValue);
                 }
                 else if (modType.Equals("ADD"))
                 {
-                    retractMod.newRetractValue = retractMod.oldRetractValue + modValue;
+                    retractMod.newPValue= retractMod.oldRetractValue + modValue;
                 }
                 else if (modType.Equals("REPLACE"))
                 {
-                    retractMod.newRetractValue = modValue;
+                    retractMod.newPValue= modValue;
                 }
+                retractMod.newSValue = retractMod.newPValue;
+                retractMod.newGValue = -1;
+                retractMod.newFValue = -1;
 
                 retractMod.retractCmd = BFBConstants.RETRACT_START;
 
                 retractStartModifers.Add(retractMod);
+            }
+
+            return valid;
+        }
+
+        private static bool DoModifyRetractStartReplace(string[] lineArray, int lineNumber)
+        {
+            bool valid = true;
+
+            int oldRetractIndex = 2;
+            int replaceIndex = 3;
+            int pIndex = 4;
+            int sIndex = 5;
+            int gIndex = 6;
+            int fIndex = 7;
+
+            String oldRetract = lineArray[oldRetractIndex].ToUpper();
+            String replaceStr = lineArray[replaceIndex].ToUpper();
+            String pValueStr = lineArray[pIndex].ToUpper();
+            String sValueStr = lineArray[sIndex].ToUpper();
+            String gValueStr = lineArray[gIndex].ToUpper();
+            String fValueStr = lineArray[fIndex].ToUpper();
+
+            int pValue = -1;
+            int sValue = -1;
+            int gValue = -1;
+            int fValue = -1;
+
+            // process OldTemperature
+            if (!int.TryParse(oldRetract, out int oldValue))
+            {
+                System.Console.WriteLine($"Nonnumeric MODIFY RETRACT old value at line {lineNumber}");
+                valid = false;
+            }
+
+            // process REPLACE string
+            if (valid && !replaceStr.Equals("REPLACE"))
+            {
+                System.Console.WriteLine($"Invalid MODIFY RETRACT at line {lineNumber}");
+                valid = false;
+            }
+
+            // P-Value
+            if (valid && 
+                (!int.TryParse(pValueStr, out pValue) ||
+                !int.TryParse(sValueStr, out sValue) ||
+                !int.TryParse(gValueStr, out gValue) ||
+                !int.TryParse(fValueStr, out fValue)))
+            {
+                System.Console.WriteLine($"Invalid MODIFY RETRACT modification value at line {lineNumber}");
+                valid = false;
+            }
+
+            if (valid)
+            {
+                RetractModifier retractMod = new RetractModifier();
+
+                // process OldTemperature
+                retractMod.oldRetractValue = oldValue;
+
+                retractMod.newPValue = pValue;
+                retractMod.newSValue = sValue;
+                retractMod.newGValue = gValue;
+                retractMod.newFValue = fValue;
+
+                retractMod.retractCmd = BFBConstants.RETRACT_START;
+
+                retractStartModifers.Add(retractMod);
+
             }
 
             return valid;
@@ -620,15 +702,15 @@ namespace Cube3Editor
                 if (modType.Equals("PERCENTAGE"))
                 {
                     double percentage = modValue;
-                    retractMod.newRetractValue = Convert.ToInt32(retractMod.oldRetractValue + (percentage / 100) * retractMod.oldRetractValue);
+                    retractMod.newSValue = Convert.ToInt32(retractMod.oldRetractValue + (percentage / 100) * retractMod.oldRetractValue);
                 }
                 else if (modType.Equals("ADD"))
                 {
-                    retractMod.newRetractValue = retractMod.oldRetractValue + modValue;
+                    retractMod.newSValue = retractMod.oldRetractValue + modValue;
                 }
                 else if (modType.Equals("REPLACE"))
                 {
-                    retractMod.newRetractValue = modValue;
+                    retractMod.newSValue = modValue;
                 }
 
                 retractMod.retractCmd = BFBConstants.RETRACT_STOP;

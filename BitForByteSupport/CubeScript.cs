@@ -46,7 +46,7 @@ namespace BitForByteSupport
 
         public CubeScript(string[] newScriptLines) : this()
         {
-            LoadAndValidateScript(newScriptLines);            
+            LoadAndValidateScript(newScriptLines);
         }
 
         public CubeScript(BitFromByte bfbObject) : this()
@@ -149,13 +149,14 @@ namespace BitForByteSupport
             String retractLine = $"MODIFY {command} {retract} BY REPLACE {retract}";
             CubeScriptLines.Add(retractLine);
         }
+
         private void PrintModifyPressureLine(string command, Double pressure)
         {
             String pressureLine = $"MODIFY {command} {pressure} BY REPLACE {pressure}";
             CubeScriptLines.Add(pressureLine);
         }
 
-       private void LoadAndValidateScript(string scriptFile)
+        private void LoadAndValidateScript(string scriptFile)
         {
             string line;
             int count = 0;
@@ -181,7 +182,7 @@ namespace BitForByteSupport
             string line;
             int count = 0;
 
-            for (int i=0; i < scriptFile.Length; i++) 
+            for (int i = 0; i < scriptFile.Length; i++)
             {
                 count++;
                 line = scriptFile[i];
@@ -424,6 +425,7 @@ namespace BitForByteSupport
         }
 
         // MODIFY RETRACTSTART XXXX BY [PERCENTAGE [+|-]YYYY|ADD [+|-]YYYY|REPLACE YYYY]
+        // MODIFY RETRACTSTART XXXX REPLACE P-VALUE S-VALUE G-VALUE F-VALUE
         private void DoModifyRetractStart(string[] lineArray, int lineNumber)
         {
             int oldRetractIndex = 2;
@@ -432,12 +434,18 @@ namespace BitForByteSupport
             int modValueIndex = 5;
 
             // check parameter count and validate line
-            if (lineArray.Length != 6)
+            if (lineArray.Length != 6 && lineArray.Length != 8)
             {
                 throw new Exception("Invalid MODIFY RETRACTSTART at line " + lineNumber);
             }
 
-            ValidateRetractLine(lineArray, oldRetractIndex, byIndex, modTypeIndex, modValueIndex);
+            if (!lineArray[byIndex].ToUpper().Equals("REPLACE"))
+                ValidateRetractLine(lineArray, oldRetractIndex, byIndex, modTypeIndex, modValueIndex);
+            else
+            {
+                DoModifyRetractStartReplace(lineArray, lineNumber);
+                return;
+            }
 
             RetractModifier retractMod = new RetractModifier();
 
@@ -449,21 +457,86 @@ namespace BitForByteSupport
             if (modType.Equals("PERCENTAGE"))
             {
                 double percentage = modValue;
-                retractMod.newRetractValue = Convert.ToInt32(retractMod.oldRetractValue + (percentage / 100) * retractMod.oldRetractValue);
+                retractMod.newPValue = Convert.ToInt32(retractMod.oldRetractValue + (percentage / 100) * retractMod.oldRetractValue);
+                retractMod.newSValue = retractMod.newPValue;
             }
             else if (modType.Equals("ADD"))
             {
-                retractMod.newRetractValue = retractMod.oldRetractValue + modValue;
+                retractMod.newPValue = retractMod.oldRetractValue + modValue;
+                retractMod.newSValue = retractMod.newPValue;
             }
             else if (modType.Equals("REPLACE"))
             {
-                retractMod.newRetractValue = modValue;
+                retractMod.newPValue = modValue;
+                retractMod.newSValue = retractMod.newPValue;
             }
+
+            retractMod.newGValue = -1;
+            retractMod.newFValue = -1;
 
             retractMod.retractCmd = BFBConstants.RETRACT_START;
 
             RetractStartModifers.Add(retractMod);
 
+        }
+
+        private void DoModifyRetractStartReplace(string[] lineArray, int lineNumber)
+        {
+            int oldRetractIndex = 2;
+            int replaceIndex = 3;
+            int pIndex = 4;
+            int sIndex = 5;
+            int gIndex = 6;
+            int fIndex = 7;
+
+            String oldRetract = lineArray[oldRetractIndex].ToUpper();
+            String replaceStr = lineArray[replaceIndex].ToUpper();
+            String pValueStr = lineArray[pIndex].ToUpper();
+            String sValueStr = lineArray[sIndex].ToUpper();
+            String gValueStr = lineArray[gIndex].ToUpper();
+            String fValueStr = lineArray[fIndex].ToUpper();
+
+            int pValue;
+            int sValue;
+            int gValue;
+            int fValue;
+
+            // process OldTemperature
+            if (!int.TryParse(oldRetract, out int oldValue))
+            {
+                throw new Exception($"Nonnumeric MODIFY RETRACT old value at line {lineNumber}");
+            }
+
+            // process REPLACE string
+            if (!replaceStr.Equals("REPLACE"))
+            {
+                throw new Exception($"Invalid MODIFY RETRACT at line {lineNumber}");
+            }
+
+            // P-Value
+            if (!int.TryParse(pValueStr, out pValue) ||
+                !int.TryParse(sValueStr, out sValue) ||
+                !int.TryParse(gValueStr, out gValue) ||
+                !int.TryParse(fValueStr, out fValue))
+            {
+                throw new Exception($"Invalid MODIFY RETRACT modification value at line {lineNumber}");
+            }
+
+
+
+            RetractModifier retractMod = new RetractModifier();
+
+            // process OldTemperature
+            retractMod.oldRetractValue = oldValue;
+
+            retractMod.newPValue = pValue;
+            retractMod.newSValue = sValue;
+            retractMod.newGValue = gValue;
+            retractMod.newFValue = fValue;
+
+            retractMod.retractCmd = BFBConstants.RETRACT_START;
+
+            RetractStartModifers.Add(retractMod);
         }
 
         // MODIFY RETRACTSTOP XXXX BY [PERCENTAGE [+|-]YYYY|ADD [+|-]YYYY|REPLACE YYYY]
@@ -492,16 +565,20 @@ namespace BitForByteSupport
             if (modType.Equals("PERCENTAGE"))
             {
                 double percentage = modValue;
-                retractMod.newRetractValue = Convert.ToInt32(retractMod.oldRetractValue + (percentage / 100) * retractMod.oldRetractValue);
+                retractMod.newSValue = Convert.ToInt32(retractMod.oldRetractValue + (percentage / 100) * retractMod.oldRetractValue);
             }
             else if (modType.Equals("ADD"))
             {
-                retractMod.newRetractValue = retractMod.oldRetractValue + modValue;
+                retractMod.newSValue = retractMod.oldRetractValue + modValue;
             }
             else if (modType.Equals("REPLACE"))
             {
-                retractMod.newRetractValue = modValue;
+                retractMod.newSValue = modValue;
             }
+
+            retractMod.newPValue = -1;
+            retractMod.newGValue = -1;
+            retractMod.newFValue = -1;
 
             retractMod.retractCmd = BFBConstants.RETRACT_STOP;
 
@@ -624,7 +701,7 @@ namespace BitForByteSupport
         public List<string> CubeScriptLines { get => cubeScriptLines; set => cubeScriptLines = value; }
         public List<TemperatureModifier> TemperatureModifers { get => temperatureModifers; set => temperatureModifers = value; }
         public List<RetractModifier> RetractStartModifers { get => retractStartModifers; set => retractStartModifers = value; }
-        public  List<RetractModifier> RetractStopModifers { get => retractStopModifers; set => retractStopModifers = value; }
-        public  List<PressureModifier> PressureModifiers { get => pressureModifiers; set => pressureModifiers = value; }
+        public List<RetractModifier> RetractStopModifers { get => retractStopModifers; set => retractStopModifers = value; }
+        public List<PressureModifier> PressureModifiers { get => pressureModifiers; set => pressureModifiers = value; }
     }
 }

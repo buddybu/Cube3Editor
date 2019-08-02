@@ -4,7 +4,10 @@
     {
         public string retractCmd;
         public int oldRetractValue;
-        public int newRetractValue;
+        public int newPValue;
+        public int newSValue;
+        public int newGValue;
+        public int newFValue;
     }
 
 }
