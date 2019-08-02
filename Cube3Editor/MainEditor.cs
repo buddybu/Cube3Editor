@@ -1,10 +1,9 @@
 ﻿using BitForByteSupport;
-using FileHelper;
 using DevAge.Drawing;
+using FileHelper;
 using Org.BouncyCastle.Crypto.Engines;
 using Org.BouncyCastle.Crypto.Paddings;
 using Org.BouncyCastle.Crypto.Parameters;
-using SourceGrid;
 using SourceGrid.Cells.Views;
 using System;
 using System.Collections.Generic;
@@ -14,7 +13,6 @@ using System.Linq;
 using System.Security;
 using System.Text;
 using System.Windows.Forms;
-using System.Xml;
 using System.Xml.Linq;
 
 namespace Cube3Editor
@@ -493,13 +491,15 @@ namespace Cube3Editor
             var newFileName = Path.GetFileNameWithoutExtension(filename);
             var newExtension = Path.GetExtension(filename);
 
-            newFileName = filename;
             if (Prefs.PreserveOriginalCube3)
             {
                 if (!newFileName.EndsWith("_MOD", StringComparison.CurrentCultureIgnoreCase))
                 {
                     newFileName = newPath + "\\" + newFileName + "_MOD" + newExtension;
                 }
+            } else
+            {
+                newFileName = filename;
             }
 
             if (Prefs.CreateBackupFiles)
@@ -583,9 +583,9 @@ namespace Cube3Editor
                     Text = Text.Split(seperator, StringSplitOptions.RemoveEmptyEntries)[0] + " - " + newFileName;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                MessageBox.Show("Unable to save file.  Check permissions and/or attributes");
+                MessageBox.Show($"Unable to save file [{ex.Message}].  Check permissions and/or attributes");
                 if (Prefs.CreateBackupFiles)
                 {
                     try
@@ -1019,10 +1019,20 @@ namespace Cube3Editor
         {
             bool success = true;
 
+            if (newFWStr != null && newFWStr.Length > 0)
+            {
+                tbFirmware.Text = newFWStr;
+            }
 
-            tbFirmware.Text = newFWStr;
-            tbMinFirmware.Text = newMinFWStr;
-            tbPrinterModel.Text = newPrinterModel;
+            if (newMinFWStr != null && newMinFWStr.Length > 0)
+            {
+                tbMinFirmware.Text = newMinFWStr;
+            }
+
+            if (newPrinterModel != null && newPrinterModel.Length > 0)
+            {
+                tbPrinterModel.Text = newPrinterModel;
+            }
 
             int.TryParse(newMCE1, out int cubeCode);
             bfbObject.SetMATERIALCODE(BFBConstants.MATERIALCODEE1, cubeCode);
@@ -1035,124 +1045,143 @@ namespace Cube3Editor
             Dictionary<int, int> rightTempDict = new Dictionary<int, int>();
             //Dictionary<int, int> midTempDict = new Dictionary<int, int>();
 
-            // process temperatures
-            for (int i = 1; i < gridLeftTemps.Rows.Count; i++)
+            if (tempMods.Count > 0)
             {
-                leftTempDict.Add((int)gridLeftTemps[i, 0].Value, i);
-            }
-            for (int i = 1; i < gridRightTemps.Rows.Count; i++)
-            {
-                rightTempDict.Add((int)gridRightTemps[i, 0].Value, i);
-            }
-            //for (int i = 1; i < gridMidTemps.Rows.Count; i++)
-            //{
-            //    midTempDict.Add((int)gridMidTemps[i, 0].Value, i);
-            //}
-
-            foreach (TemperatureModifier tempMod in tempMods)
-            {
-                int i;
-                if (tempMod.extruder.Equals(BFBConstants.LEFT_TEMP))
+                // process temperatures
+                for (int i = 1; i < gridLeftTemps.Rows.Count; i++)
                 {
-                    if (leftTempDict.Keys.Contains(tempMod.oldValue))
-                    {
-                        i = leftTempDict[tempMod.oldValue];
+                    leftTempDict.Add((int)gridLeftTemps[i, 0].Value, i);
+                }
+                for (int i = 1; i < gridRightTemps.Rows.Count; i++)
+                {
+                    rightTempDict.Add((int)gridRightTemps[i, 0].Value, i);
+                }
+                //for (int i = 1; i < gridMidTemps.Rows.Count; i++)
+                //{
+                //    midTempDict.Add((int)gridMidTemps[i, 0].Value, i);
+                //}
 
-                        // set row to replace and replace value to newvalue
-                        gridLeftTemps[i, 2].Value = tempMod.newValue;
-                        gridLeftTemps[i, 3].Value = "Replace";
+                foreach (TemperatureModifier tempMod in tempMods)
+                {
+                    int i;
+                    if (tempMod.extruder.Equals(BFBConstants.LEFT_TEMP))
+                    {
+                        if (leftTempDict.Keys.Contains(tempMod.oldValue))
+                        {
+                            i = leftTempDict[tempMod.oldValue];
+
+                            // set row to replace and replace value to newvalue
+                            gridLeftTemps[i, 2].Value = tempMod.newValue;
+                            gridLeftTemps[i, 3].Value = "Replace";
+                        }
+                    }
+                    else if (tempMod.extruder.Equals(BFBConstants.RIGHT_TEMP))
+                    {
+                        if (rightTempDict.Keys.Contains(tempMod.oldValue))
+                        {
+                            i = rightTempDict[tempMod.oldValue];
+
+                            // set row to replace and replace value to newvalue
+                            gridRightTemps[i, 2].Value = tempMod.newValue;
+                            gridRightTemps[i, 3].Value = "Replace";
+                        }
+                    }
+                    else if (tempMod.extruder.Equals(BFBConstants.MID_TEMP))
+                    {
+                        /* TODO: Update when I have MIDTEMP working....
+                        if (midTempDict.Keys.Contains(tempMod.oldValue))
+                        {
+                            i = midTempDict[tempMod.oldValue];
+
+                            // set row to replace and replace value to newvalue
+                            gridMidTemps[i, 2].Value = tempMod.newValue;
+                            gridMidTemps[i, 3].Value = "Replace";
+                        }
+                        */
                     }
                 }
-                else if (tempMod.extruder.Equals(BFBConstants.RIGHT_TEMP))
-                {
-                    if (rightTempDict.Keys.Contains(tempMod.oldValue))
-                    {
-                        i = rightTempDict[tempMod.oldValue];
+                CalculateTemperatures(gridLeftTemps);
+                UpdateTemperaturesInBFB(BFBConstants.LEFT_TEMP, gridLeftTemps);
+                CalculateTemperatures(gridRightTemps);
+                UpdateTemperaturesInBFB(BFBConstants.RIGHT_TEMP, gridRightTemps);
+                //CalculateTemperatures(gridMidTemps);
+                //UpdateTemperatures(gridMidTemps);
+            }
 
-                        // set row to replace and replace value to newvalue
-                        gridRightTemps[i, 2].Value = tempMod.newValue;
-                        gridRightTemps[i, 3].Value = "Replace";
+            if (retractStartMods.Count > 0)
+            {
+                // process retract start
+                Dictionary<int, int> retractStartDict = new Dictionary<int, int>();
+                for (int i = 1; i < gridRetractionStart.Rows.Count; i++)
+                {
+                    if (gridRetractionStart[i, 0].Value.Equals(gridRetractionStart[i, 1].Value))
+                    {
+                        retractStartDict.Add((int)gridRetractionStart[i, 0].Value, i);
                     }
                 }
-                else if (tempMod.extruder.Equals(BFBConstants.MID_TEMP))
+
+                foreach (RetractModifier retractMod in retractStartMods)
                 {
-                    /* TODO: Update when I have MIDTEMP working....
-                    if (midTempDict.Keys.Contains(tempMod.oldValue))
+                    if (retractStartDict.Keys.Contains(retractMod.oldRetractValue))
                     {
-                        i = midTempDict[tempMod.oldValue];
+                        int i = retractStartDict[retractMod.oldRetractValue];
+                        gridRetractionStart[i, 0].Value = retractMod.newPValue;
+                        gridRetractionStart[i, 1].Value = retractMod.newSValue;
+                        if (retractMod.newGValue >= 0)
+                        {
+                            gridRetractionStart[i, 2].Value = retractMod.newGValue;
+                        }
+                        if (retractMod.newFValue >= 0)
+                        {
+                            gridRetractionStart[i, 3].Value = retractMod.newFValue;
+                        }
+                    }
+                }
+
+                UpdateStartRetractions(gridRetractionStart);
+            }
+
+            if (retractStopMods.Count > 0)
+            {
+                // process retract stop
+                Dictionary<int, int> retractStopDict = new Dictionary<int, int>();
+                for (int i = 1; i < gridRetractionStop.Rows.Count; i++)
+                {
+                    retractStopDict.Add((int)gridRetractionStop[i, 1].Value, i);
+                }
+
+                foreach (RetractModifier retractMod in retractStopMods)
+                {
+                    if (retractStopDict.Keys.Contains(retractMod.oldRetractValue))
+                    {
+                        int i = retractStopDict[retractMod.oldRetractValue];
+                        gridRetractionStop[i, 1].Value = retractMod.newSValue;
+                    }
+                }
+                UpdateStopRetractions(gridRetractionStop);
+            }
+
+            if (pressureMods.Count > 0)
+            {
+                // process pressures
+                Dictionary<double, int> pressureDict = new Dictionary<double, int>();
+                for (int i = 1; i < gridPressure.Rows.Count; i++)
+                {
+                    pressureDict.Add((double)gridPressure[i, 0].Value, i);
+                }
+
+                foreach (PressureModifier pressureMod in pressureMods)
+                {
+                    if (pressureDict.Keys.Contains(pressureMod.oldPressureValue))
+                    {
+                        int i = pressureDict[pressureMod.oldPressureValue];
 
                         // set row to replace and replace value to newvalue
-                        gridMidTemps[i, 2].Value = tempMod.newValue;
-                        gridMidTemps[i, 3].Value = "Replace";
+                        gridPressure[i, 0].Value = (double)pressureMod.newPressureValue;
                     }
-                    */
                 }
+                UpdatePressures();
             }
-            CalculateTemperatures(gridLeftTemps);
-            UpdateTemperaturesInBFB(BFBConstants.LEFT_TEMP, gridLeftTemps);
-            CalculateTemperatures(gridRightTemps);
-            UpdateTemperaturesInBFB(BFBConstants.RIGHT_TEMP, gridRightTemps);
-            //CalculateTemperatures(gridMidTemps);
-            //UpdateTemperatures(gridMidTemps);
-
-            // process retract start
-            Dictionary<int, int> retractStartDict = new Dictionary<int, int>();
-            for (int i = 1; i < gridRetractionStart.Rows.Count; i++)
-            {
-                if (gridRetractionStart[i, 0].Value.Equals(gridRetractionStart[i, 1].Value))
-                {
-                    retractStartDict.Add((int)gridRetractionStart[i, 0].Value, i);
-                }
-            }
-
-            foreach (RetractModifier retractMod in retractStartMods)
-            {
-                if (retractStartDict.Keys.Contains(retractMod.oldRetractValue))
-                {
-                    int i = retractStartDict[retractMod.oldRetractValue];
-                    gridRetractionStart[i, 0].Value = retractMod.newRetractValue;
-                    gridRetractionStart[i, 1].Value = retractMod.newRetractValue;
-                }
-            }
-
-            UpdateStartRetractions(gridRetractionStart);
-
-            // process retract stop
-            Dictionary<int, int> retractStopDict = new Dictionary<int, int>();
-            for (int i = 1; i < gridRetractionStop.Rows.Count; i++)
-            {
-                retractStopDict.Add((int)gridRetractionStop[i, 1].Value, i);
-            }
-
-            foreach (RetractModifier retractMod in retractStopMods)
-            {
-                if (retractStopDict.Keys.Contains(retractMod.oldRetractValue))
-                {
-                    int i = retractStopDict[retractMod.oldRetractValue];
-                    gridRetractionStop[i, 1].Value = retractMod.newRetractValue;
-                }
-            }
-            UpdateStopRetractions(gridRetractionStop);
-
-            // process pressures
-            Dictionary<double, int> pressureDict = new Dictionary<double, int>();
-            for (int i = 1; i < gridPressure.Rows.Count; i++)
-            {
-                pressureDict.Add((double)gridPressure[i, 0].Value, i);
-            }
-
-            foreach (PressureModifier pressureMod in pressureMods)
-            {
-                if (pressureDict.Keys.Contains(pressureMod.oldPressureValue))
-                {
-                    int i = pressureDict[pressureMod.oldPressureValue];
-
-                    // set row to replace and replace value to newvalue
-                    gridPressure[i, 0].Value = (double)pressureMod.newPressureValue;
-                }
-            }
-            UpdatePressures();
-
 
             return success;
         }
