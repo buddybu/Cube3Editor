@@ -38,7 +38,11 @@ namespace Cube3ScriptGenerator
 
             }
 
-            if (cube3File == null)
+            if (cube3File == null ||
+                cube3File.ToLower().Equals("-help") ||
+                cube3File.ToLower().Equals("/help") ||
+                cube3File.ToLower().Equals("-?") ||
+                cube3File.ToLower().Equals("/?"))
             {
                 System.Console.WriteLine("usage: c3sg <cube3File> [<scriptFile>]");
                 System.Console.WriteLine("");

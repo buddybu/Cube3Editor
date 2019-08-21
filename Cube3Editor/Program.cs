@@ -77,7 +77,10 @@ namespace Cube3Editor
                 // process commmand line options
                 foreach (string arg in args)
                 {
-                    if (arg.ToLower().Trim().Equals("-help", StringComparison.CurrentCultureIgnoreCase))
+                    if (arg.ToLower().Trim().Equals("-help", StringComparison.CurrentCultureIgnoreCase) ||
+                        arg.ToLower().Trim().Equals("/?", StringComparison.CurrentCultureIgnoreCase) ||
+                        arg.ToLower().Trim().Equals("/help", StringComparison.CurrentCultureIgnoreCase) ||
+                        arg.ToLower().Trim().Equals("-?", StringComparison.CurrentCultureIgnoreCase))
                     {
                         MessageBox.Show(Usage());
                         Environment.Exit(1);

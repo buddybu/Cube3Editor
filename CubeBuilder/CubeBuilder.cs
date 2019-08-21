@@ -22,7 +22,12 @@ namespace CubeBuilder
                 cubeFolder = args[0];
             }
 
-            if (cubeFolder == null)
+
+            if (cubeFolder == null || 
+                cubeFolder.ToLower().Equals("-help") ||
+                cubeFolder.ToLower().Equals("/help") ||
+                cubeFolder.ToLower().Equals("-?") ||
+                cubeFolder.ToLower().Equals("/?"))
             {
                 displayHelp();
                 Environment.Exit(0);

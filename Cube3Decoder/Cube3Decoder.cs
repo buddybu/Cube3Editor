@@ -33,7 +33,7 @@ namespace Cube3Decoder
 
             if (args.Length > 0)
             {
-                if (args[0].StartsWith("-"))
+                if (args[0].StartsWith("-") || args[0].StartsWith("/"))
                 {
                     cube3FileIndex++;
                     bfbFileIndex++;

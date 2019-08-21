@@ -8,6 +8,14 @@ namespace BitForByteSupport
 {
     static public class BFBConstants
     {
+        public const string CUBE3_MODEL = "CUBE3";
+        public const string EKO_MODEL = "EKOCYCLE";
+        public const string CUBEPRO_MODEL = "CUBEPRO";
+
+        public const string CUBE3_VERSION = "V1.14B";
+        public const string EKO_VERSION = "V1.05";
+        public const string CUBEPRO_VERSION = "V1.87";
+
         public const string FIRMWARE = "^Firmware:";
         public const string MINFIRMWARE = "^Minfirmware:";
         public const string PRINTERMODEL = "^PrinterModel:";
@@ -174,22 +182,38 @@ namespace BitForByteSupport
         public static List<String> cube3PLAColors = new List<String>(new String[]
         {
             BLACK, BLUE, BRONZE, CORAL, DARK_GREY, FOREST_GREEN, GITDB,
-            GITDG, GOLD, GREEN, INDUST_GREY, MAGENTA, NATURAL, NAVY_BLUE,
+            GITDG, GOLD, GREEN, MAGENTA, NATURAL, NAVY_BLUE,
             NEON_GREEN, ORANGE, PALE_YELLOW, PURPLE, RED, SILVER, TAN,
               TEAL, WHITE, YELLOW
         });
+
+        public static List<String> cubeProPLAColors = new List<String>(new String[]
+{
+            BLACK, BLUE, BRONZE, CORAL, DARK_GREY, FOREST_GREEN, GITDB,
+            GITDG, GOLD, GREEN, INDUST_GREY, MAGENTA, NATURAL, NAVY_BLUE,
+            NEON_GREEN, ORANGE, PALE_YELLOW, PURPLE, RED, SILVER, TAN,
+              TEAL, WHITE, YELLOW
+});
 
         public static List<String> cube3ABSColors = new List<String>(new String[]
         {
             BLACK, BLUE, BRONZE, CORAL, DARK_GREY, FOREST_GREEN, GITDB,
-            GITDG, GOLD, GREEN, INDUST_GREY, MAGENTA, NAVY_BLUE,
+            GITDG, GOLD, GREEN, MAGENTA, NAVY_BLUE,
             NEON_GREEN, ORANGE, PALE_YELLOW, PURPLE, RED, SILVER, TAN,
               TEAL, WHITE, YELLOW
         });
 
+        public static List<String> cubeProABSColors = new List<String>(new String[]
+{
+            BLACK, BLUE, BRONZE, CORAL, DARK_GREY, FOREST_GREEN, GITDB,
+            GITDG, GOLD, GREEN, INDUST_GREY, MAGENTA, NAVY_BLUE,
+            NEON_GREEN, ORANGE, PALE_YELLOW, PURPLE, RED, SILVER, TAN,
+              TEAL, WHITE, YELLOW
+});
+
         public static List<String> ekoCycleColors = new List<String>(new String[]
         {
-            BLACK, DARK_GREY, NATURAL, RED, WHITE
+            BLACK, INDUST_GREY, NATURAL, RED, WHITE
         });
 
         static public string GetMaterialType(int material)
@@ -409,6 +433,7 @@ namespace BitForByteSupport
 
                 case PLA_NATURAL:
                 case CP_PLA_NATURAL:
+                case EKO_NATURAL:
                     return NATURAL;
 
                 case PLA_NAVY_BLUE:
@@ -433,7 +458,6 @@ namespace BitForByteSupport
                 case ABS_PALE_YELLOW:
                 case CP_PLA_PALE_YELLOW:
                 case CP_ABS_PALE_YELLOW:
-                case EKO_NATURAL:
                     return PALE_YELLOW;
 
                 case PLA_PURPLE:
@@ -642,7 +666,7 @@ namespace BitForByteSupport
                     cube3Code = CP_ABS_WHITE;
                 else if (color.Equals(YELLOW))
                     cube3Code = CP_ABS_YELLOW;
-            }
+            }   
             else if (type.Equals(CP_PLA))
             {
                 if (color.Equals(BLACK))
@@ -706,7 +730,7 @@ namespace BitForByteSupport
                     cube3Code = EKO_GREY;
                 else if (color.Equals(WHITE))
                     cube3Code = EKO_WHITE;
-                else if (color.Equals(PALE_YELLOW))
+                else if (color.Equals(NATURAL))
                     cube3Code = EKO_NATURAL;
             }
             else if (type.Equals(INFRINSE))

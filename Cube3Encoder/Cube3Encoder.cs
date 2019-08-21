@@ -26,6 +26,17 @@ namespace Cube3Decoder
 
             if (args.Length > 0)
             {
+                if (args[0].StartsWith("-") || args[0].StartsWith("/"))
+                {
+                    System.Console.WriteLine("usage: cube3Encoder <bfbFile> [<Cube3File>]");
+                    System.Console.WriteLine("");
+                    System.Console.WriteLine("cube3Encoder reads bfbFile and encodes into Cube3File.   Will generate");
+                    System.Console.WriteLine("into specified Cube3File or a file with the same name as the BFB File,");
+                    System.Console.WriteLine("but with the extension Cube3");
+                    System.Console.WriteLine("");
+                    Environment.Exit(0);
+                }
+
                 bfbFile = args[0];
                 if (args.Length > 1)
                 {

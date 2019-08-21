@@ -229,26 +229,81 @@ namespace Cube3Editor
             ClearUI();
 
             // populate all fields
-            tbFirmware.Text = bfbObject.GetText(BFBConstants.FIRMWARE);
+            cbFirmware.Text = bfbObject.GetText(BFBConstants.FIRMWARE);
+
+            cbFirmware.Enabled = true;
+            cbMinFirmware.Enabled = true;
+            cbPrinterModel.Enabled = true;
 
             cbRightColor.Enabled = true;
             cbLeftColor.Enabled = true;
             cbCubeProColor.Enabled = true;
 
-            tbMinFirmware.Text = bfbObject.GetText(BFBConstants.MINFIRMWARE);
-            tbPrinterModel.Text = bfbObject.GetText(BFBConstants.PRINTERMODEL);
+            cbMinFirmware.Text = bfbObject.GetText(BFBConstants.MINFIRMWARE);
+            cbPrinterModel.Text = bfbObject.GetText(BFBConstants.PRINTERMODEL);
             cbLeftMaterial.Text = bfbObject.GetMaterialType(BFBConstants.MATERIALCODEE1);
+
             cbLeftColor.Text = bfbObject.GetMaterialColor(BFBConstants.MATERIALCODEE1);
             if (cbLeftMaterial.Text.Equals(BFBConstants.EMPTY))
+            {
                 cbLeftColor.Enabled = false;
+                cbLeftSidewalk.Enabled = false;
+                cbLeftSupport.Enabled = false;
+            }
+            else
+            {
+                if (bfbObject.GetSUPPORTS().Equals(bfbObject.GetMaterialColor(BFBConstants.MATERIALCODEE1)))
+                {
+                    cbLeftSupport.Checked = true;
+                }
+
+                if (bfbObject.GetSIDEWALKS().Equals(bfbObject.GetMaterialColor(BFBConstants.MATERIALCODEE1)))
+                {
+                    cbLeftSidewalk.Checked = true;
+                }
+            }
+
             cbRightMaterial.Text = bfbObject.GetMaterialType(BFBConstants.MATERIALCODEE2);
             cbRightColor.Text = bfbObject.GetMaterialColor(BFBConstants.MATERIALCODEE2);
             if (cbRightMaterial.Text.Equals(BFBConstants.EMPTY))
+            {
                 cbRightColor.Enabled = false;
+                cbRightSidewalk.Enabled = false;
+                cbRightSupport.Enabled = false;
+            }
+            else
+            {
+                if (bfbObject.GetSUPPORTS().Equals(bfbObject.GetMaterialColor(BFBConstants.MATERIALCODEE2)))
+                {
+                    cbRightSupport.Checked = true;
+                }
+
+                if (bfbObject.GetSIDEWALKS().Equals(bfbObject.GetMaterialColor(BFBConstants.MATERIALCODEE2)))
+                {
+                    cbRightSidewalk.Checked = true;
+                }
+            }
+
             cbCubeProMaterial.Text = bfbObject.GetMaterialType(BFBConstants.MATERIALCODEE3);
             cbCubeProColor.Text = bfbObject.GetMaterialColor(BFBConstants.MATERIALCODEE3);
             if (cbCubeProMaterial.Text.Equals(BFBConstants.EMPTY))
+            {
                 cbCubeProColor.Enabled = false;
+                cbCubeProSidewalk.Enabled = false;
+                cbCubeProSupport.Enabled = false;
+            }
+            else
+            {
+                if (bfbObject.GetSUPPORTS().Equals(bfbObject.GetMaterialColor(BFBConstants.MATERIALCODEE3)))
+                {
+                    cbCubeProSupport.Checked = true;
+                }
+
+                if (bfbObject.GetSIDEWALKS().Equals(bfbObject.GetMaterialColor(BFBConstants.MATERIALCODEE3)))
+                {
+                    cbCubeProSidewalk.Checked = true;
+                }
+            }
 
             PopulateTemperatures(BFBConstants.LEFT_TEMP, gridLeftTemps);
             PopulateTemperatures(BFBConstants.RIGHT_TEMP, gridRightTemps);
@@ -257,9 +312,9 @@ namespace Cube3Editor
             PopulatePressures();
 
             // enable material fields
-            tbFirmware.Enabled = true;
-            tbMinFirmware.Enabled = true;
-            tbPrinterModel.Enabled = true;
+            cbFirmware.Enabled = true;
+            cbMinFirmware.Enabled = true;
+            cbPrinterModel.Enabled = true;
             cbRightMaterial.Enabled = true;
             cbLeftMaterial.Enabled = true;
             cbCubeProMaterial.Enabled = true;
@@ -286,9 +341,9 @@ namespace Cube3Editor
 
         private void ClearUI()
         {
-            tbFirmware.Text = "";
-            tbMinFirmware.Text = "";
-            tbPrinterModel.Text = "";
+            cbFirmware.Text = "";
+            cbMinFirmware.Text = "";
+            cbPrinterModel.Text = "";
 
             cbLeftColor.Text = "";
             cbLeftMaterial.Text = "";
@@ -316,9 +371,9 @@ namespace Cube3Editor
             // don't do this if a file is loaded
             if (fileName == null)
             {
-                tbFirmware.Enabled = false;
-                tbMinFirmware.Enabled = false;
-                tbPrinterModel.Enabled = false;
+                cbFirmware.Enabled = false;
+                cbMinFirmware.Enabled = false;
+                cbPrinterModel.Enabled = false;
 
                 cbRightMaterial.Enabled = false;
                 cbLeftMaterial.Enabled = false;
@@ -327,6 +382,13 @@ namespace Cube3Editor
                 cbRightColor.Enabled = false;
                 cbLeftColor.Enabled = false;
                 cbCubeProColor.Enabled = false;
+
+                cbRightSupport.Enabled = false;
+                cbRightSidewalk.Enabled = false;
+                cbLeftSupport.Enabled = false;
+                cbLeftSidewalk.Enabled = false;
+                cbCubeProSupport.Enabled = false;
+                cbCubeProSidewalk.Enabled = false;
             }
         }
 
@@ -604,7 +666,8 @@ namespace Cube3Editor
 
         private void AbouitToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+                AboutWindow aboutWindow = new AboutWindow();
+                aboutWindow.Show();
         }
 
         private int GetModelDataOffset()
@@ -627,11 +690,15 @@ namespace Cube3Editor
             {
                 cbLeftColor.Text = BFBConstants.INFINITY_RINSE;
                 cbLeftColor.Enabled = false;
+                cbLeftSupport.Enabled = true;
+                cbLeftSidewalk.Enabled = true;
             } 
             else if (cbLeftMaterial.Text.Equals(BFBConstants.EMPTY))
             {
                 cbLeftColor.Text = "";
                 cbLeftColor.Enabled = false;
+                cbLeftSupport.Enabled = false;
+                cbLeftSidewalk.Enabled = false;
             }
             else
             {
@@ -641,8 +708,18 @@ namespace Cube3Editor
                 }
                 SetColors(cbLeftMaterial.Text, cbLeftColor);
                 cbLeftColor.Enabled = true;
+                cbLeftSupport.Enabled = true;
+                cbLeftSidewalk.Enabled = true;
             }
             bfbObject.SetMATERIALCODE(BFBConstants.MATERIALCODEE1, cbLeftMaterial.Text, cbLeftColor.Text);
+            if (cbLeftSupport.Checked)
+            {
+                bfbObject.SetSUPPORTS(BFBConstants.getCUBE3Code(cbLeftMaterial.Text, cbLeftColor.Text).ToString());
+            }
+            if (cbLeftSidewalk.Checked)
+            {
+                bfbObject.SetSIDEWALKS(BFBConstants.getCUBE3Code(cbLeftMaterial.Text, cbLeftColor.Text).ToString());
+            }
         }
 
 
@@ -653,11 +730,15 @@ namespace Cube3Editor
             {
                 cbRightColor.Text = BFBConstants.INFINITY_RINSE;
                 cbRightColor.Enabled = false;
+                cbRightSupport.Enabled = true;
+                cbRightSidewalk.Enabled = true;
             }
             else if (cbRightMaterial.Text.Equals(BFBConstants.EMPTY))
             {
                 cbRightColor.Text = "";
                 cbRightColor.Enabled = false;
+                cbRightSupport.Enabled = false;
+                cbRightSidewalk.Enabled = false;
             }
             else
             {
@@ -667,8 +748,18 @@ namespace Cube3Editor
                 }
                 SetColors(cbRightMaterial.Text, cbRightColor);
                 cbRightColor.Enabled = true;
+                cbRightSupport.Enabled = true;
+                cbRightSidewalk.Enabled = true;
             }
             bfbObject.SetMATERIALCODE(BFBConstants.MATERIALCODEE2, cbRightMaterial.Text, cbRightColor.Text);
+            if (cbRightSupport.Checked)
+            {
+                bfbObject.SetSUPPORTS(BFBConstants.getCUBE3Code(cbRightMaterial.Text, cbRightColor.Text).ToString());
+            }
+            if (cbRightSidewalk.Checked)
+            {
+                bfbObject.SetSIDEWALKS(BFBConstants.getCUBE3Code(cbRightMaterial.Text, cbRightColor.Text).ToString());
+            }
         }
 
         private void CbCubeProMaterial_SelectedIndexChanged(object sender, EventArgs e)
@@ -678,11 +769,15 @@ namespace Cube3Editor
             {
                 cbCubeProColor.Text = BFBConstants.INFINITY_RINSE;
                 cbCubeProColor.Enabled = false;
+                cbCubeProSupport.Enabled = true;
+                cbCubeProSidewalk.Enabled = true;
             }
             else if (cbCubeProMaterial.Text.Equals(BFBConstants.EMPTY))
             {
                 cbCubeProColor.Text = "";
                 cbCubeProColor.Enabled = false;
+                cbCubeProSupport.Enabled = false;
+                cbCubeProSidewalk.Enabled = false;
             }
             else
             {
@@ -692,23 +787,47 @@ namespace Cube3Editor
                 }
                 SetColors(cbCubeProMaterial.Text, cbCubeProColor);
                 cbCubeProColor.Enabled = true;
+                cbCubeProSupport.Enabled = true;
+                cbCubeProSidewalk.Enabled = true;
             }
             bfbObject.SetMATERIALCODE(BFBConstants.MATERIALCODEE3, cbCubeProMaterial.Text, cbCubeProColor.Text);
+            if (cbCubeProSupport.Checked)
+            {
+                bfbObject.SetSUPPORTS(BFBConstants.getCUBE3Code(cbCubeProMaterial.Text, cbCubeProColor.Text).ToString());
+            }
+            if (cbCubeProSidewalk.Checked)
+            {
+                bfbObject.SetSIDEWALKS(BFBConstants.getCUBE3Code(cbCubeProMaterial.Text, cbCubeProColor.Text).ToString());
+            }
         }
         private void SetColors(string text, System.Windows.Forms.ComboBox cbColor)
         {
-            if (text.Equals(BFBConstants.ABS) || text.Equals(BFBConstants.CP_ABS))
+            if (text.Equals(BFBConstants.ABS))
             {
                 cbColor.Items.Clear();
                 cbColor.Text = "";
                 foreach (String color in BFBConstants.cube3ABSColors)
                     cbColor.Items.Add(color);
             }
-            else if (text.Equals(BFBConstants.PLA) || text.Equals(BFBConstants.CP_PLA))
+            if (text.Equals(BFBConstants.CP_ABS))
+            {
+                cbColor.Items.Clear();
+                cbColor.Text = "";
+                foreach (String color in BFBConstants.cubeProABSColors)
+                    cbColor.Items.Add(color);
+            }
+            else if (text.Equals(BFBConstants.PLA))
             {
                 cbColor.Items.Clear();
                 cbColor.Text = "";
                 foreach (String color in BFBConstants.cube3PLAColors)
+                    cbColor.Items.Add(color);
+            }
+            else if (text.Equals(BFBConstants.CP_PLA))
+            {
+                cbColor.Items.Clear();
+                cbColor.Text = "";
+                foreach (String color in BFBConstants.cubeProPLAColors)
                     cbColor.Items.Add(color);
             }
             else if (text.Equals(BFBConstants.EKO))
@@ -880,6 +999,10 @@ namespace Cube3Editor
             gridPressure.Columns.StretchToFit();
             gridPressure.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 
+            cbFirmware.Enabled = false;
+            cbMinFirmware.Enabled = false;
+            cbPrinterModel.Enabled = false;
+
         }
 
         private void MainEditor_Load(object sender, EventArgs e)
@@ -911,30 +1034,30 @@ namespace Cube3Editor
             UpdateTemperaturesInBFB(BFBConstants.RIGHT_TEMP, gridRightTemps);
         }
 
-        private void TbFirware_TextChanged(object sender, EventArgs e)
+        private void cbFirware_TextChanged(object sender, EventArgs e)
         {
-            if (tbFirmware.Text.Length > 0)
+            if (cbFirmware.Text.Length > 0)
             {
                 modified = true;
-                bfbObject.SetFIRMWARE(tbFirmware.Text);
+                bfbObject.SetFIRMWARE(cbFirmware.Text);
             }
         }
 
-        private void TbMinFirmware_TextChanged(object sender, EventArgs e)
+        private void CbMinFirmware_TextChanged(object sender, EventArgs e)
         {
-            if (tbMinFirmware.Text.Length > 0)
+            if (cbMinFirmware.Text.Length > 0)
             {
                 modified = true;
-                bfbObject.SetMINFIRMWARE(tbMinFirmware.Text);
+                bfbObject.SetMINFIRMWARE(cbMinFirmware.Text);
             }
         }
 
-        private void TbPrinterModel_TextChanged(object sender, EventArgs e)
+        private void CbPrinterModel_TextChanged(object sender, EventArgs e)
         {
-            if (tbPrinterModel.Text.Length > 0)
+            if (cbPrinterModel.Text.Length > 0)
             {
                 modified = true;
-                bfbObject.SetPRINTERMODEL(tbPrinterModel.Text);
+                bfbObject.SetPRINTERMODEL(cbPrinterModel.Text);
             }
         }
 
@@ -1021,17 +1144,17 @@ namespace Cube3Editor
 
             if (newFWStr != null && newFWStr.Length > 0)
             {
-                tbFirmware.Text = newFWStr;
+                cbFirmware.Text = newFWStr;
             }
 
             if (newMinFWStr != null && newMinFWStr.Length > 0)
             {
-                tbMinFirmware.Text = newMinFWStr;
+                cbMinFirmware.Text = newMinFWStr;
             }
 
             if (newPrinterModel != null && newPrinterModel.Length > 0)
             {
-                tbPrinterModel.Text = newPrinterModel;
+                cbPrinterModel.Text = newPrinterModel;
             }
 
             int.TryParse(newMCE1, out int cubeCode);
@@ -1297,6 +1420,103 @@ namespace Cube3Editor
         {
             preferencesDialog.ShowDialog();
             prefs.Load();
+        }
+
+        private void CbLeftSidewalk_CheckedChanged(object sender, EventArgs e)
+        {
+            if (cbLeftSidewalk.Checked == true)
+            {
+                cbCubeProSidewalk.Checked = false;
+                cbRightSidewalk.Checked = false;
+            }
+        }
+
+        private void CbMidSidewalk_CheckedChanged(object sender, EventArgs e)
+        {
+            if (cbCubeProSidewalk.Checked == true)
+            {
+                cbLeftSidewalk.Checked = false;
+                cbRightSidewalk.Checked = false;
+            }
+        }
+
+        private void CbRightSidewalk_CheckedChanged(object sender, EventArgs e)
+        {
+            if (cbRightSidewalk.Checked)
+            {
+                cbLeftSidewalk.Checked = false;
+                cbCubeProSidewalk.Checked = false;
+            }
+        }
+
+        private void CbLeftSupport_CheckedChanged(object sender, EventArgs e)
+        {
+            if (cbLeftSupport.Checked)
+            {
+                cbCubeProSupport.Checked = false;
+                cbRightSupport.Checked = false;
+            }
+        }
+
+        private void CbMidSupport_CheckedChanged(object sender, EventArgs e)
+        {
+            if (cbCubeProSupport.Checked)
+            {
+                cbLeftSupport.Checked = false;
+                cbRightSupport.Checked = false;
+            }
+        }
+
+        private void CbRightSupport_CheckedChanged(object sender, EventArgs e)
+        {
+            if (cbRightSupport.Checked)
+            {
+                cbLeftSupport.Checked = false;
+                cbCubeProSupport.Checked = false;
+            }
+        }
+
+        private void CbPrinterModel_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cbPrinterModel.Text.Length > 0)
+            {
+                if (cbPrinterModel.Text.ToUpper().Equals(BFBConstants.CUBE3_MODEL))
+                {
+                    cbFirmware.Text = BFBConstants.CUBE3_VERSION;
+                    cbMinFirmware.Text = BFBConstants.CUBE3_VERSION;
+                }
+
+                else if (cbPrinterModel.Text.ToUpper().Equals(BFBConstants.EKO_MODEL))
+                {
+                    cbFirmware.Text = BFBConstants.EKO_VERSION;
+                    cbMinFirmware.Text = BFBConstants.EKO_VERSION;
+                }
+
+                else if (cbPrinterModel.Text.ToUpper().Equals(BFBConstants.CUBEPRO_MODEL))
+                {
+                    cbFirmware.Text = BFBConstants.CUBEPRO_VERSION;
+                    cbMinFirmware.Text = BFBConstants.CUBEPRO_VERSION;
+                }
+                else
+                {
+                    cbFirmware.Text = "";
+                    cbMinFirmware.Text = "";
+                }
+                modified = true;
+                bfbObject.SetPRINTERMODEL(cbPrinterModel.Text);
+                bfbObject.SetFIRMWARE(cbFirmware.Text);
+                bfbObject.SetMINFIRMWARE(cbMinFirmware.Text);
+            }
+        }
+
+        private void CbFirmware_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            cbFirware_TextChanged(sender, e);
+        }
+
+        private void CbMinFirmware_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            CbMinFirmware_TextChanged(sender, e);
         }
     }
 }
