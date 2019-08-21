@@ -242,6 +242,23 @@ namespace BitForByteSupport
             }
         }
 
+        public void SetSUPPORTS(string newSupport)
+        {
+            int index = BfbLines.FindIndex(x => x.Contains(BFBConstants.SUPPORTS));
+            if (0 <= index && index < BfbLines.Count)
+            {
+                string[] supportStrArr = BfbLines[index].Split(':');
+                BfbLines[index] = string.Join(":", supportStrArr[0], newSupport);
+            }
+
+            // ^Sidewalks: entry not present, need to add as first entry
+            else
+            {
+                string supportsCmd = BFBConstants.SUPPORTS + newSupport;
+                BfbLines.Insert(0, supportsCmd);
+            }
+        }
+
         public int GetMATERIALCODE(string materialCode)
         {
             int index = BfbLines.FindIndex(x => x.Contains(materialCode));

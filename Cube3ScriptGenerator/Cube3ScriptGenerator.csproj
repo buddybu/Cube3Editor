@@ -36,10 +36,10 @@
     <SignManifests>true</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>6A1E1A1AD5D35A90F78B0EC81DB3FC8B490AEF52</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>6F335844789C740D9845CF8727C6BC7E5832BCDD</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>Cube3ScriptGenerator_TemporaryKey.pfx</ManifestKeyFile>
+    <ManifestKeyFile>Cube3Editor.pfx</ManifestKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -57,6 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="Cube3Editor.pfx" />
     <None Include="Cube3ScriptGenerator_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>

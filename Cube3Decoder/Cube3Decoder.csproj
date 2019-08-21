@@ -36,10 +36,10 @@
     <SignManifests>true</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>FDAF6B7DB3EBE3EEB11B2571F43C9BFBB0FC12CE</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>6F335844789C740D9845CF8727C6BC7E5832BCDD</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>Cube3Decoder_TemporaryKey.pfx</ManifestKeyFile>
+    <ManifestKeyFile>Cube3Editor.pfx</ManifestKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -60,6 +60,7 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="Cube3Decoder_TemporaryKey.pfx" />
+    <None Include="Cube3Editor.pfx" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\bc-csharp-release-1.8.5\crypto\BouncyCastle.csproj">

@@ -22,7 +22,11 @@ namespace CubeExtractorProgram
                 cube3File = args[cube3FileIndex];
             }
 
-            if (cube3File == null)
+            if (cube3File == null ||
+                cube3File.ToLower().Equals("-help") ||
+                cube3File.ToLower().Equals("/help") ||
+                cube3File.ToLower().Equals("-?") ||
+                cube3File.ToLower().Equals("/?"))
             {
                 displayHelp();
                 Environment.Exit(0);

@@ -32,9 +32,6 @@
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.tbPrinterModel = new System.Windows.Forms.TextBox();
-            this.tbMinFirmware = new System.Windows.Forms.TextBox();
-            this.tbFirmware = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
@@ -47,9 +44,15 @@
             this.cbRightMaterial = new System.Windows.Forms.ComboBox();
             this.label9 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.cbLeftSupport = new System.Windows.Forms.CheckBox();
+            this.cbLeftSidewalk = new System.Windows.Forms.CheckBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.cbRightSupport = new System.Windows.Forms.CheckBox();
+            this.cbRightSidewalk = new System.Windows.Forms.CheckBox();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.cbCubeProSupport = new System.Windows.Forms.CheckBox();
             this.cbCubeProMaterial = new System.Windows.Forms.ComboBox();
+            this.cbCubeProSidewalk = new System.Windows.Forms.CheckBox();
             this.label6 = new System.Windows.Forms.Label();
             this.cbCubeProColor = new System.Windows.Forms.ComboBox();
             this.label8 = new System.Windows.Forms.Label();
@@ -90,6 +93,9 @@
             this.saveScriptDialog = new System.Windows.Forms.SaveFileDialog();
             this.saveBFBFile = new System.Windows.Forms.SaveFileDialog();
             this.fdLoadScript = new System.Windows.Forms.OpenFileDialog();
+            this.cbFirmware = new System.Windows.Forms.ComboBox();
+            this.cbMinFirmware = new System.Windows.Forms.ComboBox();
+            this.cbPrinterModel = new System.Windows.Forms.ComboBox();
             this.panel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -112,48 +118,21 @@
             // 
             // panel1
             // 
-            this.panel1.Controls.Add(this.tbPrinterModel);
-            this.panel1.Controls.Add(this.tbMinFirmware);
-            this.panel1.Controls.Add(this.tbFirmware);
-            this.panel1.Controls.Add(this.label3);
+            this.panel1.Controls.Add(this.cbPrinterModel);
+            this.panel1.Controls.Add(this.cbMinFirmware);
+            this.panel1.Controls.Add(this.cbFirmware);
             this.panel1.Controls.Add(this.label2);
+            this.panel1.Controls.Add(this.label3);
             this.panel1.Controls.Add(this.label1);
             this.panel1.Location = new System.Drawing.Point(12, 27);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(216, 93);
             this.panel1.TabIndex = 1;
             // 
-            // tbPrinterModel
-            // 
-            this.tbPrinterModel.Enabled = false;
-            this.tbPrinterModel.Location = new System.Drawing.Point(130, 56);
-            this.tbPrinterModel.Name = "tbPrinterModel";
-            this.tbPrinterModel.Size = new System.Drawing.Size(80, 22);
-            this.tbPrinterModel.TabIndex = 5;
-            this.tbPrinterModel.TextChanged += new System.EventHandler(this.TbPrinterModel_TextChanged);
-            // 
-            // tbMinFirmware
-            // 
-            this.tbMinFirmware.Enabled = false;
-            this.tbMinFirmware.Location = new System.Drawing.Point(130, 34);
-            this.tbMinFirmware.Name = "tbMinFirmware";
-            this.tbMinFirmware.Size = new System.Drawing.Size(80, 22);
-            this.tbMinFirmware.TabIndex = 4;
-            this.tbMinFirmware.TextChanged += new System.EventHandler(this.TbMinFirmware_TextChanged);
-            // 
-            // tbFirmware
-            // 
-            this.tbFirmware.Enabled = false;
-            this.tbFirmware.Location = new System.Drawing.Point(130, 11);
-            this.tbFirmware.Name = "tbFirmware";
-            this.tbFirmware.Size = new System.Drawing.Size(80, 22);
-            this.tbFirmware.TabIndex = 3;
-            this.tbFirmware.TextChanged += new System.EventHandler(this.TbFirware_TextChanged);
-            // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(6, 59);
+            this.label3.Location = new System.Drawing.Point(4, 12);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(96, 17);
             this.label3.TabIndex = 2;
@@ -162,7 +141,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(9, 37);
+            this.label2.Location = new System.Drawing.Point(9, 65);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(91, 17);
             this.label2.TabIndex = 1;
@@ -171,7 +150,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(26, 14);
+            this.label1.Location = new System.Drawing.Point(31, 38);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(69, 17);
             this.label1.TabIndex = 0;
@@ -321,42 +300,108 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.cbLeftSupport);
+            this.groupBox1.Controls.Add(this.cbLeftSidewalk);
             this.groupBox1.Controls.Add(this.cbLeftMaterial);
             this.groupBox1.Controls.Add(this.label4);
             this.groupBox1.Controls.Add(this.label7);
             this.groupBox1.Controls.Add(this.cbLeftColor);
             this.groupBox1.Location = new System.Drawing.Point(12, 126);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(216, 87);
+            this.groupBox1.Size = new System.Drawing.Size(216, 103);
             this.groupBox1.TabIndex = 14;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Left Extruder (E1)";
             // 
+            // cbLeftSupport
+            // 
+            this.cbLeftSupport.AutoSize = true;
+            this.cbLeftSupport.Enabled = false;
+            this.cbLeftSupport.Location = new System.Drawing.Point(125, 76);
+            this.cbLeftSupport.Name = "cbLeftSupport";
+            this.cbLeftSupport.Size = new System.Drawing.Size(80, 21);
+            this.cbLeftSupport.TabIndex = 17;
+            this.cbLeftSupport.Text = "Support";
+            this.cbLeftSupport.UseVisualStyleBackColor = true;
+            this.cbLeftSupport.CheckedChanged += new System.EventHandler(this.CbLeftSupport_CheckedChanged);
+            // 
+            // cbLeftSidewalk
+            // 
+            this.cbLeftSidewalk.AutoSize = true;
+            this.cbLeftSidewalk.Enabled = false;
+            this.cbLeftSidewalk.Location = new System.Drawing.Point(12, 76);
+            this.cbLeftSidewalk.Name = "cbLeftSidewalk";
+            this.cbLeftSidewalk.Size = new System.Drawing.Size(85, 21);
+            this.cbLeftSidewalk.TabIndex = 16;
+            this.cbLeftSidewalk.Text = "Sidewalk";
+            this.cbLeftSidewalk.UseVisualStyleBackColor = true;
+            this.cbLeftSidewalk.CheckedChanged += new System.EventHandler(this.CbLeftSidewalk_CheckedChanged);
+            // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.cbRightSupport);
+            this.groupBox2.Controls.Add(this.cbRightSidewalk);
             this.groupBox2.Controls.Add(this.cbRightMaterial);
             this.groupBox2.Controls.Add(this.label9);
             this.groupBox2.Controls.Add(this.cbRightColor);
             this.groupBox2.Controls.Add(this.label5);
-            this.groupBox2.Location = new System.Drawing.Point(12, 324);
+            this.groupBox2.Location = new System.Drawing.Point(12, 354);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(216, 87);
+            this.groupBox2.Size = new System.Drawing.Size(216, 112);
             this.groupBox2.TabIndex = 15;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Right Extruder (E2)";
             // 
+            // cbRightSupport
+            // 
+            this.cbRightSupport.AutoSize = true;
+            this.cbRightSupport.Enabled = false;
+            this.cbRightSupport.Location = new System.Drawing.Point(125, 85);
+            this.cbRightSupport.Name = "cbRightSupport";
+            this.cbRightSupport.Size = new System.Drawing.Size(80, 21);
+            this.cbRightSupport.TabIndex = 15;
+            this.cbRightSupport.Text = "Support";
+            this.cbRightSupport.UseVisualStyleBackColor = true;
+            this.cbRightSupport.CheckedChanged += new System.EventHandler(this.CbRightSupport_CheckedChanged);
+            // 
+            // cbRightSidewalk
+            // 
+            this.cbRightSidewalk.AutoSize = true;
+            this.cbRightSidewalk.Enabled = false;
+            this.cbRightSidewalk.Location = new System.Drawing.Point(12, 85);
+            this.cbRightSidewalk.Name = "cbRightSidewalk";
+            this.cbRightSidewalk.Size = new System.Drawing.Size(85, 21);
+            this.cbRightSidewalk.TabIndex = 14;
+            this.cbRightSidewalk.Text = "Sidewalk";
+            this.cbRightSidewalk.UseVisualStyleBackColor = true;
+            this.cbRightSidewalk.CheckedChanged += new System.EventHandler(this.CbRightSidewalk_CheckedChanged);
+            // 
             // groupBox5
             // 
+            this.groupBox5.Controls.Add(this.cbCubeProSupport);
             this.groupBox5.Controls.Add(this.cbCubeProMaterial);
+            this.groupBox5.Controls.Add(this.cbCubeProSidewalk);
             this.groupBox5.Controls.Add(this.label6);
             this.groupBox5.Controls.Add(this.cbCubeProColor);
             this.groupBox5.Controls.Add(this.label8);
-            this.groupBox5.Location = new System.Drawing.Point(12, 225);
+            this.groupBox5.Location = new System.Drawing.Point(12, 235);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(216, 87);
+            this.groupBox5.Size = new System.Drawing.Size(216, 113);
             this.groupBox5.TabIndex = 28;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Mid Extruder (E3)";
+            // 
+            // cbCubeProSupport
+            // 
+            this.cbCubeProSupport.AutoSize = true;
+            this.cbCubeProSupport.Enabled = false;
+            this.cbCubeProSupport.Location = new System.Drawing.Point(128, 86);
+            this.cbCubeProSupport.Name = "cbCubeProSupport";
+            this.cbCubeProSupport.Size = new System.Drawing.Size(80, 21);
+            this.cbCubeProSupport.TabIndex = 17;
+            this.cbCubeProSupport.Text = "Support";
+            this.cbCubeProSupport.UseVisualStyleBackColor = true;
+            this.cbCubeProSupport.CheckedChanged += new System.EventHandler(this.CbMidSupport_CheckedChanged);
             // 
             // cbCubeProMaterial
             // 
@@ -376,6 +421,18 @@
             this.cbCubeProMaterial.Size = new System.Drawing.Size(68, 24);
             this.cbCubeProMaterial.TabIndex = 10;
             this.cbCubeProMaterial.SelectedIndexChanged += new System.EventHandler(this.CbCubeProMaterial_SelectedIndexChanged);
+            // 
+            // cbCubeProSidewalk
+            // 
+            this.cbCubeProSidewalk.AutoSize = true;
+            this.cbCubeProSidewalk.Enabled = false;
+            this.cbCubeProSidewalk.Location = new System.Drawing.Point(15, 86);
+            this.cbCubeProSidewalk.Name = "cbCubeProSidewalk";
+            this.cbCubeProSidewalk.Size = new System.Drawing.Size(85, 21);
+            this.cbCubeProSidewalk.TabIndex = 16;
+            this.cbCubeProSidewalk.Text = "Sidewalk";
+            this.cbCubeProSidewalk.UseVisualStyleBackColor = true;
+            this.cbCubeProSidewalk.CheckedChanged += new System.EventHandler(this.CbMidSidewalk_CheckedChanged);
             // 
             // label6
             // 
@@ -781,10 +838,52 @@
             this.fdLoadScript.FileName = "fdLoadScript";
             this.fdLoadScript.Filter = "\"Cube Script Files|*.cubescr|AllFiless|*.*\"";
             // 
+            // cbFirmware
+            // 
+            this.cbFirmware.FormattingEnabled = true;
+            this.cbFirmware.Items.AddRange(new object[] {
+            "V1.14B",
+            "V1.05",
+            "V1.87"});
+            this.cbFirmware.Location = new System.Drawing.Point(114, 34);
+            this.cbFirmware.Name = "cbFirmware";
+            this.cbFirmware.Size = new System.Drawing.Size(94, 24);
+            this.cbFirmware.TabIndex = 3;
+            this.cbFirmware.SelectedIndexChanged += new System.EventHandler(this.CbFirmware_SelectedIndexChanged);
+            this.cbFirmware.TextChanged += new System.EventHandler(this.cbFirware_TextChanged);
+            // 
+            // cbMinFirmware
+            // 
+            this.cbMinFirmware.FormattingEnabled = true;
+            this.cbMinFirmware.Items.AddRange(new object[] {
+            "V1.14B",
+            "V1.05",
+            "V1.87"});
+            this.cbMinFirmware.Location = new System.Drawing.Point(114, 62);
+            this.cbMinFirmware.Name = "cbMinFirmware";
+            this.cbMinFirmware.Size = new System.Drawing.Size(94, 24);
+            this.cbMinFirmware.TabIndex = 4;
+            this.cbMinFirmware.SelectedIndexChanged += new System.EventHandler(this.CbMinFirmware_SelectedIndexChanged);
+            this.cbMinFirmware.TextChanged += new System.EventHandler(this.CbMinFirmware_TextChanged);
+            // 
+            // cbPrinterModel
+            // 
+            this.cbPrinterModel.FormattingEnabled = true;
+            this.cbPrinterModel.Items.AddRange(new object[] {
+            "CUBE3",
+            "EKOCYCLE",
+            "CUBEPRO"});
+            this.cbPrinterModel.Location = new System.Drawing.Point(114, 5);
+            this.cbPrinterModel.Name = "cbPrinterModel";
+            this.cbPrinterModel.Size = new System.Drawing.Size(94, 24);
+            this.cbPrinterModel.TabIndex = 5;
+            this.cbPrinterModel.SelectedIndexChanged += new System.EventHandler(this.CbPrinterModel_SelectedIndexChanged);
+            this.cbPrinterModel.TextChanged += new System.EventHandler(this.CbPrinterModel_TextChanged);
+            // 
             // MainEditor
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-            this.ClientSize = new System.Drawing.Size(903, 450);
+            this.ClientSize = new System.Drawing.Size(903, 478);
             this.Controls.Add(this.btnViewScript);
             this.Controls.Add(this.btnGenScript);
             this.Controls.Add(this.tabControl1);
@@ -831,9 +930,6 @@
         private System.Windows.Forms.OpenFileDialog openFileDialog;
         private System.Windows.Forms.SaveFileDialog saveFileDialog;
         private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.TextBox tbPrinterModel;
-        private System.Windows.Forms.TextBox tbMinFirmware;
-        private System.Windows.Forms.TextBox tbFirmware;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
@@ -889,6 +985,15 @@
         private System.Windows.Forms.ToolStripMenuItem generateScriptToolStripMenuItem1;
         private System.Windows.Forms.OpenFileDialog fdLoadScript;
         private System.Windows.Forms.ToolStripMenuItem preferencesToolStripMenuItem;
+        private System.Windows.Forms.CheckBox cbLeftSupport;
+        private System.Windows.Forms.CheckBox cbLeftSidewalk;
+        private System.Windows.Forms.CheckBox cbRightSupport;
+        private System.Windows.Forms.CheckBox cbRightSidewalk;
+        private System.Windows.Forms.CheckBox cbCubeProSupport;
+        private System.Windows.Forms.CheckBox cbCubeProSidewalk;
+        private System.Windows.Forms.ComboBox cbPrinterModel;
+        private System.Windows.Forms.ComboBox cbMinFirmware;
+        private System.Windows.Forms.ComboBox cbFirmware;
     }
 }
 
