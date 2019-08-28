@@ -986,14 +986,18 @@ namespace Cube3Editor
             gridRetractionStop.Columns.StretchToFit();
             gridRetractionStop.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 
-            gridPressure.ColumnsCount = 2;
+            gridPressure.ColumnsCount = 4;
             gridPressure.FixedRows = 1;
             gridPressure.Rows.Insert(0);
 
-            gridPressure[0, 0] = new SourceGrid.Cells.ColumnHeader("Extruder Pressure");
+            gridPressure[0, 0] = new SourceGrid.Cells.ColumnHeader("Selected");
             gridPressure[0, 0].View = headerView;
-            gridPressure[0, 1] = new SourceGrid.Cells.ColumnHeader("1st Index");
+            gridPressure[0, 1] = new SourceGrid.Cells.ColumnHeader("Extruder Pressure");
             gridPressure[0, 1].View = headerView;
+            gridPressure[0, 2] = new SourceGrid.Cells.ColumnHeader("Calculated Pressure");
+            gridPressure[0, 2].View = headerView;
+            gridPressure[0, 3] = new SourceGrid.Cells.ColumnHeader("1st Index");
+            gridPressure[0, 3].View = headerView;
             gridPressure.AutoSize = true;
             gridPressure.AutoSizeCells();
             gridPressure.Columns.StretchToFit();
@@ -1290,7 +1294,7 @@ namespace Cube3Editor
                 Dictionary<double, int> pressureDict = new Dictionary<double, int>();
                 for (int i = 1; i < gridPressure.Rows.Count; i++)
                 {
-                    pressureDict.Add((double)gridPressure[i, 0].Value, i);
+                    pressureDict.Add((double)gridPressure[i, 1].Value, i);
                 }
 
                 foreach (PressureModifier pressureMod in pressureMods)
@@ -1300,7 +1304,7 @@ namespace Cube3Editor
                         int i = pressureDict[pressureMod.oldPressureValue];
 
                         // set row to replace and replace value to newvalue
-                        gridPressure[i, 0].Value = (double)pressureMod.newPressureValue;
+                        gridPressure[i, 1].Value = (double)pressureMod.newPressureValue;
                     }
                 }
                 UpdatePressures();
@@ -1517,6 +1521,38 @@ namespace Cube3Editor
         private void CbMinFirmware_SelectedIndexChanged(object sender, EventArgs e)
         {
             CbMinFirmware_TextChanged(sender, e);
+        }
+
+        private void GridPressureSelectAll_Click(object sender, EventArgs e)
+        {
+            for (int i = 1; i < gridPressure.Rows.Count; i++)
+            {
+                if ((bool)(gridPressure[i, 0].Value) == false)
+                {
+                    gridPressure[i, 0].Value = true;
+                }
+            }
+
+        }
+
+        private void GridPressureClearSelection_Click(object sender, EventArgs e)
+        {
+            for (int i = 1; i < gridPressure.Rows.Count; i++)
+            {
+                if ((bool)(gridPressure[i, 0].Value) == true) {
+                    gridPressure[i, 0].Value = false;
+                }
+            }
+        }
+
+        private void BtnApplyChange_Click(object sender, EventArgs e)
+        {
+            CalculatePressures((double)nudPressureMod.Value, false);
+        }
+
+        private void BtnUpdate_Click(object sender, EventArgs e)
+        {
+            CalculatePressures((double)nudPressureMod.Value, true);
         }
     }
 }

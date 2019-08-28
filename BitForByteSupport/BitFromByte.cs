@@ -301,6 +301,19 @@ namespace BitForByteSupport
             return supports;
         }
 
+        public void RebuildPressures()
+        {
+            // clear dictionary
+            // clear line list
+            // repopulate dictionary and linelist
+
+            PressureDictionary.Clear();
+            PressureLineList.Clear();
+
+            getExtruderPressures(BFBConstants.EXTRUDER_PRESSURE);
+
+
+        }
         public List<string> getExtruderPressures(string bfbPressureCode)
         {
             List<string> pressures = new List<string>();
