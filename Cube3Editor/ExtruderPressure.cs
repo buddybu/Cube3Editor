@@ -20,9 +20,11 @@ namespace Cube3Editor
                 Double pressure = bfbObject.PressureDictionary[index];
 
                 gridPressure.Rows.Insert(gridRow);
-                gridPressure[gridRow, 0] = new SourceGrid.Cells.Cell(pressure, typeof(double));
-                gridPressure[gridRow, 0].AddController(valueChangedController);
-                gridPressure[gridRow, 1] = new SourceGrid.Cells.Cell(index, pressureEditor);
+                gridPressure[gridRow, 0] = new SourceGrid.Cells.CheckBox("", false);
+                gridPressure[gridRow, 1] = new SourceGrid.Cells.Cell(pressure, typeof(double));
+                gridPressure[gridRow, 1].AddController(valueChangedController);
+                gridPressure[gridRow, 2] = new SourceGrid.Cells.Cell(0, typeof(double));
+                gridPressure[gridRow, 3] = new SourceGrid.Cells.Cell(index, pressureEditor);
 
                 gridRow++;
             }
@@ -34,8 +36,8 @@ namespace Cube3Editor
             {
                 for (int i = 1; i < gridPressure.Rows.Count; i++)
                 {
-                    Double pressure = (Double)gridPressure[i, 0].Value;
-                    int index = (int)gridPressure[i, 1].Value;
+                    Double pressure = (Double)gridPressure[i, 1].Value;
+                    int index = (int)gridPressure[i, 3].Value;
 
                     string pressureCmd = BFBConstants.EXTRUDER_PRESSURE + " S" + pressure;
 
@@ -43,8 +45,44 @@ namespace Cube3Editor
 
                 }
             }
+
+            if (gridPressure.Rows.Count > 1)
+                gridPressure.Rows.RemoveRange(1, gridPressure.Rows.Count - 1);
+            bfbObject.RebuildPressures();
+            PopulatePressures();
         }
 
+        internal void CalculatePressures(Double pressureChangeValue, Boolean updatePressures)
+        {
+            if (gridPressure.Rows.Count > 1)
+            {
+                if (pressureChangeValue > 0.0 || pressureChangeValue < 0.0)
+                {
+                    for (int i = 1; i < gridPressure.Rows.Count; i++)
+                    {
+                        if ((bool)(gridPressure[i, 0].Value) == true)
+                        {
+                            Double currentPressure = (Double)gridPressure[i, 1].Value;
+                            Double pressureModifier = (pressureChangeValue / 100.0) * currentPressure;
+                            Double newPressure = currentPressure + pressureModifier;
+
+                            // don't allow negative pressures
+                            if (newPressure < 0.0)
+                            {
+                                newPressure = 0.0;
+                            }
+
+                            gridPressure[i, 2].Value = newPressure;
+                            if (updatePressures)
+                            {
+                                gridPressure[i, 1].Value = newPressure;
+                            }
+
+                        }
+                    }
+                }
+            }
+        }
 
     }
 }

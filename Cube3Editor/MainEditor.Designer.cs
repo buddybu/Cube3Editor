@@ -32,8 +32,11 @@
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.label3 = new System.Windows.Forms.Label();
+            this.cbPrinterModel = new System.Windows.Forms.ComboBox();
+            this.cbMinFirmware = new System.Windows.Forms.ComboBox();
+            this.cbFirmware = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.cbLeftMaterial = new System.Windows.Forms.ComboBox();
@@ -87,15 +90,18 @@
             this.btnRightCalculate = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tbPressure = new System.Windows.Forms.TabPage();
+            this.btnCalculate = new System.Windows.Forms.Button();
+            this.nudPressureMod = new System.Windows.Forms.NumericUpDown();
+            this.label10 = new System.Windows.Forms.Label();
+            this.btnSelectAll = new System.Windows.Forms.Button();
+            this.btnClearSelection = new System.Windows.Forms.Button();
             this.gridPressure = new SourceGrid.Grid();
             this.btnGenScript = new System.Windows.Forms.Button();
             this.btnViewScript = new System.Windows.Forms.Button();
             this.saveScriptDialog = new System.Windows.Forms.SaveFileDialog();
             this.saveBFBFile = new System.Windows.Forms.SaveFileDialog();
             this.fdLoadScript = new System.Windows.Forms.OpenFileDialog();
-            this.cbFirmware = new System.Windows.Forms.ComboBox();
-            this.cbMinFirmware = new System.Windows.Forms.ComboBox();
-            this.cbPrinterModel = new System.Windows.Forms.ComboBox();
+            this.btnUpdate = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -109,6 +115,7 @@
             this.groupBox4.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tbPressure.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudPressureMod)).BeginInit();
             this.SuspendLayout();
             // 
             // openFileDialog
@@ -129,14 +136,47 @@
             this.panel1.Size = new System.Drawing.Size(216, 93);
             this.panel1.TabIndex = 1;
             // 
-            // label3
+            // cbPrinterModel
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(4, 12);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(96, 17);
-            this.label3.TabIndex = 2;
-            this.label3.Text = "Printer Model:";
+            this.cbPrinterModel.FormattingEnabled = true;
+            this.cbPrinterModel.Items.AddRange(new object[] {
+            "CUBE3",
+            "EKOCYCLE",
+            "CUBEPRO"});
+            this.cbPrinterModel.Location = new System.Drawing.Point(114, 5);
+            this.cbPrinterModel.Name = "cbPrinterModel";
+            this.cbPrinterModel.Size = new System.Drawing.Size(94, 24);
+            this.cbPrinterModel.TabIndex = 5;
+            this.cbPrinterModel.SelectedIndexChanged += new System.EventHandler(this.CbPrinterModel_SelectedIndexChanged);
+            this.cbPrinterModel.TextChanged += new System.EventHandler(this.CbPrinterModel_TextChanged);
+            // 
+            // cbMinFirmware
+            // 
+            this.cbMinFirmware.FormattingEnabled = true;
+            this.cbMinFirmware.Items.AddRange(new object[] {
+            "V1.14B",
+            "V1.05",
+            "V1.87"});
+            this.cbMinFirmware.Location = new System.Drawing.Point(114, 62);
+            this.cbMinFirmware.Name = "cbMinFirmware";
+            this.cbMinFirmware.Size = new System.Drawing.Size(94, 24);
+            this.cbMinFirmware.TabIndex = 4;
+            this.cbMinFirmware.SelectedIndexChanged += new System.EventHandler(this.CbMinFirmware_SelectedIndexChanged);
+            this.cbMinFirmware.TextChanged += new System.EventHandler(this.CbMinFirmware_TextChanged);
+            // 
+            // cbFirmware
+            // 
+            this.cbFirmware.FormattingEnabled = true;
+            this.cbFirmware.Items.AddRange(new object[] {
+            "V1.14B",
+            "V1.05",
+            "V1.87"});
+            this.cbFirmware.Location = new System.Drawing.Point(114, 34);
+            this.cbFirmware.Name = "cbFirmware";
+            this.cbFirmware.Size = new System.Drawing.Size(94, 24);
+            this.cbFirmware.TabIndex = 3;
+            this.cbFirmware.SelectedIndexChanged += new System.EventHandler(this.CbFirmware_SelectedIndexChanged);
+            this.cbFirmware.TextChanged += new System.EventHandler(this.cbFirware_TextChanged);
             // 
             // label2
             // 
@@ -146,6 +186,15 @@
             this.label2.Size = new System.Drawing.Size(91, 17);
             this.label2.TabIndex = 1;
             this.label2.Text = "MinFirmware:";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(4, 12);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(96, 17);
+            this.label3.TabIndex = 2;
+            this.label3.Text = "Printer Model:";
             // 
             // label1
             // 
@@ -792,6 +841,12 @@
             // 
             // tbPressure
             // 
+            this.tbPressure.Controls.Add(this.btnUpdate);
+            this.tbPressure.Controls.Add(this.btnCalculate);
+            this.tbPressure.Controls.Add(this.nudPressureMod);
+            this.tbPressure.Controls.Add(this.label10);
+            this.tbPressure.Controls.Add(this.btnSelectAll);
+            this.tbPressure.Controls.Add(this.btnClearSelection);
             this.tbPressure.Controls.Add(this.gridPressure);
             this.tbPressure.Location = new System.Drawing.Point(4, 25);
             this.tbPressure.Name = "tbPressure";
@@ -800,6 +855,59 @@
             this.tbPressure.TabIndex = 2;
             this.tbPressure.Text = "Extruder Pressure";
             this.tbPressure.UseVisualStyleBackColor = true;
+            // 
+            // btnCalculate
+            // 
+            this.btnCalculate.Location = new System.Drawing.Point(467, 316);
+            this.btnCalculate.Name = "btnCalculate";
+            this.btnCalculate.Size = new System.Drawing.Size(77, 26);
+            this.btnCalculate.TabIndex = 6;
+            this.btnCalculate.Text = "Calculate";
+            this.btnCalculate.UseVisualStyleBackColor = true;
+            this.btnCalculate.Click += new System.EventHandler(this.BtnApplyChange_Click);
+            // 
+            // nudPressureMod
+            // 
+            this.nudPressureMod.DecimalPlaces = 1;
+            this.nudPressureMod.Location = new System.Drawing.Point(374, 319);
+            this.nudPressureMod.Minimum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            -2147483648});
+            this.nudPressureMod.Name = "nudPressureMod";
+            this.nudPressureMod.Size = new System.Drawing.Size(70, 22);
+            this.nudPressureMod.TabIndex = 5;
+            this.nudPressureMod.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(291, 321);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(77, 17);
+            this.label10.TabIndex = 4;
+            this.label10.Text = "Change %:";
+            // 
+            // btnSelectAll
+            // 
+            this.btnSelectAll.Location = new System.Drawing.Point(6, 316);
+            this.btnSelectAll.Name = "btnSelectAll";
+            this.btnSelectAll.Size = new System.Drawing.Size(111, 26);
+            this.btnSelectAll.TabIndex = 3;
+            this.btnSelectAll.Text = "Select All";
+            this.btnSelectAll.UseVisualStyleBackColor = true;
+            this.btnSelectAll.Click += new System.EventHandler(this.GridPressureSelectAll_Click);
+            // 
+            // btnClearSelection
+            // 
+            this.btnClearSelection.Location = new System.Drawing.Point(123, 316);
+            this.btnClearSelection.Name = "btnClearSelection";
+            this.btnClearSelection.Size = new System.Drawing.Size(111, 26);
+            this.btnClearSelection.TabIndex = 2;
+            this.btnClearSelection.Text = "Clear Selection";
+            this.btnClearSelection.UseVisualStyleBackColor = true;
+            this.btnClearSelection.Click += new System.EventHandler(this.GridPressureClearSelection_Click);
             // 
             // gridPressure
             // 
@@ -838,47 +946,15 @@
             this.fdLoadScript.FileName = "fdLoadScript";
             this.fdLoadScript.Filter = "\"Cube Script Files|*.cubescr|AllFiless|*.*\"";
             // 
-            // cbFirmware
+            // btnUpdate
             // 
-            this.cbFirmware.FormattingEnabled = true;
-            this.cbFirmware.Items.AddRange(new object[] {
-            "V1.14B",
-            "V1.05",
-            "V1.87"});
-            this.cbFirmware.Location = new System.Drawing.Point(114, 34);
-            this.cbFirmware.Name = "cbFirmware";
-            this.cbFirmware.Size = new System.Drawing.Size(94, 24);
-            this.cbFirmware.TabIndex = 3;
-            this.cbFirmware.SelectedIndexChanged += new System.EventHandler(this.CbFirmware_SelectedIndexChanged);
-            this.cbFirmware.TextChanged += new System.EventHandler(this.cbFirware_TextChanged);
-            // 
-            // cbMinFirmware
-            // 
-            this.cbMinFirmware.FormattingEnabled = true;
-            this.cbMinFirmware.Items.AddRange(new object[] {
-            "V1.14B",
-            "V1.05",
-            "V1.87"});
-            this.cbMinFirmware.Location = new System.Drawing.Point(114, 62);
-            this.cbMinFirmware.Name = "cbMinFirmware";
-            this.cbMinFirmware.Size = new System.Drawing.Size(94, 24);
-            this.cbMinFirmware.TabIndex = 4;
-            this.cbMinFirmware.SelectedIndexChanged += new System.EventHandler(this.CbMinFirmware_SelectedIndexChanged);
-            this.cbMinFirmware.TextChanged += new System.EventHandler(this.CbMinFirmware_TextChanged);
-            // 
-            // cbPrinterModel
-            // 
-            this.cbPrinterModel.FormattingEnabled = true;
-            this.cbPrinterModel.Items.AddRange(new object[] {
-            "CUBE3",
-            "EKOCYCLE",
-            "CUBEPRO"});
-            this.cbPrinterModel.Location = new System.Drawing.Point(114, 5);
-            this.cbPrinterModel.Name = "cbPrinterModel";
-            this.cbPrinterModel.Size = new System.Drawing.Size(94, 24);
-            this.cbPrinterModel.TabIndex = 5;
-            this.cbPrinterModel.SelectedIndexChanged += new System.EventHandler(this.CbPrinterModel_SelectedIndexChanged);
-            this.cbPrinterModel.TextChanged += new System.EventHandler(this.CbPrinterModel_TextChanged);
+            this.btnUpdate.Location = new System.Drawing.Point(550, 316);
+            this.btnUpdate.Name = "btnUpdate";
+            this.btnUpdate.Size = new System.Drawing.Size(65, 26);
+            this.btnUpdate.TabIndex = 7;
+            this.btnUpdate.Text = "Update";
+            this.btnUpdate.UseVisualStyleBackColor = true;
+            this.btnUpdate.Click += new System.EventHandler(this.BtnUpdate_Click);
             // 
             // MainEditor
             // 
@@ -921,6 +997,8 @@
             this.groupBox4.ResumeLayout(false);
             this.tabControl1.ResumeLayout(false);
             this.tbPressure.ResumeLayout(false);
+            this.tbPressure.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudPressureMod)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -994,6 +1072,12 @@
         private System.Windows.Forms.ComboBox cbPrinterModel;
         private System.Windows.Forms.ComboBox cbMinFirmware;
         private System.Windows.Forms.ComboBox cbFirmware;
+        private System.Windows.Forms.Button btnSelectAll;
+        private System.Windows.Forms.Button btnClearSelection;
+        private System.Windows.Forms.Button btnCalculate;
+        private System.Windows.Forms.NumericUpDown nudPressureMod;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Button btnUpdate;
     }
 }
 
