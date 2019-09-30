@@ -30,7 +30,7 @@ namespace Cube3Editor
             }
         }
 
-        internal void UpdatePressures()
+        internal void UpdatePressures(bool updateGrid = false)
         {
             if (gridPressure.Rows.Count > 1)
             {
@@ -46,10 +46,13 @@ namespace Cube3Editor
                 }
             }
 
-            if (gridPressure.Rows.Count > 1)
-                gridPressure.Rows.RemoveRange(1, gridPressure.Rows.Count - 1);
-            bfbObject.RebuildPressures();
-            PopulatePressures();
+            if (updateGrid)
+            {
+                if (gridPressure.Rows.Count > 1)
+                    gridPressure.Rows.RemoveRange(1, gridPressure.Rows.Count - 1);
+                bfbObject.RebuildPressures();
+                PopulatePressures();
+            }
         }
 
         internal void CalculatePressures(Double pressureChangeValue, Boolean updatePressures)
@@ -63,8 +66,9 @@ namespace Cube3Editor
                         if ((bool)(gridPressure[i, 0].Value) == true)
                         {
                             Double currentPressure = (Double)gridPressure[i, 1].Value;
-                            Double pressureModifier = (pressureChangeValue / 100.0) * currentPressure;
-                            Double newPressure = currentPressure + pressureModifier;
+
+                            Double pressureModifier = Convert.ToDouble(String.Format("{0:F2}", (pressureChangeValue / 100.0) * currentPressure));
+                            Double newPressure = Convert.ToDouble(String.Format("{0:F2}", currentPressure + pressureModifier));
 
                             // don't allow negative pressures
                             if (newPressure < 0.0)
@@ -79,6 +83,11 @@ namespace Cube3Editor
                             }
 
                         }
+                    }
+
+                    if (updatePressures)
+                    {
+                        UpdatePressures(true);
                     }
                 }
             }
