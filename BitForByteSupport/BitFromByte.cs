@@ -117,35 +117,33 @@ namespace BitForByteSupport
         public string GetMaterialType(string material)
         {
             int index = BfbLines.FindIndex(x => x.Contains(material));
-            string materialCodeStr = BfbLines[index].Split(':')[1];
-            int materialCode = Convert.ToInt32(materialCodeStr);
-
-            //if (materialCode != -1)
+            if (index != -1)
             {
+                string materialCodeStr = BfbLines[index].Split(':')[1];
+                int materialCode = Convert.ToInt32(materialCodeStr);
                 return BFBConstants.GetMaterialType(materialCode);
             }
-            //else
-            //{
-            //    return "";
+            else
+            {
+                return BFBConstants.EMPTY;
 
-            //}
+            }
         }
 
         public string GetMaterialColor(string material)
         {
             int index = BfbLines.FindIndex(x => x.Contains(material));
-            string materialCodeStr = BfbLines[index].Split(':')[1];
-            int materialCode = Convert.ToInt32(materialCodeStr);
-
-//            if (materialCode != -1)
+            if (index != -1)
             {
+                string materialCodeStr = BfbLines[index].Split(':')[1];
+                int materialCode = Convert.ToInt32(materialCodeStr);
+
                 return BFBConstants.GetMaterialColor(materialCode);
             }
-            //else
-            //{
-            //    return "";
-
-            //}
+            else
+            {
+                return BFBConstants.EMPTY;
+            }
         }
 
 
