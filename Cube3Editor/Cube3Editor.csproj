@@ -79,6 +79,12 @@
       <DependentUpon>AboutBox1.cs</DependentUpon>
     </Compile>
     <Compile Include="BCEngine.cs" />
+    <Compile Include="XmlViewForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="XmlViewForm.Designer.cs">
+      <DependentUpon>XmlViewForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Preferences.cs" />
     <Compile Include="PreferencesDialog.cs">
       <SubType>Form</SubType>
@@ -101,11 +107,11 @@
     <Compile Include="ExtruderPressure.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="RawViewForm.cs">
+    <Compile Include="BFBViewForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="RawViewForm.Designer.cs">
-      <DependentUpon>RawViewForm.cs</DependentUpon>
+    <Compile Include="BFBViewForm.Designer.cs">
+      <DependentUpon>BFBViewForm.cs</DependentUpon>
     </Compile>
     <Compile Include="MainEditor.cs">
       <SubType>Form</SubType>
@@ -120,14 +126,20 @@
     <Compile Include="RetractionStartChangedEvent.cs" />
     <Compile Include="TemperatureChangedEvent.cs" />
     <Compile Include="TemperatureType.cs" />
+    <Compile Include="XmlEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="XmlEditor.designer.cs" />
+    <Compile Include="XmlToken.cs" />
+    <Compile Include="XmlTokenizer.cs" />
     <EmbeddedResource Include="AboutBox1.resx">
       <DependentUpon>AboutBox1.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PreferencesDialog.resx">
       <DependentUpon>PreferencesDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="RawViewForm.resx">
-      <DependentUpon>RawViewForm.cs</DependentUpon>
+    <EmbeddedResource Include="BFBViewForm.resx">
+      <DependentUpon>BFBViewForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainEditor.resx">
       <DependentUpon>MainEditor.cs</DependentUpon>
@@ -144,6 +156,9 @@
     </Compile>
     <EmbeddedResource Include="ScriptViewForm.resx">
       <DependentUpon>ScriptViewForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="XmlViewForm.resx">
+      <DependentUpon>XmlViewForm.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Cube3Editor.pfx" />
     <None Include="Cube3Editor_TemporaryKey.pfx" />

@@ -1554,5 +1554,33 @@ namespace Cube3Editor
         {
             CalculatePressures((double)nudPressureMod.Value, true);
         }
+
+        private void XMLViewerShow(object sender, EventArgs e)
+        {
+
+            if (extractor != null)
+            {
+                Byte[] xmlBytes = extractor.ModelFiles[extractor.GetXMLFilename()];
+
+                string xmlString = encoding.GetString(xmlBytes);
+                var xDoc = XDocument.Parse(xmlString);
+
+                XmlViewForm xmlViewForm = new XmlViewForm(xDoc);
+
+                xmlViewForm.ShowDialog();
+
+                //if (rawViewForm.ApplyChanges)
+                //{
+                //    string rawBFBText = rawViewForm.rtbRawView.Text;
+
+                //    ProcessAndLoadBFB(encoding.GetBytes(rawBFBText));
+                //}
+            }
+            else
+            {
+                MessageBox.Show("Please open a Cube model.", "No Model Present", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }
+
+        }
     }
 }

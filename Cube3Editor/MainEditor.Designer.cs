@@ -74,48 +74,52 @@
             this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.generateScriptToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.preferencesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.tabRetractrionControl = new System.Windows.Forms.TabPage();
-            this.groupBox7 = new System.Windows.Forms.GroupBox();
-            this.gridRetractionStop = new SourceGrid.Grid();
-            this.groupBox6 = new System.Windows.Forms.GroupBox();
-            this.gridRetractionStart = new SourceGrid.Grid();
-            this.tabTemperatureControl = new System.Windows.Forms.TabPage();
-            this.gridLeftTemps = new SourceGrid.Grid();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.btnLeftCalculate = new System.Windows.Forms.Button();
-            this.btnLeftTempUpdate = new System.Windows.Forms.Button();
-            this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.gridRightTemps = new SourceGrid.Grid();
-            this.btnRightTempUpdate = new System.Windows.Forms.Button();
-            this.btnRightCalculate = new System.Windows.Forms.Button();
-            this.tabControl1 = new System.Windows.Forms.TabControl();
-            this.tbPressure = new System.Windows.Forms.TabPage();
-            this.btnCalculate = new System.Windows.Forms.Button();
-            this.nudPressureMod = new System.Windows.Forms.NumericUpDown();
-            this.label10 = new System.Windows.Forms.Label();
-            this.btnSelectAll = new System.Windows.Forms.Button();
-            this.btnClearSelection = new System.Windows.Forms.Button();
-            this.gridPressure = new SourceGrid.Grid();
             this.btnGenScript = new System.Windows.Forms.Button();
             this.btnViewScript = new System.Windows.Forms.Button();
             this.saveScriptDialog = new System.Windows.Forms.SaveFileDialog();
             this.saveBFBFile = new System.Windows.Forms.SaveFileDialog();
             this.fdLoadScript = new System.Windows.Forms.OpenFileDialog();
+            this.tbPressure = new System.Windows.Forms.TabPage();
+            this.gridPressure = new SourceGrid.Grid();
+            this.btnClearSelection = new System.Windows.Forms.Button();
+            this.btnSelectAll = new System.Windows.Forms.Button();
+            this.label10 = new System.Windows.Forms.Label();
+            this.nudPressureMod = new System.Windows.Forms.NumericUpDown();
+            this.btnCalculate = new System.Windows.Forms.Button();
             this.btnUpdate = new System.Windows.Forms.Button();
+            this.tabRetractrionControl = new System.Windows.Forms.TabPage();
+            this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.gridRetractionStart = new SourceGrid.Grid();
+            this.groupBox7 = new System.Windows.Forms.GroupBox();
+            this.gridRetractionStop = new SourceGrid.Grid();
+            this.tabTemperatureControl = new System.Windows.Forms.TabPage();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.btnRightCalculate = new System.Windows.Forms.Button();
+            this.btnRightTempUpdate = new System.Windows.Forms.Button();
+            this.gridRightTemps = new SourceGrid.Grid();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.btnLeftTempUpdate = new System.Windows.Forms.Button();
+            this.btnLeftCalculate = new System.Windows.Forms.Button();
+            this.gridLeftTemps = new SourceGrid.Grid();
+            this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.bFBToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.xMLToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.scriptToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox5.SuspendLayout();
             this.mainMenu.SuspendLayout();
-            this.tabRetractrionControl.SuspendLayout();
-            this.groupBox7.SuspendLayout();
-            this.groupBox6.SuspendLayout();
-            this.tabTemperatureControl.SuspendLayout();
-            this.groupBox3.SuspendLayout();
-            this.groupBox4.SuspendLayout();
-            this.tabControl1.SuspendLayout();
             this.tbPressure.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudPressureMod)).BeginInit();
+            this.tabRetractrionControl.SuspendLayout();
+            this.groupBox6.SuspendLayout();
+            this.groupBox7.SuspendLayout();
+            this.tabTemperatureControl.SuspendLayout();
+            this.groupBox4.SuspendLayout();
+            this.groupBox3.SuspendLayout();
+            this.tabControl1.SuspendLayout();
             this.SuspendLayout();
             // 
             // openFileDialog
@@ -629,7 +633,7 @@
             // abouitToolStripMenuItem
             // 
             this.abouitToolStripMenuItem.Name = "abouitToolStripMenuItem";
-            this.abouitToolStripMenuItem.Size = new System.Drawing.Size(142, 26);
+            this.abouitToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.abouitToolStripMenuItem.Text = "About...";
             this.abouitToolStripMenuItem.Click += new System.EventHandler(this.AbouitToolStripMenuItem_Click);
             // 
@@ -639,6 +643,7 @@
             this.mainMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
             this.editToolStripMenuItem,
+            this.viewToolStripMenuItem,
             this.helpToolStripMenuItem});
             this.mainMenu.Location = new System.Drawing.Point(0, 0);
             this.mainMenu.Name = "mainMenu";
@@ -670,257 +675,6 @@
             this.preferencesToolStripMenuItem.Text = "Preferences";
             this.preferencesToolStripMenuItem.Click += new System.EventHandler(this.PreferencesToolStripMenuItem_Click);
             // 
-            // tabRetractrionControl
-            // 
-            this.tabRetractrionControl.Controls.Add(this.groupBox7);
-            this.tabRetractrionControl.Controls.Add(this.groupBox6);
-            this.tabRetractrionControl.Location = new System.Drawing.Point(4, 25);
-            this.tabRetractrionControl.Name = "tabRetractrionControl";
-            this.tabRetractrionControl.Padding = new System.Windows.Forms.Padding(3);
-            this.tabRetractrionControl.Size = new System.Drawing.Size(621, 357);
-            this.tabRetractrionControl.TabIndex = 1;
-            this.tabRetractrionControl.Text = "Retraction Control";
-            this.tabRetractrionControl.UseVisualStyleBackColor = true;
-            // 
-            // groupBox7
-            // 
-            this.groupBox7.Controls.Add(this.gridRetractionStop);
-            this.groupBox7.Location = new System.Drawing.Point(3, 183);
-            this.groupBox7.Name = "groupBox7";
-            this.groupBox7.Size = new System.Drawing.Size(609, 179);
-            this.groupBox7.TabIndex = 2;
-            this.groupBox7.TabStop = false;
-            this.groupBox7.Text = "M228";
-            // 
-            // gridRetractionStop
-            // 
-            this.gridRetractionStop.EnableSort = true;
-            this.gridRetractionStop.Location = new System.Drawing.Point(6, 19);
-            this.gridRetractionStop.Name = "gridRetractionStop";
-            this.gridRetractionStop.OptimizeMode = SourceGrid.CellOptimizeMode.ForRows;
-            this.gridRetractionStop.SelectionMode = SourceGrid.GridSelectionMode.Cell;
-            this.gridRetractionStop.Size = new System.Drawing.Size(597, 154);
-            this.gridRetractionStop.TabIndex = 0;
-            this.gridRetractionStop.TabStop = true;
-            this.gridRetractionStop.ToolTipText = "";
-            // 
-            // groupBox6
-            // 
-            this.groupBox6.Controls.Add(this.gridRetractionStart);
-            this.groupBox6.Location = new System.Drawing.Point(6, 6);
-            this.groupBox6.Name = "groupBox6";
-            this.groupBox6.Size = new System.Drawing.Size(609, 171);
-            this.groupBox6.TabIndex = 1;
-            this.groupBox6.TabStop = false;
-            this.groupBox6.Text = "M227";
-            // 
-            // gridRetractionStart
-            // 
-            this.gridRetractionStart.EnableSort = true;
-            this.gridRetractionStart.Location = new System.Drawing.Point(6, 19);
-            this.gridRetractionStart.Name = "gridRetractionStart";
-            this.gridRetractionStart.OptimizeMode = SourceGrid.CellOptimizeMode.ForRows;
-            this.gridRetractionStart.SelectionMode = SourceGrid.GridSelectionMode.Cell;
-            this.gridRetractionStart.Size = new System.Drawing.Size(597, 154);
-            this.gridRetractionStart.TabIndex = 0;
-            this.gridRetractionStart.TabStop = true;
-            this.gridRetractionStart.ToolTipText = "";
-            // 
-            // tabTemperatureControl
-            // 
-            this.tabTemperatureControl.Controls.Add(this.gridLeftTemps);
-            this.tabTemperatureControl.Controls.Add(this.groupBox3);
-            this.tabTemperatureControl.Controls.Add(this.groupBox4);
-            this.tabTemperatureControl.Location = new System.Drawing.Point(4, 25);
-            this.tabTemperatureControl.Name = "tabTemperatureControl";
-            this.tabTemperatureControl.Padding = new System.Windows.Forms.Padding(3);
-            this.tabTemperatureControl.Size = new System.Drawing.Size(621, 357);
-            this.tabTemperatureControl.TabIndex = 0;
-            this.tabTemperatureControl.Text = "Temperature Control";
-            this.tabTemperatureControl.UseVisualStyleBackColor = true;
-            // 
-            // gridLeftTemps
-            // 
-            this.gridLeftTemps.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.gridLeftTemps.EnableSort = true;
-            this.gridLeftTemps.Location = new System.Drawing.Point(6, 59);
-            this.gridLeftTemps.Name = "gridLeftTemps";
-            this.gridLeftTemps.OptimizeMode = SourceGrid.CellOptimizeMode.ForRows;
-            this.gridLeftTemps.SelectionMode = SourceGrid.GridSelectionMode.Cell;
-            this.gridLeftTemps.Size = new System.Drawing.Size(290, 247);
-            this.gridLeftTemps.TabIndex = 28;
-            this.gridLeftTemps.TabStop = true;
-            this.gridLeftTemps.ToolTipText = "";
-            // 
-            // groupBox3
-            // 
-            this.groupBox3.Controls.Add(this.btnLeftCalculate);
-            this.groupBox3.Controls.Add(this.btnLeftTempUpdate);
-            this.groupBox3.Location = new System.Drawing.Point(6, 25);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(290, 317);
-            this.groupBox3.TabIndex = 34;
-            this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Left Cartridge Temperatures";
-            // 
-            // btnLeftCalculate
-            // 
-            this.btnLeftCalculate.Location = new System.Drawing.Point(209, 287);
-            this.btnLeftCalculate.Name = "btnLeftCalculate";
-            this.btnLeftCalculate.Size = new System.Drawing.Size(75, 23);
-            this.btnLeftCalculate.TabIndex = 30;
-            this.btnLeftCalculate.Text = "Calculate";
-            this.btnLeftCalculate.UseVisualStyleBackColor = true;
-            this.btnLeftCalculate.Click += new System.EventHandler(this.BtnLeftCalculate_Click);
-            // 
-            // btnLeftTempUpdate
-            // 
-            this.btnLeftTempUpdate.Location = new System.Drawing.Point(128, 287);
-            this.btnLeftTempUpdate.Name = "btnLeftTempUpdate";
-            this.btnLeftTempUpdate.Size = new System.Drawing.Size(75, 23);
-            this.btnLeftTempUpdate.TabIndex = 32;
-            this.btnLeftTempUpdate.Text = "Update";
-            this.btnLeftTempUpdate.UseVisualStyleBackColor = true;
-            this.btnLeftTempUpdate.Click += new System.EventHandler(this.BtnLeftTempUpdate_Click);
-            // 
-            // groupBox4
-            // 
-            this.groupBox4.Controls.Add(this.gridRightTemps);
-            this.groupBox4.Controls.Add(this.btnRightTempUpdate);
-            this.groupBox4.Controls.Add(this.btnRightCalculate);
-            this.groupBox4.Location = new System.Drawing.Point(305, 25);
-            this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(295, 317);
-            this.groupBox4.TabIndex = 35;
-            this.groupBox4.TabStop = false;
-            this.groupBox4.Text = "Right Cartridge Temperatures";
-            // 
-            // gridRightTemps
-            // 
-            this.gridRightTemps.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.gridRightTemps.EnableSort = true;
-            this.gridRightTemps.Location = new System.Drawing.Point(0, 34);
-            this.gridRightTemps.Name = "gridRightTemps";
-            this.gridRightTemps.OptimizeMode = SourceGrid.CellOptimizeMode.ForRows;
-            this.gridRightTemps.SelectionMode = SourceGrid.GridSelectionMode.Cell;
-            this.gridRightTemps.Size = new System.Drawing.Size(295, 247);
-            this.gridRightTemps.TabIndex = 29;
-            this.gridRightTemps.TabStop = true;
-            this.gridRightTemps.ToolTipText = "";
-            // 
-            // btnRightTempUpdate
-            // 
-            this.btnRightTempUpdate.Location = new System.Drawing.Point(45, 287);
-            this.btnRightTempUpdate.Name = "btnRightTempUpdate";
-            this.btnRightTempUpdate.Size = new System.Drawing.Size(119, 23);
-            this.btnRightTempUpdate.TabIndex = 33;
-            this.btnRightTempUpdate.Text = "Update";
-            this.btnRightTempUpdate.UseVisualStyleBackColor = true;
-            this.btnRightTempUpdate.Click += new System.EventHandler(this.BtnRightTempUpdate_Click);
-            // 
-            // btnRightCalculate
-            // 
-            this.btnRightCalculate.Location = new System.Drawing.Point(170, 287);
-            this.btnRightCalculate.Name = "btnRightCalculate";
-            this.btnRightCalculate.Size = new System.Drawing.Size(119, 23);
-            this.btnRightCalculate.TabIndex = 31;
-            this.btnRightCalculate.Text = "Calculate";
-            this.btnRightCalculate.UseVisualStyleBackColor = true;
-            this.btnRightCalculate.Click += new System.EventHandler(this.BtnRightCalculate_Click);
-            // 
-            // tabControl1
-            // 
-            this.tabControl1.Controls.Add(this.tabTemperatureControl);
-            this.tabControl1.Controls.Add(this.tabRetractrionControl);
-            this.tabControl1.Controls.Add(this.tbPressure);
-            this.tabControl1.Location = new System.Drawing.Point(262, 27);
-            this.tabControl1.Name = "tabControl1";
-            this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(629, 386);
-            this.tabControl1.TabIndex = 31;
-            // 
-            // tbPressure
-            // 
-            this.tbPressure.Controls.Add(this.btnUpdate);
-            this.tbPressure.Controls.Add(this.btnCalculate);
-            this.tbPressure.Controls.Add(this.nudPressureMod);
-            this.tbPressure.Controls.Add(this.label10);
-            this.tbPressure.Controls.Add(this.btnSelectAll);
-            this.tbPressure.Controls.Add(this.btnClearSelection);
-            this.tbPressure.Controls.Add(this.gridPressure);
-            this.tbPressure.Location = new System.Drawing.Point(4, 25);
-            this.tbPressure.Name = "tbPressure";
-            this.tbPressure.Padding = new System.Windows.Forms.Padding(3);
-            this.tbPressure.Size = new System.Drawing.Size(621, 357);
-            this.tbPressure.TabIndex = 2;
-            this.tbPressure.Text = "Extruder Pressure";
-            this.tbPressure.UseVisualStyleBackColor = true;
-            // 
-            // btnCalculate
-            // 
-            this.btnCalculate.Location = new System.Drawing.Point(467, 316);
-            this.btnCalculate.Name = "btnCalculate";
-            this.btnCalculate.Size = new System.Drawing.Size(77, 26);
-            this.btnCalculate.TabIndex = 6;
-            this.btnCalculate.Text = "Calculate";
-            this.btnCalculate.UseVisualStyleBackColor = true;
-            this.btnCalculate.Click += new System.EventHandler(this.BtnApplyChange_Click);
-            // 
-            // nudPressureMod
-            // 
-            this.nudPressureMod.DecimalPlaces = 1;
-            this.nudPressureMod.Location = new System.Drawing.Point(374, 319);
-            this.nudPressureMod.Minimum = new decimal(new int[] {
-            100,
-            0,
-            0,
-            -2147483648});
-            this.nudPressureMod.Name = "nudPressureMod";
-            this.nudPressureMod.Size = new System.Drawing.Size(70, 22);
-            this.nudPressureMod.TabIndex = 5;
-            this.nudPressureMod.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(291, 321);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(77, 17);
-            this.label10.TabIndex = 4;
-            this.label10.Text = "Change %:";
-            // 
-            // btnSelectAll
-            // 
-            this.btnSelectAll.Location = new System.Drawing.Point(6, 316);
-            this.btnSelectAll.Name = "btnSelectAll";
-            this.btnSelectAll.Size = new System.Drawing.Size(111, 26);
-            this.btnSelectAll.TabIndex = 3;
-            this.btnSelectAll.Text = "Select All";
-            this.btnSelectAll.UseVisualStyleBackColor = true;
-            this.btnSelectAll.Click += new System.EventHandler(this.GridPressureSelectAll_Click);
-            // 
-            // btnClearSelection
-            // 
-            this.btnClearSelection.Location = new System.Drawing.Point(123, 316);
-            this.btnClearSelection.Name = "btnClearSelection";
-            this.btnClearSelection.Size = new System.Drawing.Size(111, 26);
-            this.btnClearSelection.TabIndex = 2;
-            this.btnClearSelection.Text = "Clear Selection";
-            this.btnClearSelection.UseVisualStyleBackColor = true;
-            this.btnClearSelection.Click += new System.EventHandler(this.GridPressureClearSelection_Click);
-            // 
-            // gridPressure
-            // 
-            this.gridPressure.EnableSort = true;
-            this.gridPressure.Location = new System.Drawing.Point(3, 0);
-            this.gridPressure.Name = "gridPressure";
-            this.gridPressure.OptimizeMode = SourceGrid.CellOptimizeMode.ForRows;
-            this.gridPressure.SelectionMode = SourceGrid.GridSelectionMode.Cell;
-            this.gridPressure.Size = new System.Drawing.Size(612, 310);
-            this.gridPressure.TabIndex = 0;
-            this.gridPressure.TabStop = true;
-            this.gridPressure.ToolTipText = "";
-            // 
             // btnGenScript
             // 
             this.btnGenScript.Location = new System.Drawing.Point(583, 415);
@@ -946,6 +700,88 @@
             this.fdLoadScript.FileName = "fdLoadScript";
             this.fdLoadScript.Filter = "\"Cube Script Files|*.cubescr|AllFiless|*.*\"";
             // 
+            // tbPressure
+            // 
+            this.tbPressure.Controls.Add(this.btnUpdate);
+            this.tbPressure.Controls.Add(this.btnCalculate);
+            this.tbPressure.Controls.Add(this.nudPressureMod);
+            this.tbPressure.Controls.Add(this.label10);
+            this.tbPressure.Controls.Add(this.btnSelectAll);
+            this.tbPressure.Controls.Add(this.btnClearSelection);
+            this.tbPressure.Controls.Add(this.gridPressure);
+            this.tbPressure.Location = new System.Drawing.Point(4, 25);
+            this.tbPressure.Name = "tbPressure";
+            this.tbPressure.Padding = new System.Windows.Forms.Padding(3);
+            this.tbPressure.Size = new System.Drawing.Size(621, 357);
+            this.tbPressure.TabIndex = 2;
+            this.tbPressure.Text = "Extruder Pressure";
+            this.tbPressure.UseVisualStyleBackColor = true;
+            // 
+            // gridPressure
+            // 
+            this.gridPressure.EnableSort = true;
+            this.gridPressure.Location = new System.Drawing.Point(3, 0);
+            this.gridPressure.Name = "gridPressure";
+            this.gridPressure.OptimizeMode = SourceGrid.CellOptimizeMode.ForRows;
+            this.gridPressure.SelectionMode = SourceGrid.GridSelectionMode.Cell;
+            this.gridPressure.Size = new System.Drawing.Size(612, 310);
+            this.gridPressure.TabIndex = 0;
+            this.gridPressure.TabStop = true;
+            this.gridPressure.ToolTipText = "";
+            // 
+            // btnClearSelection
+            // 
+            this.btnClearSelection.Location = new System.Drawing.Point(123, 316);
+            this.btnClearSelection.Name = "btnClearSelection";
+            this.btnClearSelection.Size = new System.Drawing.Size(111, 26);
+            this.btnClearSelection.TabIndex = 2;
+            this.btnClearSelection.Text = "Clear Selection";
+            this.btnClearSelection.UseVisualStyleBackColor = true;
+            this.btnClearSelection.Click += new System.EventHandler(this.GridPressureClearSelection_Click);
+            // 
+            // btnSelectAll
+            // 
+            this.btnSelectAll.Location = new System.Drawing.Point(6, 316);
+            this.btnSelectAll.Name = "btnSelectAll";
+            this.btnSelectAll.Size = new System.Drawing.Size(111, 26);
+            this.btnSelectAll.TabIndex = 3;
+            this.btnSelectAll.Text = "Select All";
+            this.btnSelectAll.UseVisualStyleBackColor = true;
+            this.btnSelectAll.Click += new System.EventHandler(this.GridPressureSelectAll_Click);
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(291, 321);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(77, 17);
+            this.label10.TabIndex = 4;
+            this.label10.Text = "Change %:";
+            // 
+            // nudPressureMod
+            // 
+            this.nudPressureMod.DecimalPlaces = 1;
+            this.nudPressureMod.Location = new System.Drawing.Point(374, 319);
+            this.nudPressureMod.Minimum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            -2147483648});
+            this.nudPressureMod.Name = "nudPressureMod";
+            this.nudPressureMod.Size = new System.Drawing.Size(70, 22);
+            this.nudPressureMod.TabIndex = 5;
+            this.nudPressureMod.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
+            // btnCalculate
+            // 
+            this.btnCalculate.Location = new System.Drawing.Point(467, 316);
+            this.btnCalculate.Name = "btnCalculate";
+            this.btnCalculate.Size = new System.Drawing.Size(77, 26);
+            this.btnCalculate.TabIndex = 6;
+            this.btnCalculate.Text = "Calculate";
+            this.btnCalculate.UseVisualStyleBackColor = true;
+            this.btnCalculate.Click += new System.EventHandler(this.BtnApplyChange_Click);
+            // 
             // btnUpdate
             // 
             this.btnUpdate.Location = new System.Drawing.Point(550, 316);
@@ -955,6 +791,210 @@
             this.btnUpdate.Text = "Update";
             this.btnUpdate.UseVisualStyleBackColor = true;
             this.btnUpdate.Click += new System.EventHandler(this.BtnUpdate_Click);
+            // 
+            // tabRetractrionControl
+            // 
+            this.tabRetractrionControl.Controls.Add(this.groupBox7);
+            this.tabRetractrionControl.Controls.Add(this.groupBox6);
+            this.tabRetractrionControl.Location = new System.Drawing.Point(4, 25);
+            this.tabRetractrionControl.Name = "tabRetractrionControl";
+            this.tabRetractrionControl.Padding = new System.Windows.Forms.Padding(3);
+            this.tabRetractrionControl.Size = new System.Drawing.Size(621, 357);
+            this.tabRetractrionControl.TabIndex = 1;
+            this.tabRetractrionControl.Text = "Retraction Control";
+            this.tabRetractrionControl.UseVisualStyleBackColor = true;
+            // 
+            // groupBox6
+            // 
+            this.groupBox6.Controls.Add(this.gridRetractionStart);
+            this.groupBox6.Location = new System.Drawing.Point(6, 6);
+            this.groupBox6.Name = "groupBox6";
+            this.groupBox6.Size = new System.Drawing.Size(609, 171);
+            this.groupBox6.TabIndex = 1;
+            this.groupBox6.TabStop = false;
+            this.groupBox6.Text = "M227";
+            // 
+            // gridRetractionStart
+            // 
+            this.gridRetractionStart.EnableSort = true;
+            this.gridRetractionStart.Location = new System.Drawing.Point(6, 19);
+            this.gridRetractionStart.Name = "gridRetractionStart";
+            this.gridRetractionStart.OptimizeMode = SourceGrid.CellOptimizeMode.ForRows;
+            this.gridRetractionStart.SelectionMode = SourceGrid.GridSelectionMode.Cell;
+            this.gridRetractionStart.Size = new System.Drawing.Size(597, 154);
+            this.gridRetractionStart.TabIndex = 0;
+            this.gridRetractionStart.TabStop = true;
+            this.gridRetractionStart.ToolTipText = "";
+            // 
+            // groupBox7
+            // 
+            this.groupBox7.Controls.Add(this.gridRetractionStop);
+            this.groupBox7.Location = new System.Drawing.Point(3, 183);
+            this.groupBox7.Name = "groupBox7";
+            this.groupBox7.Size = new System.Drawing.Size(609, 179);
+            this.groupBox7.TabIndex = 2;
+            this.groupBox7.TabStop = false;
+            this.groupBox7.Text = "M228";
+            // 
+            // gridRetractionStop
+            // 
+            this.gridRetractionStop.EnableSort = true;
+            this.gridRetractionStop.Location = new System.Drawing.Point(6, 19);
+            this.gridRetractionStop.Name = "gridRetractionStop";
+            this.gridRetractionStop.OptimizeMode = SourceGrid.CellOptimizeMode.ForRows;
+            this.gridRetractionStop.SelectionMode = SourceGrid.GridSelectionMode.Cell;
+            this.gridRetractionStop.Size = new System.Drawing.Size(597, 154);
+            this.gridRetractionStop.TabIndex = 0;
+            this.gridRetractionStop.TabStop = true;
+            this.gridRetractionStop.ToolTipText = "";
+            // 
+            // tabTemperatureControl
+            // 
+            this.tabTemperatureControl.Controls.Add(this.gridLeftTemps);
+            this.tabTemperatureControl.Controls.Add(this.groupBox3);
+            this.tabTemperatureControl.Controls.Add(this.groupBox4);
+            this.tabTemperatureControl.Location = new System.Drawing.Point(4, 25);
+            this.tabTemperatureControl.Name = "tabTemperatureControl";
+            this.tabTemperatureControl.Padding = new System.Windows.Forms.Padding(3);
+            this.tabTemperatureControl.Size = new System.Drawing.Size(621, 357);
+            this.tabTemperatureControl.TabIndex = 0;
+            this.tabTemperatureControl.Text = "Temperature Control";
+            this.tabTemperatureControl.UseVisualStyleBackColor = true;
+            // 
+            // groupBox4
+            // 
+            this.groupBox4.Controls.Add(this.gridRightTemps);
+            this.groupBox4.Controls.Add(this.btnRightTempUpdate);
+            this.groupBox4.Controls.Add(this.btnRightCalculate);
+            this.groupBox4.Location = new System.Drawing.Point(305, 25);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Size = new System.Drawing.Size(295, 317);
+            this.groupBox4.TabIndex = 35;
+            this.groupBox4.TabStop = false;
+            this.groupBox4.Text = "Right Cartridge Temperatures";
+            // 
+            // btnRightCalculate
+            // 
+            this.btnRightCalculate.Location = new System.Drawing.Point(170, 287);
+            this.btnRightCalculate.Name = "btnRightCalculate";
+            this.btnRightCalculate.Size = new System.Drawing.Size(119, 23);
+            this.btnRightCalculate.TabIndex = 31;
+            this.btnRightCalculate.Text = "Calculate";
+            this.btnRightCalculate.UseVisualStyleBackColor = true;
+            this.btnRightCalculate.Click += new System.EventHandler(this.BtnRightCalculate_Click);
+            // 
+            // btnRightTempUpdate
+            // 
+            this.btnRightTempUpdate.Location = new System.Drawing.Point(45, 287);
+            this.btnRightTempUpdate.Name = "btnRightTempUpdate";
+            this.btnRightTempUpdate.Size = new System.Drawing.Size(119, 23);
+            this.btnRightTempUpdate.TabIndex = 33;
+            this.btnRightTempUpdate.Text = "Update";
+            this.btnRightTempUpdate.UseVisualStyleBackColor = true;
+            this.btnRightTempUpdate.Click += new System.EventHandler(this.BtnRightTempUpdate_Click);
+            // 
+            // gridRightTemps
+            // 
+            this.gridRightTemps.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.gridRightTemps.EnableSort = true;
+            this.gridRightTemps.Location = new System.Drawing.Point(0, 34);
+            this.gridRightTemps.Name = "gridRightTemps";
+            this.gridRightTemps.OptimizeMode = SourceGrid.CellOptimizeMode.ForRows;
+            this.gridRightTemps.SelectionMode = SourceGrid.GridSelectionMode.Cell;
+            this.gridRightTemps.Size = new System.Drawing.Size(295, 247);
+            this.gridRightTemps.TabIndex = 29;
+            this.gridRightTemps.TabStop = true;
+            this.gridRightTemps.ToolTipText = "";
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.btnLeftCalculate);
+            this.groupBox3.Controls.Add(this.btnLeftTempUpdate);
+            this.groupBox3.Location = new System.Drawing.Point(6, 25);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(290, 317);
+            this.groupBox3.TabIndex = 34;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Left Cartridge Temperatures";
+            // 
+            // btnLeftTempUpdate
+            // 
+            this.btnLeftTempUpdate.Location = new System.Drawing.Point(128, 287);
+            this.btnLeftTempUpdate.Name = "btnLeftTempUpdate";
+            this.btnLeftTempUpdate.Size = new System.Drawing.Size(75, 23);
+            this.btnLeftTempUpdate.TabIndex = 32;
+            this.btnLeftTempUpdate.Text = "Update";
+            this.btnLeftTempUpdate.UseVisualStyleBackColor = true;
+            this.btnLeftTempUpdate.Click += new System.EventHandler(this.BtnLeftTempUpdate_Click);
+            // 
+            // btnLeftCalculate
+            // 
+            this.btnLeftCalculate.Location = new System.Drawing.Point(209, 287);
+            this.btnLeftCalculate.Name = "btnLeftCalculate";
+            this.btnLeftCalculate.Size = new System.Drawing.Size(75, 23);
+            this.btnLeftCalculate.TabIndex = 30;
+            this.btnLeftCalculate.Text = "Calculate";
+            this.btnLeftCalculate.UseVisualStyleBackColor = true;
+            this.btnLeftCalculate.Click += new System.EventHandler(this.BtnLeftCalculate_Click);
+            // 
+            // gridLeftTemps
+            // 
+            this.gridLeftTemps.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.gridLeftTemps.EnableSort = true;
+            this.gridLeftTemps.Location = new System.Drawing.Point(6, 59);
+            this.gridLeftTemps.Name = "gridLeftTemps";
+            this.gridLeftTemps.OptimizeMode = SourceGrid.CellOptimizeMode.ForRows;
+            this.gridLeftTemps.SelectionMode = SourceGrid.GridSelectionMode.Cell;
+            this.gridLeftTemps.Size = new System.Drawing.Size(290, 247);
+            this.gridLeftTemps.TabIndex = 28;
+            this.gridLeftTemps.TabStop = true;
+            this.gridLeftTemps.ToolTipText = "";
+            // 
+            // tabControl1
+            // 
+            this.tabControl1.Controls.Add(this.tabTemperatureControl);
+            this.tabControl1.Controls.Add(this.tabRetractrionControl);
+            this.tabControl1.Controls.Add(this.tbPressure);
+            this.tabControl1.Location = new System.Drawing.Point(262, 27);
+            this.tabControl1.Name = "tabControl1";
+            this.tabControl1.SelectedIndex = 0;
+            this.tabControl1.Size = new System.Drawing.Size(629, 386);
+            this.tabControl1.TabIndex = 31;
+            // 
+            // viewToolStripMenuItem
+            // 
+            this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.bFBToolStripMenuItem,
+            this.xMLToolStripMenuItem,
+            this.scriptToolStripMenuItem});
+            this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
+            this.viewToolStripMenuItem.Size = new System.Drawing.Size(55, 24);
+            this.viewToolStripMenuItem.Text = "View";
+            // 
+            // bFBToolStripMenuItem
+            // 
+            this.bFBToolStripMenuItem.Name = "bFBToolStripMenuItem";
+            this.bFBToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.B)));
+            this.bFBToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.bFBToolStripMenuItem.Text = "BFB";
+            this.bFBToolStripMenuItem.Click += new System.EventHandler(this.BtnViewRaw_Click);
+            // 
+            // xMLToolStripMenuItem
+            // 
+            this.xMLToolStripMenuItem.Name = "xMLToolStripMenuItem";
+            this.xMLToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.X)));
+            this.xMLToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.xMLToolStripMenuItem.Text = "XML";
+            this.xMLToolStripMenuItem.Click += new System.EventHandler(this.XMLViewerShow);
+            // 
+            // scriptToolStripMenuItem
+            // 
+            this.scriptToolStripMenuItem.Name = "scriptToolStripMenuItem";
+            this.scriptToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Alt) 
+            | System.Windows.Forms.Keys.S)));
+            this.scriptToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.scriptToolStripMenuItem.Text = "Script";
+            this.scriptToolStripMenuItem.Click += new System.EventHandler(this.BtnViewScript_Click);
             // 
             // MainEditor
             // 
@@ -989,16 +1029,16 @@
             this.groupBox5.PerformLayout();
             this.mainMenu.ResumeLayout(false);
             this.mainMenu.PerformLayout();
-            this.tabRetractrionControl.ResumeLayout(false);
-            this.groupBox7.ResumeLayout(false);
-            this.groupBox6.ResumeLayout(false);
-            this.tabTemperatureControl.ResumeLayout(false);
-            this.groupBox3.ResumeLayout(false);
-            this.groupBox4.ResumeLayout(false);
-            this.tabControl1.ResumeLayout(false);
             this.tbPressure.ResumeLayout(false);
             this.tbPressure.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudPressureMod)).EndInit();
+            this.tabRetractrionControl.ResumeLayout(false);
+            this.groupBox6.ResumeLayout(false);
+            this.groupBox7.ResumeLayout(false);
+            this.tabTemperatureControl.ResumeLayout(false);
+            this.groupBox4.ResumeLayout(false);
+            this.groupBox3.ResumeLayout(false);
+            this.tabControl1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1037,23 +1077,6 @@
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem abouitToolStripMenuItem;
         private System.Windows.Forms.MenuStrip mainMenu;
-        private System.Windows.Forms.TabPage tabRetractrionControl;
-        private System.Windows.Forms.GroupBox groupBox7;
-        private SourceGrid.Grid gridRetractionStop;
-        private System.Windows.Forms.GroupBox groupBox6;
-        private SourceGrid.Grid gridRetractionStart;
-        private System.Windows.Forms.TabPage tabTemperatureControl;
-        private SourceGrid.Grid gridLeftTemps;
-        private System.Windows.Forms.GroupBox groupBox3;
-        private System.Windows.Forms.Button btnLeftCalculate;
-        private System.Windows.Forms.Button btnLeftTempUpdate;
-        private System.Windows.Forms.GroupBox groupBox4;
-        private SourceGrid.Grid gridRightTemps;
-        private System.Windows.Forms.Button btnRightTempUpdate;
-        private System.Windows.Forms.Button btnRightCalculate;
-        private System.Windows.Forms.TabControl tabControl1;
-        private System.Windows.Forms.TabPage tbPressure;
-        private SourceGrid.Grid gridPressure;
         private System.Windows.Forms.Button btnGenScript;
         private System.Windows.Forms.Button btnViewScript;
         private System.Windows.Forms.SaveFileDialog saveScriptDialog;
@@ -1072,12 +1095,33 @@
         private System.Windows.Forms.ComboBox cbPrinterModel;
         private System.Windows.Forms.ComboBox cbMinFirmware;
         private System.Windows.Forms.ComboBox cbFirmware;
-        private System.Windows.Forms.Button btnSelectAll;
-        private System.Windows.Forms.Button btnClearSelection;
+        private System.Windows.Forms.TabPage tbPressure;
+        private System.Windows.Forms.Button btnUpdate;
         private System.Windows.Forms.Button btnCalculate;
         private System.Windows.Forms.NumericUpDown nudPressureMod;
         private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.Button btnUpdate;
+        private System.Windows.Forms.Button btnSelectAll;
+        private System.Windows.Forms.Button btnClearSelection;
+        private SourceGrid.Grid gridPressure;
+        private System.Windows.Forms.TabPage tabRetractrionControl;
+        private System.Windows.Forms.GroupBox groupBox7;
+        private SourceGrid.Grid gridRetractionStop;
+        private System.Windows.Forms.GroupBox groupBox6;
+        private SourceGrid.Grid gridRetractionStart;
+        private System.Windows.Forms.TabPage tabTemperatureControl;
+        private SourceGrid.Grid gridLeftTemps;
+        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.Button btnLeftCalculate;
+        private System.Windows.Forms.Button btnLeftTempUpdate;
+        private System.Windows.Forms.GroupBox groupBox4;
+        private SourceGrid.Grid gridRightTemps;
+        private System.Windows.Forms.Button btnRightTempUpdate;
+        private System.Windows.Forms.Button btnRightCalculate;
+        private System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem bFBToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem xMLToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem scriptToolStripMenuItem;
     }
 }
 
