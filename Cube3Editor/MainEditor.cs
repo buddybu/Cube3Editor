@@ -144,7 +144,7 @@ namespace Cube3Editor
                                 ModelFilenameSize = 0x104,
                                 MaxFilenameLengthPlusSize = 0x108
                             };
-
+                            
 
                             String rawCube3Filename = extractor.GetCubeFilename();
                             if (rawCube3Filename != null)
@@ -443,7 +443,7 @@ namespace Cube3Editor
             {
                 if (saveFileDialog.ShowDialog() == DialogResult.OK)
                 {
-                    SaveFile(saveFileDialog.FileName);
+                    SaveFile(saveFileDialog.FileName, false);
                 }
             }
             catch (Exception ex)
@@ -498,37 +498,20 @@ namespace Cube3Editor
 
             var build = xDoc.Root.Element("build");
 
-            var type = build.Element("type");
-            type.Value = "cube";
+            build.SetElementValue("type", "cube");
 
             CRC32 crc = new CRC32();
-            var buildCrc32 = build.Element("build_crc32");
-            var newCRC32 = crc.ComputeChecksum(encodedBFB);
-            buildCrc32.Value = newCRC32.ToString();
+            build.SetElementValue("build_crc32", crc.ComputeChecksum(encodedBFB).ToString());
 
-            var materials = build.Element("materials");
-            var extruder1 = materials.Element("extruder1");
-            var ext1Code = extruder1.Element("code");
-            var ext1Recycled = extruder1.Element("recycled");
-            ext1Code.Value = bfbObject.GetMATERIALCODE(BFBConstants.MATERIALCODEE1).ToString();
-            ext1Recycled.Value = "0";
+            build.Element("materials").Element("extruder1").SetElementValue("code", bfbObject.GetMATERIALCODE(BFBConstants.MATERIALCODEE1).ToString());
+            build.Element("materials").Element("extruder1").SetElementValue("recycled","0");
+            build.Element("materials").Element("extruder2").SetElementValue("code", bfbObject.GetMATERIALCODE(BFBConstants.MATERIALCODEE2).ToString());
+            build.Element("materials").Element("extruder2").SetElementValue("recycled", "0");
+            build.Element("materials").Element("extruder3").SetElementValue("code", bfbObject.GetMATERIALCODE(BFBConstants.MATERIALCODEE3).ToString());
+            build.Element("materials").Element("extruder3").SetElementValue("recycled", "0");
 
-            var extruder2 = materials.Element("extruder2");
-            var ext2Code = extruder2.Element("code");
-            var ext2Recycled = extruder2.Element("recycled");
-            ext2Code.Value = bfbObject.GetMATERIALCODE(BFBConstants.MATERIALCODEE2).ToString();
-            ext2Recycled.Value = "0";
-
-            var extruder3 = materials.Element("extruder3");
-            var ext3Code = extruder3.Element("code");
-            var ext3Recycled = extruder3.Element("recycled");
-            ext3Code.Value = bfbObject.GetMATERIALCODE(BFBConstants.MATERIALCODEE3).ToString();
-            ext3Recycled.Value = "0";
-
-            var supports = build.Element("supports");
-            supports.Value = bfbObject.GetSUPPORTS();
-            var sidewalk = build.Element("sidewalk");
-            sidewalk.Value = bfbObject.GetSIDEWALKS();
+            build.SetElementValue("supports", bfbObject.GetSUPPORTS());
+            build.SetElementValue("sidewalk", bfbObject.GetSIDEWALKS());
 
             StringBuilder sb = new StringBuilder();
             TextWriter tr = new StringWriter(sb);
@@ -538,12 +521,12 @@ namespace Cube3Editor
             return newXMLBytes;
         }
 
-        private void SaveFile()
+        private void SaveFile(Boolean addMod = true)
         {
-            SaveFile(fileName);
+            SaveFile(fileName, addMod);
         }
 
-        private void SaveFile(String filename)
+        private void SaveFile(String filename, Boolean addMod = true)
         {
             inFile.Close();
 
@@ -553,13 +536,14 @@ namespace Cube3Editor
             var newFileName = Path.GetFileNameWithoutExtension(filename);
             var newExtension = Path.GetExtension(filename);
 
-            if (Prefs.PreserveOriginalCube3)
+            if (Prefs.PreserveOriginalCube3 && addMod)
             {
                 if (!newFileName.EndsWith("_MOD", StringComparison.CurrentCultureIgnoreCase))
                 {
                     newFileName = newPath + "\\" + newFileName + "_MOD" + newExtension;
                 }
-            } else
+            }
+            else
             {
                 newFileName = filename;
             }
@@ -590,7 +574,6 @@ namespace Cube3Editor
                         extractor.ModelFileSize = 10;
 
                         Byte[] updatedXMLBytes = ProcessXML(extractor.ModelFiles[extractor.GetXMLFilename()], encodedBFB);
-
 
                         binaryWriter.Write(extractor.ModelFileCount);
                         binaryWriter.Write(extractor.ModelFileSize);
