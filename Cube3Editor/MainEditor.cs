@@ -529,6 +529,7 @@ namespace Cube3Editor
         private void SaveFile(String filename, Boolean addMod = true)
         {
             inFile.Close();
+            inFile.Dispose();
 
             Byte[] encodedBFB = EncodeBFB();
 
@@ -541,6 +542,10 @@ namespace Cube3Editor
                 if (!newFileName.EndsWith("_MOD", StringComparison.CurrentCultureIgnoreCase))
                 {
                     newFileName = newPath + "\\" + newFileName + "_MOD" + newExtension;
+                }
+                else
+                {
+                    newFileName = filename;
                 }
             }
             else
