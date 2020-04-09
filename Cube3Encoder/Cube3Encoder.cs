@@ -61,7 +61,8 @@ namespace Cube3Decoder
                 cube3File = Path.GetFileNameWithoutExtension(bfbFile) + ".Cube3";
             }
 
-            engine = new BlowfishEngine(true);
+            engine = new BlowfishEngine();
+            engine.UseLittleEndian = true;
             generateCube3FromBFBFile(bfbFile, cube3File);
 
         }

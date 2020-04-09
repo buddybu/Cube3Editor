@@ -61,7 +61,7 @@
     <None Include="Cube3ScriptGenerator_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\bc-csharp-release-1.8.5\crypto\BouncyCastle.csproj">
+    <ProjectReference Include="..\..\bc-csharp\crypto\BouncyCastle.csproj">
       <Project>{4c235092-820c-4deb-9074-d356fb797d8b}</Project>
       <Name>BouncyCastle</Name>
     </ProjectReference>

@@ -74,7 +74,8 @@ namespace Cube3Decoder
                 }
             }
 
-            engine = new BlowfishEngine(true);
+            engine = new BlowfishEngine();
+            engine.UseLittleEndian = true;
             generateBFBFromCube3File(cube3File, bfbFile, xmlMode);
 
         }
@@ -159,10 +160,10 @@ namespace Cube3Decoder
                             {
                                 int endXmlIndex = decodedModel.LastIndexOf('>');
 
-                                if (endXmlIndex < decodedModel.Length - 1)
-                                {
-                                    decodedModel = decodedModel.Substring(0, endXmlIndex + 1);
-                                }
+                                //if (endXmlIndex < decodedModel.Length - 1)
+                                //{
+                                //    decodedModel = decodedModel.Substring(0, endXmlIndex + 1);
+                                //}
                             }
 
                             string[] seperator = new string[] { "\r\n" };

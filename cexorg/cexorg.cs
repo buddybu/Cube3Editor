@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using FileHelper;
@@ -11,11 +12,19 @@ namespace cexorg
 
     class cexorg
     {
+        [DllImport("3DSystemsCubeBuildIt.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int EncryptBuffer(IntPtr buffer, int length, string password);
+
+        [DllImport("3DSystemsCubeBuildIt.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int DecryptBuffer(IntPtr buffer, int length, string password);
+
+
         private static Blowfish bf;
         private static List<String> modelFileNames = new List<string>();
         private static Dictionary<String, Byte[]> modelFiles = new Dictionary<string, byte[]>();
 
         private static string key = "221BBakerMycroft";
+        private static string key2 = "eXbfXoDj^e\\>?/12";
 
         static void Main(string[] args)
         {
@@ -27,7 +36,6 @@ namespace cexorg
 
             Encoding encoding = Encoding.ASCII;
 
-            bf = new Blowfish(encoding.GetBytes(key));
 
             try
             {
@@ -36,7 +44,9 @@ namespace cexorg
                 {
                     Byte[] inputCubeFile = binaryReader.ReadBytes((int)binaryReader.BaseStream.Length);
 
-                    bf.Decipher(inputCubeFile, inputCubeFile.Length);
+                    GCHandle gcHandle = GCHandle.Alloc((object)inputCubeFile, GCHandleType.Pinned);
+                    DecryptBuffer(gcHandle.AddrOfPinnedObject(), inputCubeFile.Length, key);
+                    gcHandle.Free();
 
                     var outFile = File.OpenWrite(args[0] + ".decoded");
                     var binaryWriter = new BinaryWriter(outFile);

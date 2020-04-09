@@ -75,7 +75,8 @@ namespace Cube3Editor
 
             PreferencesDialog = new PreferencesDialog(Prefs);
 
-            engine = new BlowfishEngine(true);
+            engine = new BlowfishEngine();
+            engine.UseLittleEndian = true;
 
 
             if (cubeFile != null)

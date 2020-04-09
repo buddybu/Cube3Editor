@@ -41,6 +41,9 @@
   <PropertyGroup>
     <ManifestKeyFile>Cube3Editor.pfx</ManifestKeyFile>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>cube3editor.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -63,7 +66,7 @@
     <None Include="Cube3Editor.pfx" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\bc-csharp-release-1.8.5\crypto\BouncyCastle.csproj">
+    <ProjectReference Include="..\..\bc-csharp\crypto\BouncyCastle.csproj">
       <Project>{4c235092-820c-4deb-9074-d356fb797d8b}</Project>
       <Name>BouncyCastle</Name>
     </ProjectReference>
@@ -75,6 +78,9 @@
       <Project>{666c52b7-46ec-43b8-af42-d7e2e26cb032}</Project>
       <Name>FileHelper</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="cube3editor.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

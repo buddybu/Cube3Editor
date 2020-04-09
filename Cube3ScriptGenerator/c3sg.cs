@@ -58,7 +58,8 @@ namespace Cube3ScriptGenerator
                 scriptFile = Path.GetFileNameWithoutExtension(cube3File) + ".CUBESCR";
             }
 
-            engine = new BlowfishEngine(true);
+            engine = new BlowfishEngine();
+            engine.UseLittleEndian = true;
             generateScriptFromCube3File(cube3File, scriptFile);
 
         }
